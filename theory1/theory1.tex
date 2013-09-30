@@ -1,0 +1,81 @@
+\documentclass[12pt]{chmullighw}
+
+
+% info for header block in upper right hand corner
+\name{Chris Mulligan}
+\uni{clm2186}
+\class{COMS3157 Data Structures \& Algorithms}
+\professor{Hershkop}
+\assignment{Theory 1}
+\duedate{September 30, 2013}
+
+\lstset{language=Java, numbers=none, frame=l, captionpos=n}
+\begin{document}
+\problemlist{Theory 1} %Give us a nice big title
+\begin{enumerate}
+
+\item We use a simplified model because we're primarily interested in
+understanding worst case, asymptotic behavior of an algorithm. By ignoring the
+details of the specific implementation we can focus on the big picture of how an
+algorithm scales, and compare in a general sense. The difference between an algorithm
+that completes in $2n$ vs $3n$ does matter, but is completely dwarfed by the
+difference between $2n$ and $n^2$, for large values of $n$. 
+
+A more efficient implementation, or slightly better optimization, will only make
+a difference on the scale of the fixed cost or multiplier ($3n+30$ to $2.5n+18$),
+it won't change the class the algorithm is.
+
+
+\item The class of an algorithm is asymptotic - as $n$ gets large, what function
+is an appropriate upper bound (ignoring multipliers). However this doesn't mean
+that on a given dataset, or for a given $n$ of a relatively small size, the
+a "worse" function might not perform better. If the \BigO{n \log n} class function
+has a high fixed cost, for small values of $n$ that could dwarf the substantially
+better asymptotic behavior. 
+
+For example, take our specific functions are \BigO{n \log_2 n + 3000} and
+\BigO{n^2+100}. If $n = 50$ then $n \log n$ class function will take take
+3282 steps, while the $n^2$ class function takes only 2600 steps. However at
+larger values of $n$ the expected behavior arises, for $n = 5\,000$ then $n \log n$
+takes $64\,400$ steps, while $n^2$ takes $25\,000\,100$.
+
+
+
+
+\item A call to JComboBox.addItemListener() is polymorphic because
+formal parameter is the interface ItemListener, but the actual parameter must be an object that implements that interface.
+
+\item Yes, try-catch-finally may be nested arbitrarily deep. The order of nesting would depend on your code. In general you want to address each exception as close to the source as possible, where you can best isolate and deal with it. However there may be cases where there are several times of similar exceptions that you want to deal with in the same way, so you might reverse the nesting to accommodate that.
+
+
+
+\item Throwable Hierarchy
+
+%\includegraphics[height=7.2in]{theory4.png}
+
+
+\item 
+\texttt{IllegalArgumentException} inherits from \texttt{RuntimeException} so it's unchecked. It occurs when a method is called with illegal or inappropriate argument that it can't use. For example if you passed 0 as a parameter that was going to be used as the denominator, the method might throw an illegal argument exception.
+
+\texttt{ArrayStoreException} inherits from \texttt{RuntimeException} so it's unchecked. It is thrown when, at run time, you try to store an object of the wrong kind into an array. This is possible due to late binding, javac couldn't tell what the object was actually going to be during compilation, but during execution it's evidently the wrong type.
+
+\texttt{ClassCastException} inherits from \texttt{RuntimeException} so it's unchecked. It is thrown when you attempt to illegally cast an object to a new class, but the object is not of a type that is a superclass of the new class. (For example, casting a String to an Integer). 
+
+\texttt{FontFormatException} inherits from \texttt{Exception} so it is checked. It's thrown when \texttt{Font.createFont} when the font you are attempting to create is invalid. This will happen when there is no required font table for that format (eg it has no italics).
+
+\texttt{TooManyListenersException} inherits from \texttt{Exception} so it is checked. It is thrown when a class that implements the Listener pattern can only take a single listener, not many as is typical. As a checked exception it is checked at compile time.
+
+
+\item Checked exceptions are good because they force the developer to pay attention to the edge cases that are possible. This encourages defensive programming and hopefully reduces the number of bugs found in production.
+
+Checked exceptions are also useful because they are a way of making explicit agreements between functions/classes/programmers. Checked exceptions function almost as micro interfaces, creating promises about what sort of exceptions each could possibly throw, and making sure the caller is aware of it and deals with it (or at least passes the buck to it's caller with a throws clause).
+
+Checked exceptions are bad because exceptions are typically rare. The use of checked exceptions means that a lot of unnecessary boilerplate code to catch or pass exceptions that, in practice, won't ever happen.
+
+Checked exceptions are also bad because they're inconsistent and violate the principle of least surprise because only some exceptions are checked. If the helmet law that is checked exceptions is valuable, it should be on everything. If it's not valuable, it should be gone entirely. 
+
+\textit{For better or worse, I didn't consult the internet.}
+
+
+\end{enumerate} %end of questions
+\end{document}

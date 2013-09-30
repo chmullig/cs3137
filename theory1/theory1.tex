@@ -50,26 +50,27 @@ at only $F_{50}$:
 
 \begin{verbatim}
 $ for((i=5;i<=51;i+=1)); do java Fibonacci $i; done
-Running fib for 5... = 5. Took 0.0s
-Running fib for 30... = 832040. Took 0.025s
-Running fib for 35... = 9227465. Took 0.068s
-Running fib for 40... = 102334155. Took 0.533s
-Running fib for 45... = 1134903170. Took 6.341s
-Running fib for 46... = 1836311903. Took 9.416s
-Running fib for 47... = -1323752223. Took 14.843s
-Running fib for 48... = 512559680. Took 25.091s
-Running fib for 49... = -811192543. Took 40.04s
-Running fib for 50... = -298632863. Took 66.436s
-Running fib for 51... = -1109825406. Took 111.065s
+Running fib tailed  for 1  ... = 1. Took   0.0   secs
+Running fib tailed  for 20  ... = 1. Took   0.446   secs
+
 \end{verbatim}
-
-
 
 Graph of the number of seconds taken to calculate $F_n, n=1,...,51$ \\
 \includegraphics[height=3.5in]{fibtimes.png}
 
 
-\item Yes, try-catch-finally may be nested arbitrarily deep. The order of nesting would depend on your code. In general you want to address each exception as close to the source as possible, where you can best isolate and deal with it. However there may be cases where there are several times of similar exceptions that you want to deal with in the same way, so you might reverse the nesting to accommodate that.
+\item
+    \begin{enumerate}
+    \item  Given that \BigO{n} $>$ \BigO{\log n}, since this is a worst case scenario
+we assume both even and odd execute the \BigO{n} computation, thus the overall
+algorithm is, worst case, \BigO{n^2}.
+
+    The best case is that we can assume half the time it executes \BigO{\log n},
+    so the overall runtime is $\frac{n}{2}(n + \log n)$.
+    \item Without knowing anything about the data, we must assume that all locations
+    will contain even numbers - and therefore every computation will take \BigO{n} time. Therefore
+    Algorithm C would be \BigO{n^2}.
+    \end{enumerate}
 
 
 

@@ -1,4 +1,5 @@
 \documentclass[12pt]{chmullighw}
+\usepackage{sidecap}
 
 
 % info for header block in upper right hand corner
@@ -72,7 +73,16 @@ algorithm is, worst case, \BigO{n^2}.
     Algorithm C would be \BigO{n^2}.
     \end{enumerate}
 
+\item use a library ;)
 
+\item Number the elements $e_i, i=1,...,N$. Starting with the first element test
+whether each subsequent element, $e_j \mid j > 1$ can be subtracted from this element (or
+vice-versa) to equal $K$. If not, proceed with the second element and test all
+the remaining elements from $e_3$. In other words test:\\
+$(\forall i)(\forall j : j > i)(e_i - e_j = K$ OR $e_j - e_i = K)$
+
+Since in the worst case there is no combination that equals K every element must
+be tested against every other element, resulting in \BigO{n^2} run time.
 
 \item Throwable Hierarchy
 

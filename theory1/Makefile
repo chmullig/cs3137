@@ -16,5 +16,5 @@ fibonacci.times: Fibonacci.class FibonacciTailess.class
 	for((i=1;i<=51;i+=1)); do java FibonacciTailess $$i >> fibonacci.times; done
 
 fibonacci.cleantimes: fibonacci.times
-	echo "type	n	time" > fibonacci.cleantimes
+	echo "algorithm	n	time" > fibonacci.cleantimes
 	cut -f 2,4,6 fibonacci.times >> fibonacci.cleantimes

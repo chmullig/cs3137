@@ -105,6 +105,52 @@ $(\forall i)(\forall j : j > i)(e_i - e_j = K$ OR $e_j - e_i = K)$
 Since in the worst case there is no combination that equals K every element must
 be tested against every other element, resulting in \BigO{n^2} run time.
 
+\item From slowest to fastest: \\
+e) 8 \\
+b) $\log_3n$ \\
+f) $\log_2n$ \\
+d) $10n$ \\
+g) $n\log_2n$ \\
+a) $10n^2$ \\
+a) $2^n$ \\
+a) $n!$ \\
+
+I primarily used intuition and graphs of the functions I created with R.
+Intuitively it was easy to bin the growth rates into: constant; $\log n$; linear;
+bigger than linear. Comparing within each group was slightly more difficult, but
+using derivatives helped as well. The R code is below:
+
+\lstinputlisting{q7.R}
+
+\item
+\begin{enumerate}
+\item Exactly: $1 + 1 + 3(1+2+1+n(2+2+1)) = 17+18n$. Which is of the class \BigO{n}.
+\item Exactly: $1+1+n^2(2+2+2) = 2+6n^2$. Which is of the class \BigO{n^2}.
+\item Exactly: $1+ n(n(1+2+1) + n\log n + 2 + 1) = 4n^2 + n^2\log n + 3n + 1$. Which is of the class \BigO{n^2 \log n}.
+\item Exact runtime depends on the value of n. The exact run time if $n$ is even
+is $1 + 1 + 1 + n(2+2+1) = 3+5n$. If $n$ is odd $1+1+2=4$. However we must assume
+worst case, hence this is \BigO{n}.
+\end{enumerate}
+
+\item Delete the head. Then set \texttt{next.next = next.next.next}. Then set
+\texttt{this = next.next} and repeat. By bypassing every other node you'll force the garbage collector to clean up after you, and delete all the odd elements in the list.
+
+This will take \BigO{n}.
+
+\item Take each element in the list, and as you encounter it either add it to an
+AVL tree that contains a tuple of (element, times), or increment the existing node.
+This will take $n \log n$ work. Then go through the tree and check every number
+to see how many times it appeared. Worst case that's $n$ work, so overall \BigO{n \log n}.
+
+\item Implementation in terms of choosing various algorithms determines your general
+growth rate, which greatly impacts whether certain solutions are viable or not. If
+the a given algorithm is \BigO{n!} it effectively can't be used for any non-trivial n.
+However if it can be rewritten to be something like \BigO{n\log n} it may be a
+viable solution even for reasonably large values of $n$. For example if
+$n = 100\,000$ and our system can calculate $10\,000$ items per second, then
+$n! \approx 2.82\times10^{456573}$ steps taking many of orders of magnitude longer
+than the universe will last, while $n \log_2 n \approx 1.66\times10^6$ steps
+taking only 2.7 minutes. 
 
 \end{enumerate} %end of questions
 \end{document}

@@ -51,10 +51,14 @@ at only $F_{50}$:
 
 \begin{verbatim}
 $ for((i=5;i<=51;i+=1)); do java Fibonacci $i; done
-Running fib tailed  for 1  ... = 1. Took   0.0   secs
-Running fib tailed  for 20  ... = 1. Took   0.446   secs
-
 \end{verbatim}
+\begin{tabular}{l|*{7}{r|}r}
+algorithm & 10 & 20 & 30 & 35 & 40 & 45 & 50 & 51\\
+\hline
+tailed & 0.001 & 0.050 & 0.715 & 2.432 & 18.92 & 211.566 & 2300.641 & 3735.449\\
+\hline
+tailless & 0.001 & 0.001 & 0.001 & 0.001 & 0.001 & 0.001 & 0.001 & 0.001
+\end{tabular}
 
 Graph of the number of seconds taken to calculate $F_n, n=1,...,51$ \\
 \includegraphics[height=3.5in]{fibtimes.png}
@@ -73,7 +77,24 @@ algorithm is, worst case, \BigO{n^2}.
     Algorithm C would be \BigO{n^2}.
     \end{enumerate}
 
-\item use a library ;)
+\item Assume we have a function \texttt{random()} that returns a random number
+in \BigO{1} time.
+
+One method would be to first create the array, $A$, and fill it in order, such that
+$a_i = i, i = 1,\ldots,N$, taking \BigO{N} time.
+Then iterate through the array, $i = 1,\ldots,N$, for element
+$i$ use \texttt{random()} to generate a random integer $j \in (1, N)$ and swap
+$a_i$ with $a_j$. The run time for a single element is a constant for generating
+the random number, and a constant for the swap. Thus the overall runtime is
+simply \BigO{N}.
+
+Another (worse) method is to create the basic array, $A$ as described above, where
+$a_i = i, i=1,\ldots,N$, taking \BigO{N}. Then create an empty array of size N,
+$B$, taking \BigO{1}. For $i = 1,\ldots,N$ use \texttt{random()} to select a
+random index $r \in [1, N-i]$ of the initial array $A$, remove the element $a_r$
+and insert it into the next slot $b_i$. However array $A$ must be collapsed after
+each removal so it's not sparse. This results in an overall \BigO{N^2} runtime.
+
 
 \item Number the elements $e_i, i=1,...,N$. Starting with the first element test
 whether each subsequent element, $e_j \mid j > 1$ can be subtracted from this element (or
@@ -83,33 +104,6 @@ $(\forall i)(\forall j : j > i)(e_i - e_j = K$ OR $e_j - e_i = K)$
 
 Since in the worst case there is no combination that equals K every element must
 be tested against every other element, resulting in \BigO{n^2} run time.
-
-\item Throwable Hierarchy
-
-%\includegraphics[height=7.2in]{theory4.png}
-
-
-\item 
-\texttt{IllegalArgumentException} inherits from \texttt{RuntimeException} so it's unchecked. It occurs when a method is called with illegal or inappropriate argument that it can't use. For example if you passed 0 as a parameter that was going to be used as the denominator, the method might throw an illegal argument exception.
-
-\texttt{ArrayStoreException} inherits from \texttt{RuntimeException} so it's unchecked. It is thrown when, at run time, you try to store an object of the wrong kind into an array. This is possible due to late binding, javac couldn't tell what the object was actually going to be during compilation, but during execution it's evidently the wrong type.
-
-\texttt{ClassCastException} inherits from \texttt{RuntimeException} so it's unchecked. It is thrown when you attempt to illegally cast an object to a new class, but the object is not of a type that is a superclass of the new class. (For example, casting a String to an Integer). 
-
-\texttt{FontFormatException} inherits from \texttt{Exception} so it is checked. It's thrown when \texttt{Font.createFont} when the font you are attempting to create is invalid. This will happen when there is no required font table for that format (eg it has no italics).
-
-\texttt{TooManyListenersException} inherits from \texttt{Exception} so it is checked. It is thrown when a class that implements the Listener pattern can only take a single listener, not many as is typical. As a checked exception it is checked at compile time.
-
-
-\item Checked exceptions are good because they force the developer to pay attention to the edge cases that are possible. This encourages defensive programming and hopefully reduces the number of bugs found in production.
-
-Checked exceptions are also useful because they are a way of making explicit agreements between functions/classes/programmers. Checked exceptions function almost as micro interfaces, creating promises about what sort of exceptions each could possibly throw, and making sure the caller is aware of it and deals with it (or at least passes the buck to it's caller with a throws clause).
-
-Checked exceptions are bad because exceptions are typically rare. The use of checked exceptions means that a lot of unnecessary boilerplate code to catch or pass exceptions that, in practice, won't ever happen.
-
-Checked exceptions are also bad because they're inconsistent and violate the principle of least surprise because only some exceptions are checked. If the helmet law that is checked exceptions is valuable, it should be on everything. If it's not valuable, it should be gone entirely. 
-
-\textit{For better or worse, I didn't consult the internet.}
 
 
 \end{enumerate} %end of questions

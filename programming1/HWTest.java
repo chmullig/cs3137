@@ -1,15 +1,17 @@
 import java.util.*;
+import java.io.*;
 
 /**
  * @author Chris Mulligan
  * @email clm2186@columbia.edu
  *
+ * Tests the SuperDuperLinkedLists class
+ * 
+ * @see SuperDuperLinkedLists
  */
 public class HWTest {
 
 	/**
-	 * Tests the SuperDuperLinkedLists class
-	 * 
 	 * Features a number of internal tests to to check that the linked list
 	 * properly handles adding, finding, removing, sorting, printing, etc a
 	 * linked list. 
@@ -18,6 +20,7 @@ public class HWTest {
 	 * and manipulating them. (reverse, printN, etc).  
 	 * 
 	 * @param args takes a single argument - a file name to read in
+	 * @throws FileNotFoundException 
 	 */
 	public static void main(String[] args) {
 		String[] words = {"Hello", "World.", "Goodbye.", "I miss C", "Or at least python"};
@@ -118,8 +121,32 @@ public class HWTest {
 		
 		System.out.println("\nSort the list by count");
 		numbersLL.sort();
-		numbersLL.print("percent");		
-
+		numbersLL.print("percent");	
+		
+		System.out.println("\n\nAttempting to load the file");
+		// Step 8: load a file from args
+		SuperDuperLinkedLists<String> fileLL = new SuperDuperLinkedLists<String>();
+		if (args.length == 1) {
+			String filename = args[0];
+			File file = new File(filename);
+			Scanner fileScanner = null;
+			try {
+				fileScanner = new Scanner(file);
+			} catch (FileNotFoundException e) {
+				System.out.println("File " + filename + " not found!");
+				System.exit(1);
+			}
+			while (fileScanner.hasNext()) {
+				fileLL.insert(fileScanner.nextLine());
+			}
+			
+			fileLL.sort();
+			fileLL.reverse();
+			fileLL.print("percent");
+		} else {
+			System.out.println("No filename given. Please call with a file as the sole command line argument.");
+			System.exit(1);
+		}
 	}
 
 }

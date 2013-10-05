@@ -142,13 +142,14 @@ public class SuperDuperLinkedLists<E> implements Iterable<LinkNode<E>>{
 		tail = temp;
 	}
 	
-	public void sort(String type) {
+	public void sort() {
 		LinkNode<E> p, q, e;
 		int insize, nmerges, psize, qsize;
 		insize = 1;
 		
 		while (true) {
 			p = head;
+			head = tail = null;
 			nmerges = 0;
 			while (p != null) {
 				nmerges++;
@@ -161,19 +162,80 @@ public class SuperDuperLinkedLists<E> implements Iterable<LinkNode<E>>{
 						break;
 				}
 				qsize = insize;
+				
+				// now merge the two lists
+				while (psize > 0 || (qsize > 0 && q != null)) {
+					e = null;
+					// decide whether to take e from q or p
+					if (psize == 0) {
+						// p empty, take from q
+						e = q;
+						q = q.getNext();
+						qsize--;
+					} else if (qsize == 0 || q == null) {
+						// q empty, take from p
+						e = p;
+						p = p.getNext();
+						psize--;
+					} else if (p.getCount() <= q.getCount()) {
+						//p is less or eq q, take from p
+						e = p;
+						p = p.getNext();
+						psize--;						
+					} else if (p.getCount() > q.getCount()) {
+						// q is less, take from q
+						e = q;
+						q = q.getNext();
+						qsize--;
+					}
+					
+					if (tail != null) {
+						// add to end of LL
+						tail.setNext(e);
+					} else {
+						head = e;
+					}
+					e.setPrevious(tail);
+					tail = e;
+				} // end select loop
+				p = q;
 			}
+			tail.setNext(null);
+			
+			if (nmerges <= 1) {
+				break;
+			}
+			
+			insize *= 2;
 		}
 	}
 	
 	public void printN(int n) {
-		SuperDuperLinkedLists<E> sortedLL = new SuperDuperLinkedLists<E>();
-		LinkNode<E> current = head;
-		int inlist = 0;
-		while (current != null) {
-			
+		SuperDuperLinkedLists<E> sortedLL = this.clone();
+		sortedLL.sort();
+		LinkNode<E> current = sortedLL.getTail();
+		for (int i = 0; i < n; i++) {
+			if (current == null)
+				break;
+			System.out.println("\t" + current.getData() + " " + Math.round(((double)current.getCount()/size)*1000.0)/10f + "%");
+			current = current.getPrevious();
 		}
+		System.out.println();
 	}
 	
+	public SuperDuperLinkedLists<E> clone() {
+		SuperDuperLinkedLists<E> copy = new SuperDuperLinkedLists<E>();
+		Iterator<LinkNode<E>> ll = iterator();
+		while (ll.hasNext()) {
+			LinkNode<E> source = ll.next();
+			copy.insert(source.getData());
+			if (source.getCount() != 1) {
+				copy.getTail().setCount(source.getCount());
+				copy.size += source.getCount() - 1; 
+			}
+		}
+		return copy;
+	}
 	
 
 	public Iterator<LinkNode<E>> iterator() {

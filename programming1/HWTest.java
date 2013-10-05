@@ -10,7 +10,14 @@ public class HWTest {
 	/**
 	 * Tests the SuperDuperLinkedLists class
 	 * 
-	 * @param args ignored
+	 * Features a number of internal tests to to check that the linked list
+	 * properly handles adding, finding, removing, sorting, printing, etc a
+	 * linked list. 
+	 * 
+	 * Includes generating 1000 ints as strings, storing them in a linked list
+	 * and manipulating them. (reverse, printN, etc).  
+	 * 
+	 * @param args takes a single argument - a file name to read in
 	 */
 	public static void main(String[] args) {
 		String[] words = {"Hello", "World.", "Goodbye.", "I miss C", "Or at least python"};
@@ -88,22 +95,30 @@ public class HWTest {
 		System.out.println("\nAdd 1000 integers [0-30] to a new list");
 		SuperDuperLinkedLists<String> numbersLL = new SuperDuperLinkedLists<String>();
 		Random r = new Random();
-		long preInsert = System.currentTimeMillis();
+		long preInsert = System.nanoTime();
 		System.out.println("Current time is: " + preInsert);
 		for (int i = 0; i < 1000; i++) {
-			String num = Integer.toString(r.nextInt(30));
+			String num = Integer.toString(r.nextInt(31));
 			numbersLL.insert(num);
 		}
-		long postInsert = System.currentTimeMillis();
-		System.out.println("Inserting 1000 random integers took " + (postInsert-preInsert)/1000.0 + "s");
+		long postInsert = System.nanoTime();
+		System.out.println("Inserting 1000 random integers took " + (postInsert-preInsert)/1000000.0 + "ms");
 		numbersLL.print("percent");
 		
-		long preReverse = System.currentTimeMillis();
+		System.out.println("\nPrint the 3 most frequent items");
+		numbersLL.printN(3);
+		System.out.println("\nMake sure the original is intact");
+		numbersLL.print("percent");
+		
+		long preReverse = System.nanoTime();
 		numbersLL.reverse();
-		long postReverse = System.currentTimeMillis();
-		System.out.println("Reversing 1000 random integers took " + (postReverse-preReverse)/1000.0 + "s");
-
-			
+		long postReverse = System.nanoTime();
+		System.out.println("Reversing 1000 random integers took " + (postReverse-preReverse)/1000000.0 + "ms");
+		
+		
+		System.out.println("\nSort the list by count");
+		numbersLL.sort();
+		numbersLL.print("percent");		
 
 	}
 

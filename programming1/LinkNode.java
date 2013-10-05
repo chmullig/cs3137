@@ -1,7 +1,10 @@
 /**
  * @author Chris Mulligan
  * @email clm2186@columbia.edu
- *
+ * 
+ * An element to be stored in a linked list.
+ * 
+ * @see SuperDuperLinkedLists 
  */
 public class LinkNode<E> {
 	private LinkNode next;

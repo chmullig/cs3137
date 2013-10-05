@@ -6,7 +6,7 @@ import java.util.*;
  *
  * A basic linked list class. Based in part on Weiss Chapter 3.
  */
-public class SuperDuperLinkedLists<E> implements Iterable<E>{
+public class SuperDuperLinkedLists<E> implements Iterable<LinkNode<E>>{
 	private LinkNode<E> head;
 	private LinkNode<E> tail;
 	private int size;
@@ -22,12 +22,18 @@ public class SuperDuperLinkedLists<E> implements Iterable<E>{
 	 * @param data the value to add
 	 */
 	public void insert(E data) {
-		LinkNode<E> newNode = new LinkNode<E>(data);
 		if (size == 0) {
-			head = tail = newNode;
+			head = tail = new LinkNode<E>(data);
 		} else {
-			tail.setNext(newNode);
-			tail = newNode;
+			LinkNode<E> oldNode = find(data);
+			if (oldNode != null) {
+				oldNode.incrementCount();
+			} else {
+				LinkNode<E> newNode = new LinkNode<E>(data);
+				tail.setNext(newNode);
+				newNode.setPrevious(tail);
+				tail = newNode;
+			}
 		}
 		size++;
 	}
@@ -66,22 +72,25 @@ public class SuperDuperLinkedLists<E> implements Iterable<E>{
 	 * @param toDelete the node to be deleted from the list
 	 * @throws SDLException if the node cannot be found
 	 */
-	private void delete(LinkNode<E> toDelete) throws SDLException {
-		if (toDelete != null) {
-			if (toDelete == head) {
-				head = head.getNext();
-			}
-			if (toDelete == tail) {
-				tail = tail.getPrevious();
-			}
+	public void delete(LinkNode<E> toDelete) throws SDLException {
+		if (toDelete == null) {
+			throw new SDLException();
+		}
+		
+		toDelete.decrementCount();
+		
+		if (toDelete.isDead()) {
 			if (toDelete.getPrevious() != null)
 				toDelete.getPrevious().setNext(toDelete.getNext());
 			if (toDelete.getNext() != null)
 				toDelete.getNext().setPrevious(toDelete.getPrevious());
-			size--;
-		} else {
-			throw new SDLException();
+			
+			if (toDelete == head)
+				head = head.getNext();
+			if (toDelete == tail)
+				tail = tail.getPrevious();
 		}
+		size--;
 	}
 
 	public LinkNode<E> getHead() {
@@ -104,32 +113,49 @@ public class SuperDuperLinkedLists<E> implements Iterable<E>{
 		return size;
 	}
 	
-	public void print() {
-		System.out.print("[head]");
-		Iterator<E> ll = iterator();
+	public void print(String format) {
+		System.out.print(getSize() + ": [head]");
+		Iterator<LinkNode<E>> ll = iterator();
 		while (ll.hasNext()) {
-			E item = ll.next();
-			System.out.print(" -> " + item);
+			LinkNode<E> item = ll.next();
+			System.out.print(" -> " + item.getData());
+			if (format.equals("count"))
+				System.out.print(":" + item.getCount());
+			else if (format.equals("percent"))
+				System.out.print(" " + Math.round(((double)item.getCount()/size)*100.0) + "%");
 		}
 		System.out.println(" <- [tail]");
 	}
+	
+	public void reverse() {
+		LinkNode<E> current = head;
+		while (current != null) {
+			LinkNode<E> temp = current.getNext();
+			current.setNext(current.getPrevious());
+			current.setPrevious(temp);
+			current = temp;
+		}
+		LinkNode<E> temp = head;
+		head = tail;
+		tail = temp;
+	}
 
-	public Iterator<E> iterator() {
+	public Iterator<LinkNode<E>> iterator() {
 		return new SDLIterator();
 	}
 	
-	private class SDLIterator implements Iterator<E> {
+	private class SDLIterator implements Iterator<LinkNode<E>> {
 		private LinkNode<E> current = head;
 		
 		public boolean hasNext() {
 			return current != null;
 		}
 		
-		public E next() {
+		public LinkNode<E> next() {
 			if (hasNext()) {
-				E contents = current.getData();
+				LinkNode<E> ret = current;
 				current = current.getNext();
-				return contents;
+				return ret;
 			} else {
 				throw new NoSuchElementException();
 			}

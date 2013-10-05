@@ -122,7 +122,7 @@ public class SuperDuperLinkedLists<E> implements Iterable<LinkNode<E>>{
 			if (format.equals("count"))
 				System.out.print(":" + item.getCount());
 			else if (format.equals("percent"))
-				System.out.print(" " + Math.round(((double)item.getCount()/size)*100.0) + "%");
+				System.out.print(" " + Math.round(((double)item.getCount()/size)*1000.0)/10f + "%");
 		}
 		System.out.println(" <- [tail]");
 	}

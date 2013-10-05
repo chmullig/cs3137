@@ -72,10 +72,7 @@ public class HWTest {
 		myLL.print("count");
 		
 		
-
-		
-		
-		//print out all the elements
+		System.out.println("\nPrint all the elements");
 		Iterator<LinkNode<String>> myIterator = myLL.iterator();
 		while (myIterator.hasNext()) {
 			System.out.println(myIterator.next());
@@ -86,6 +83,28 @@ public class HWTest {
 		System.out.println(gb);
 		LinkNode<String> missing = myLL.find("i am not real");
 		System.out.println(missing);
+		
+		
+		System.out.println("\nAdd 1000 integers [0-30] to a new list");
+		SuperDuperLinkedLists<String> numbersLL = new SuperDuperLinkedLists<String>();
+		Random r = new Random();
+		long preInsert = System.currentTimeMillis();
+		System.out.println("Current time is: " + preInsert);
+		for (int i = 0; i < 1000; i++) {
+			String num = Integer.toString(r.nextInt(30));
+			numbersLL.insert(num);
+		}
+		long postInsert = System.currentTimeMillis();
+		System.out.println("Inserting 1000 random integers took " + (postInsert-preInsert)/1000.0 + "s");
+		numbersLL.print("percent");
+		
+		long preReverse = System.currentTimeMillis();
+		numbersLL.reverse();
+		long postReverse = System.currentTimeMillis();
+		System.out.println("Reversing 1000 random integers took " + (postReverse-preReverse)/1000.0 + "s");
+
+			
+
 	}
 
 }

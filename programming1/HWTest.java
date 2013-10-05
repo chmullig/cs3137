@@ -5,7 +5,7 @@ import java.util.*;
  * @email clm2186@columbia.edu
  *
  */
-public class Tester {
+public class HWTest {
 
 	/**
 	 * Tests the SuperDuperLinkedLists class

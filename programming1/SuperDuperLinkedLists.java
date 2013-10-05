@@ -5,6 +5,8 @@ import java.util.*;
  * @email clm2186@columbia.edu
  *
  * A basic linked list class. Based in part on Weiss Chapter 3.
+ * 
+ * sorting based on http://www.chiark.greenend.org.uk/~sgtatham/algorithms/listsort.html
  */
 public class SuperDuperLinkedLists<E> implements Iterable<LinkNode<E>>{
 	private LinkNode<E> head;
@@ -139,6 +141,40 @@ public class SuperDuperLinkedLists<E> implements Iterable<LinkNode<E>>{
 		head = tail;
 		tail = temp;
 	}
+	
+	public void sort(String type) {
+		LinkNode<E> p, q, e;
+		int insize, nmerges, psize, qsize;
+		insize = 1;
+		
+		while (true) {
+			p = head;
+			nmerges = 0;
+			while (p != null) {
+				nmerges++;
+				q = p;
+				psize = 0;
+				for (int i = 0; i < insize; i++) {
+					psize++;
+					q = q.getNext();
+					if (q == null) 
+						break;
+				}
+				qsize = insize;
+			}
+		}
+	}
+	
+	public void printN(int n) {
+		SuperDuperLinkedLists<E> sortedLL = new SuperDuperLinkedLists<E>();
+		LinkNode<E> current = head;
+		int inlist = 0;
+		while (current != null) {
+			
+		}
+	}
+	
+	
 
 	public Iterator<LinkNode<E>> iterator() {
 		return new SDLIterator();

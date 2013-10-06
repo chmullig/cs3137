@@ -315,6 +315,8 @@ public class SuperDuperLinkedLists<E> implements Iterable<LinkNode<E>>{
 	 * Iterator for standard forward only iteration through the LinkedList
 	 * On calling next it returns the actual node, rather than the node's data,
 	 * to enable caller to get the count. 
+	 * 
+	 * Does not implement remove.
 	 */
 	private class SDLIterator implements Iterator<LinkNode<E>> {
 		private LinkNode<E> current = head;
@@ -334,14 +336,7 @@ public class SuperDuperLinkedLists<E> implements Iterable<LinkNode<E>>{
 		}
 
 		public void remove() {
-			LinkNode<E> next = current.getNext();
-			try {
-				delete(current);
-			} catch (SDLException e) {
-				e.printStackTrace();
-			}
-			current = next;
-			
+			throw new UnsupportedOperationException();
 		}
 	}
 	

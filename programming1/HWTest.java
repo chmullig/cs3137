@@ -2,10 +2,10 @@ import java.util.*;
 import java.io.*;
 
 /**
- * @author Chris Mulligan
- * @email clm2186@columbia.edu
+ * @author Chris Mulligan <clm2186>
  *
- * Tests the SuperDuperLinkedLists class
+ * Tests the SuperDuperLinkedLists class. See the comments on
+ * {@link #main(String[])}
  * 
  * @see SuperDuperLinkedLists
  */
@@ -14,10 +14,12 @@ public class HWTest {
 	/**
 	 * Features a number of internal tests to to check that the linked list
 	 * properly handles adding, finding, removing, sorting, printing, etc a
-	 * linked list. 
+	 * {@link SuperDuperLinkedLists} linked list. 
 	 * 
 	 * Includes generating 1000 ints as strings, storing them in a linked list
-	 * and manipulating them. (reverse, printN, etc).  
+	 * and manipulating them. (reverse, printN, etc).
+	 * 
+	 * Comments have been replaced by print statements to aid interpreting output
 	 * 
 	 * @param args takes a single argument - a file name to read in
 	 * @throws FileNotFoundException 
@@ -29,22 +31,22 @@ public class HWTest {
 		for (String w: words) {
 			myLL.insert(w);
 		}
-		myLL.print("count");
+		myLL.print(SuperDuperLinkedLists.COUNT);
 		
 		System.out.println("\nAdd some duplicates, print out both ways.");		
 		myLL.insert("Hello");
 		myLL.insert("Goodbye.");
 		myLL.insert("Goodbye.");
-		myLL.print("count");
-		myLL.print("percent");
+		myLL.print(SuperDuperLinkedLists.COUNT);
+		myLL.print(SuperDuperLinkedLists.PERCENT);
 		
 		System.out.println("\nReversing");
 		myLL.reverse();
-		myLL.print("count");
+		myLL.print(SuperDuperLinkedLists.COUNT);
 		
 		System.out.println("\nReversing again");
 		myLL.reverse();
-		myLL.print("count");
+		myLL.print(SuperDuperLinkedLists.COUNT);
 
 		System.out.println("\ndelete the tail");
 		try {
@@ -59,7 +61,7 @@ public class HWTest {
 		} catch (SDLException e) {
 			System.out.println("\tTried to delete an element not in the list, OK!");
 		}
-		myLL.print("count");
+		myLL.print(SuperDuperLinkedLists.COUNT);
 		
 		System.out.println("\ndelete the head");
 		try {
@@ -68,7 +70,7 @@ public class HWTest {
 		} catch (SDLException e) {
 			e.printStackTrace();
 		}
-		myLL.print("count");
+		myLL.print(SuperDuperLinkedLists.COUNT);
 		
 		System.out.println("\nNow add another element and we'll delete the middle");
 		myLL.insert("Hello Again");
@@ -79,7 +81,7 @@ public class HWTest {
 		} catch (SDLException e) {
 			e.printStackTrace();
 		}
-		myLL.print("count");
+		myLL.print(SuperDuperLinkedLists.COUNT);
 		
 		
 		System.out.println("\nPrint all the elements");
@@ -106,12 +108,12 @@ public class HWTest {
 		}
 		long postInsert = System.nanoTime();
 		System.out.println("Inserting 1000 random integers took " + (postInsert-preInsert)/1000000.0 + "ms");
-		numbersLL.print("percent");
+		numbersLL.print(SuperDuperLinkedLists.PERCENT);
 		
 		System.out.println("\nPrint the 3 most frequent items");
 		numbersLL.printN(3);
 		System.out.println("\nMake sure the original is intact");
-		numbersLL.print("percent");
+		numbersLL.print(SuperDuperLinkedLists.PERCENT);
 		
 		long preReverse = System.nanoTime();
 		numbersLL.reverse();
@@ -121,7 +123,7 @@ public class HWTest {
 		
 		System.out.println("\nSort the list by count");
 		numbersLL.sort();
-		numbersLL.print("percent");	
+		numbersLL.print(SuperDuperLinkedLists.PERCENT);	
 		
 		System.out.println("\n\nAttempting to load the file");
 		// Step 8: load a file from args
@@ -142,7 +144,7 @@ public class HWTest {
 			
 			fileLL.sort();
 			fileLL.reverse();
-			fileLL.print("percent");
+			fileLL.print(SuperDuperLinkedLists.PERCENT);
 		} else {
 			System.out.println("No filename given. Please call with a file as the sole command line argument.");
 			System.exit(1);

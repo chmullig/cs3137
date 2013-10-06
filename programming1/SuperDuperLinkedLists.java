@@ -1,25 +1,41 @@
 import java.util.*;
 
 /**
- * @author Chris Mulligan
- * @email clm2186@columbia.edu
+ * @author Chris Mulligan <clm2186>
  *
- * A basic linked list class. Based in part on Weiss Chapter 3.
+ * A doubly linked linked list class. Based in part on Weiss Chapter 3.
  * 
- * sorting based on http://www.chiark.greenend.org.uk/~sgtatham/algorithms/listsort.html
+ * Contains a head and tail of {@link LinkNode} nodes. Each node then points to
+ * the next and previous nodes in the list. If a node is tail the tail it's next
+ * is null (and likewise for head's previous).
+ * 
+ * Internally each link node stores a count, so when adding or removing from the
+ * list it will just increment/decrement the count when possible and avoid creating
+ * duplicate entries.
+ * 
+ * Sorting in count order is based on
+ * http://www.chiark.greenend.org.uk/~sgtatham/algorithms/listsort.html
  */
 public class SuperDuperLinkedLists<E> implements Iterable<LinkNode<E>>{
 	private LinkNode<E> head;
 	private LinkNode<E> tail;
 	private int size;
 	
+	public static final String PERCENT = "percent";
+	public static final String COUNT = "count";
+	public static final  String NONE = "none";
+	
+	
 	public <E> SuperDuperLinkedLists() {
 		head = tail = null;
 		size = 0;
 	}
 	
+	
 	/**
-	 * Add a new node to the end of the list
+	 * Add an element, either incrementing the count of the element if it already
+	 * equals an element in the list, or appending it to the end of the list if
+	 * not
 	 * 
 	 * @param data the value to add
 	 */
@@ -40,6 +56,7 @@ public class SuperDuperLinkedLists<E> implements Iterable<LinkNode<E>>{
 		size++;
 	}
 	
+	
 	/**
 	 * Look for the first node with the given value
 	 * 
@@ -57,8 +74,12 @@ public class SuperDuperLinkedLists<E> implements Iterable<LinkNode<E>>{
 		return null;
 	}
 	
+	
 	/**
-	 * Deletes the first node whose data .equals() the given data
+	 * Decrement the count on the the first node whose data .equals() the given
+	 * data. If the new count is zero, remove it from the list entirely.
+	 * 
+	 * Uses find to find the node, and delete(LinkedNode) to delete it.
 	 * 
 	 * @param data the data element to delete the first occurrence of
 	 * @throws SDLException If the element cannot be found
@@ -68,8 +89,10 @@ public class SuperDuperLinkedLists<E> implements Iterable<LinkNode<E>>{
 		delete(toDelete);
 	}
 	
+	
 	/**
-	 * Delete a specified LinkNode from the list
+	 * Decrement the count for a specified LinkNode in the list. If the new count
+	 * is zero delete it from the list by bypassing it.
 	 * 
 	 * @param toDelete the node to be deleted from the list
 	 * @throws SDLException if the node cannot be found
@@ -80,8 +103,8 @@ public class SuperDuperLinkedLists<E> implements Iterable<LinkNode<E>>{
 		}
 		
 		toDelete.decrementCount();
-		
 		if (toDelete.isDead()) {
+			//This was the last one, actually remove it from the list
 			if (toDelete.getPrevious() != null)
 				toDelete.getPrevious().setNext(toDelete.getNext());
 			if (toDelete.getNext() != null)
@@ -115,20 +138,37 @@ public class SuperDuperLinkedLists<E> implements Iterable<LinkNode<E>>{
 		return size;
 	}
 	
+	
+	/**
+	 * Print out the Linked List in order, with metadata and helpful tips. 
+	 * 
+	 * If the parameter is "count" it prints the number of times each entry shows up
+	 * If the parameter is "percent" it prints the percentage of entries this
+	 * is. Example output for count:
+	 * 
+	 * size: [head] -> element1:count -> element2:count <- [tail]
+	 * 
+	 * @param format "count" or "percent" or "none", from the obvious constants
+	 */
 	public void print(String format) {
 		System.out.print(getSize() + ": [head]");
 		Iterator<LinkNode<E>> ll = iterator();
 		while (ll.hasNext()) {
 			LinkNode<E> item = ll.next();
 			System.out.print(" -> " + item.getData());
-			if (format.equals("count"))
+			if (format.equals(COUNT))
 				System.out.print(":" + item.getCount());
-			else if (format.equals("percent"))
+			else if (format.equals(PERCENT))
 				System.out.print(" " + Math.round(((double)item.getCount()/size)*1000.0)/10f + "%");
 		}
 		System.out.println(" <- [tail]");
 	}
 	
+	
+	/**
+	 * Reverse the list in place, such that the head now points to the old tail.
+	 * Also reverses all links (as a doubly linked list this is "easy" 
+	 */
 	public void reverse() {
 		LinkNode<E> current = head;
 		while (current != null) {
@@ -142,6 +182,14 @@ public class SuperDuperLinkedLists<E> implements Iterable<LinkNode<E>>{
 		tail = temp;
 	}
 	
+	
+	/**
+	 * Sort the linked list with an in place mergesort, based on the value of
+	 * count. It's in ascending (smallest to largest) order.
+	 * 
+	 * Implemented based on:
+	 * http://www.chiark.greenend.org.uk/~sgtatham/algorithms/listsort.html
+	 */
 	public void sort() {
 		LinkNode<E> p, q, e;
 		int insize, nmerges, psize, qsize;
@@ -210,6 +258,17 @@ public class SuperDuperLinkedLists<E> implements Iterable<LinkNode<E>>{
 		}
 	}
 	
+	
+	/**
+	 * Print the n most frequently occurring elements in the list.
+	 * 
+	 * Implemented through a horrible hack:
+	 *  1. clone the current linked list
+	 *  2. sort the clone by count 
+	 *  3. print the last n elements from the tail backwards 
+	 * 
+	 * @param n the number of elements to print
+	 */
 	public void printN(int n) {
 		SuperDuperLinkedLists<E> sortedLL = this.clone();
 		sortedLL.sort();
@@ -223,6 +282,13 @@ public class SuperDuperLinkedLists<E> implements Iterable<LinkNode<E>>{
 		System.out.println();
 	}
 	
+	
+	/* 
+	 * Make a copy where all the nodes are identically structured new nodes. The
+	 * data will be the same though. 
+	 * 
+	 * @see java.lang.Object#clone()
+	 */
 	public SuperDuperLinkedLists<E> clone() {
 		SuperDuperLinkedLists<E> copy = new SuperDuperLinkedLists<E>();
 		Iterator<LinkNode<E>> ll = iterator();
@@ -242,6 +308,14 @@ public class SuperDuperLinkedLists<E> implements Iterable<LinkNode<E>>{
 		return new SDLIterator();
 	}
 	
+	
+	/**
+	 * @author Chris Mulligan <clm2186>
+	 *
+	 * Iterator for standard forward only iteration through the LinkedList
+	 * On calling next it returns the actual node, rather than the node's data,
+	 * to enable caller to get the count. 
+	 */
 	private class SDLIterator implements Iterator<LinkNode<E>> {
 		private LinkNode<E> current = head;
 		

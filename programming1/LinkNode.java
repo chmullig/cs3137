@@ -1,10 +1,16 @@
 import java.lang.System.*;
 
 /**
- * @author Chris Mulligan
- * @email clm2186@columbia.edu
+ * @author Chris Mulligan  <clm2186>
  * 
- * An element to be stored in a linked list.
+ * A double linked to be stored in a linked list.
+ * 
+ * Most functions are self explanatory - getting/setting the next, previous,
+ * and data fields.
+ * 
+ *  This maintains an internal count of the number of times it's in use. It
+ *  should generally be used through increment/decrement count, but can be set
+ *  directly as needed.
  * 
  * @see SuperDuperLinkedLists 
  */
@@ -62,10 +68,23 @@ public class LinkNode<E> {
 		count--;
 	}
 	
+	/**
+	 * True if this node has a count of zero and should be killed
+	 * 
+	 * @return true if the internal count is 0
+	 */
 	public boolean isDead() {
 		return count < 1;
 	}
 	
+	/** 
+	 * Prints out a debugging version of the node, with the memory addresses of
+	 * this node, and the nodes it's pointing toward for previous and next.
+	 * 
+	 * [<-previous|this|next->]
+	 * 
+	 * @see java.lang.Object#toString()
+	 */
 	public String toString() {
 		return "[<-" + 
 			((previous != null) ? Integer.toHexString(System.identityHashCode(previous)) : "null") +

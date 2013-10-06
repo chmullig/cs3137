@@ -118,20 +118,13 @@ public class SuperDuperLinkedLists<E> implements Iterable<LinkNode<E>>{
 		size--;
 	}
 
+	
 	public LinkNode<E> getHead() {
 		return head;
 	}
 
-	public void setHead(LinkNode<E> head) {
-		this.head = head;
-	}
-
 	public LinkNode<E> getTail() {
 		return tail;
-	}
-
-	public void setTail(LinkNode<E> tail) {
-		this.tail = tail;
 	}
 
 	public int getSize() {

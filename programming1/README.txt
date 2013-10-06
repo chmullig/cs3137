@@ -81,3 +81,40 @@ even though that's not necessarily ideal in all circumstances.
 
 ### SDLException.java ###
 An exception class in case you attempt to delete an element that doesn't exist.
+
+
+## Runtime Analysis ##
+
+Insert: O(n). We have to first find in the list to see if the element is already there,
+which is O(n). If we find it the best case is just incrementing an int. Worst case
+we don't find it and we have to create a node, point tail's next to it, and
+repoint the tail, which are all constant operations.
+
+Find: O(n) because it must search each node individually and cannot take advantage
+of any sorting, etc. 
+
+Delete by node: O(1) If the count is >1 then we just decrement the count, a
+constant operation. It the count is 1 it's a matter of updating the previous and
+next nodes to bypass it (and possibly head/tail), all constant time operations.
+
+Delete by value: O(n) - it must first find the node, which is O(n), then delete
+it by node which is O(1), so overall O(n).
+
+getHead/Tail/Size are all O(1) operations because they're stored internally and
+updated as the list changes. 
+
+print: O(n) because it has to touch every element once to print it out.
+
+reverse: O(n) it touches every element swapping its previous and next pointers, 
+plus updating the head and tail in constant time.
+
+sort: O(n log n) uses an in place mergesort, which is relatively efficient. It
+does log n passes over n items, for n logn total work. 
+
+clone: O(n) makes a new node for every existing node, but no worse.
+
+printN: O(n logn), although actual performance is worse than that suggests. 
+It clones in O(n) and then sorts in O(n log n), before printing the last i elements
+in O(i) where i is the argument value. PrintN uses substantially more memory,
+although not pathologically more, since it duplicates the linked list and nodes,
+but not the actual values.

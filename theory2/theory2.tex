@@ -1,7 +1,7 @@
 \documentclass[12pt]{chmullighw}
 \usepackage{tikz}
 \usepackage{tikz-qtree}
-
+\usepackage{algorithm2e}
 
 % info for header block in upper right hand corner
 \name{Chris Mulligan}
@@ -219,6 +219,38 @@ Pre-Order: 18, 3, 0, 2, 11, 12, 25, 222, 34, 30, 40
 Post-Order: 2, 0, 12, 11, 3, 30, 40, 34, 222, 25, 18
 
 In-order: 0, 2, 3, 11, 12, 18, 25, 30, 34, 40, 222
+
+\item First, set the root node's depth to 0. For each node set their children's
+depth to the node's depth + 1. Then recursively call the same routine on each of
+the children.
+
+This is \BigO{n} because every node is touched once when its depth is updated,
+and once to get all its children. With clever programming that could be reduced
+to only once, but both cases are \BigO{n}.
+
+\item  \hskip 1in
+
+\begin{algorithm}[H]
+\SetAlgoNoLine
+\KwData{Tree T}
+\KwResult{A \BigO{n} algorithm for non-recursively in-order traversing a binary tree.}
+
+create stack\;
+current = root\;
+\While{current is not null \textbf{or} stack is not empty}{
+    \If(\tcc*[h]{pop from the stack, and head right}){current is null}{
+        current = stack.pop\;
+        process current\;
+        current = current.right\;
+    }
+    \If(\tcc*[h]{push onto stack and proceed left}){current is not null}{
+        push current onto stack\;
+        current = current.left\;
+    }
+}
+\end{algorithm}
+This algorithm is \BigO{n} because each node is only touched twice, once when
+it is pushed onto the stack, and once when it's popped off and processed.
 
 \end{enumerate} %end of questions
 \end{document}

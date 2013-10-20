@@ -1,0 +1,33 @@
+\documentclass[12pt]{chmullighw}
+\usepackage{sidecap}
+
+
+% info for header block in upper right hand corner
+\name{Chris Mulligan}
+\uni{clm2186}
+\class{COMS3137 Data Structures \& Algorithms}
+\professor{Hershkop}
+\assignment{Theory 2}
+\duedate{October 20, 2013}
+
+\lstset{language=Java, numbers=none, frame=l, captionpos=n}
+\begin{document}
+\problemlist{Theory 2} %Give us a nice big title
+\begin{enumerate}
+
+\item There is little advantage to an 8 item Linked List node, unless you can
+make very strong assumptions regarding the contents of the Linked List. The
+advantages include reduced memory allocations, which can be quite slow, and
+an ability to proceed through a list in units of 8, particularly if you're able
+to ignore the contents of the array inside each node.
+
+The disadvantages include substantially increased complexity, an inability to
+trivially rearrange the linked list.
+
+It only seems to make sense if you always have sets of 8, in which case it's
+really a normal Linked List with each object being an 8-tuple.
+
+
+
+\end{enumerate} %end of questions
+\end{document}

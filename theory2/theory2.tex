@@ -1,5 +1,6 @@
 \documentclass[12pt]{chmullighw}
-\usepackage{sidecap}
+\usepackage{tikz}
+\usepackage{tikz-qtree}
 
 
 % info for header block in upper right hand corner
@@ -85,6 +86,139 @@ Output:
 
 Final Stack: [15, 9]
 
+
+\item \begin{enumerate} \renewcommand{\labelenumii}{\arabic{enumii}.}
+\item \begin{enumerate} \renewcommand{\labelenumiii}{\arabic{enumiii}.}
+\item The advantage to lazy deletion for arrays is that you can avoid frequently
+compacting the array by shifting elements left by one, and more occasionally
+compact the array by several. Compacting by any number of spaces requires
+approximately the same amount of work, \BigO{n}, so if you can avoid doing 4
+separate \BigO{n} shifts, and instead do a single one, you've reduced your runtime
+from $4n$ to $n$.
+
+The biggest disadvantage is that you make the code more complicated, as it must
+now handle cases where elements have been deleted but remain in the list. It may
+change the meaning of getting the $k^{th}$ value, or require substantially
+increased runtime to determine which element actually is in position k. It can 
+also slightly increase the amount of time required to find an element by value, since it has to skip over some elements.
+
+Fortunately it doesn't require more memory, since the array has a fixed size,
+and we can always decide to compact before we grow (although I imagine growing
+and only copying alive values is more efficient for most uses). 
+
+\item For a standard linked list there are no advantages to lazy deletion. Instead
+of the standard \BigO{n} find plus \BigO{1} deletion after you find the element,
+you have the \BigO{n} find, \BigO{1} to mark the element as deleted. Then at
+some point another, separate \BigO{n} sweep to compact the list is required.
+
+Moreover it wastes a lot more memory, since in a standard linked list we can
+delete the node and immediately free the memory, with lazy deletion the node
+stays around, using memory.
+
+The one case it might make sense is if you were keeping an internal counter of
+elements, and if you keep an element with a count of 0 around for a little while,
+then if you re-add that element it will be faster to increment 0 than to create a
+new node. However this case would be relatively rare for most use cases.
+\end{enumerate}
+
+\item In a standard binary tree this will cause extra work, and the tree
+to be larger. That means the constants in the \BigO{\log n} runtime of operations
+will be larger, and the overall tree will be slower.
+
+In a binary search tree one advantage is that the tree will be reshuffled by
+small amounts less, which could result in more balanced trees than naively deleting
+as it occurs. Similarly in a self balancing tree, like AVL, you could do
+fewer rotations, which could save some time. However it would mean that your tree
+is larger, and therefore deeper for the same number of alive elements, slowing down operations.
+
+Overall this mostly makes the trees more complicated, for little gain. 
+\end{enumerate}
+
+\item Let $l$ be the number of leaves, $n$ the total number of nodes, and $n_2$
+as the number of nodes of degree 2. Every node has exactly 1 parent, except the
+root. We shall prove $n_2 = l - 1$.
+
+If $n = 1$ we only have a root, which is a leaf. $l$ = 1, $n_2$ = 0. \checkmark
+
+Adding a node to a tree already displaying exhibiting this property, there are two cases:
+\begin{itemize}
+\item If it's the first child of a former leaf, we add increment $l$ for the new
+node, but decrement $l$ because the former leaf is now degree 1. The degree of the grandparent, and all other nodes, is unchanged, so $n_2$ is unchanged. $l +1 -1 = l$, $n_2\prime = n_2$
+\checkmark
+\item If it's the second child of a former leaf, then both $n_2$ and $l$ are
+incremented by one, and since $n_2 = l -1$ adding 1 to each side, $n_2 + 1 = (l + 1) - 1$, the equality still holds. \checkmark
+\end{itemize}
+
+
+\item
+\tikzset{sibling distance=18pt}
+
+a) \Tree[.18 ]
+\hskip .8in
+b) \Tree[.18   [.3 ]   \edge[draw=none];[.{} ] ]
+\hskip .8in
+c) \Tree[.18   [.3 ]
+            [.25 ] ]
+\hskip .8in
+d) \Tree[.18   [.3 [.0 ] \edge[draw=none];[.{} ] ]
+                [.25 ] ]
+
+f) \Tree[.18   [.3 [.0 ] \edge[draw=none];[.{} ] ]
+                [.25 \edge[draw=none];[.{} ] [.222 ] ] ]
+\hskip 1.5in
+g) \Tree[.18   [.3
+                    [.0 \edge[draw=none];[.{} ] [.2 ] ]
+                    \edge[draw=none];[.{} ] ]
+                [.25 \edge[draw=none];[.{} ] [.222 ] ] ]
+
+\-\\
+
+h) \Tree[.18   [.3
+                    [.0 \edge[draw=none];[.{} ] [.2 ] ]
+                    [.11 ] ]
+                [.25 \edge[draw=none];[.{} ] [.222 ] ] ]
+\hskip 1in
+i) \Tree[.18  [.3
+                    [.0 \edge[draw=none];[.{} ] [.2 ] ]
+                    [.11 \edge[draw=none];[.{} ] [.12 ] ] ]
+                [.25 \edge[draw=none];[.{} ] [.222 ] ] ]
+
+\-\\
+
+j) \Tree[.18  [.3
+                    [.0 \edge[draw=none];[.{} ] [.2 ] ]
+                    [.11 \edge[draw=none];[.{} ] [.12 ] ] ]
+                [.25
+                    \edge[draw=none];[.{} ]
+                    [.222 [.34 ] \edge[draw=none];[.{} ] ] ] ]
+\hskip .5in
+k) \Tree[.18  [.3
+                    [.0 \edge[draw=none];[.{} ] [.2 ] ]
+                    [.11 \edge[draw=none];[.{} ] [.12 ] ] ]
+                [.25
+                    \edge[draw=none];[.{} ]
+                    [.222
+                        [.34 [.30 ] \edge[draw=none];[.{} ] ]
+                        \edge[draw=none];[.{} ] ] ] ]
+
+\-\\
+
+l) Final: \Tree[.18  [.3
+                    [.0 \edge[draw=none];[.{} ] [.2 ] ]
+                    [.11 \edge[draw=none];[.{} ] [.12 ] ] ]
+                [.25
+                    \edge[draw=none];[.{} ]
+                    [.222
+                        [.34 [.30 ] [.40 ] ]
+                        \edge[draw=none];[.{} ] ] ] ]
+
+\-\\
+
+Pre-Order: 18, 3, 0, 2, 11, 12, 25, 222, 34, 30, 40
+
+Post-Order: 2, 0, 12, 11, 3, 30, 40, 34, 222, 25, 18
+
+In-order: 0, 2, 3, 11, 12, 18, 25, 30, 34, 40, 222
 
 \end{enumerate} %end of questions
 \end{document}

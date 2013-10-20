@@ -22,11 +22,68 @@ an ability to proceed through a list in units of 8, particularly if you're able
 to ignore the contents of the array inside each node.
 
 The disadvantages include substantially increased complexity, an inability to
-trivially rearrange the linked list.
+trivially rearrange the linked list, and potentially wasted space. It only seems
+to make sense if you always have sets of 8, in which case it's really a normal
+Linked List with each object being an 8-tuple.
 
-It only seems to make sense if you always have sets of 8, in which case it's
-really a normal Linked List with each object being an 8-tuple.
+Inserting a single element would be relatively easy, you would find the tail,
+see if it has any space in the current LinkedNode8, and either add the element
+to the end of the array if there's space, or allocate a new LinkedNode8 and 
+insert into the beginning of the data array if not. This would be a simple \BigO{1}
+operation, assuming we have a pointer to the tail.
 
+Finding an element would be similar to a normal linked list find, with the added
+complexity of checking all 8 spots in the arrays. You would start with head, check
+all 8 spots, then proceed to the next node where you check all 8 nodes, and so on
+until you reach the end or you find the element you're looking for. The result is
+a standard \BigO{n} linear search.
+
+Deleting an element is more complicated (I will assume we must preserve order,
+since that's a feature of linked lists). First you have to do a find at \BigO{n}.
+Then it depends on how you handle deletes. Option 1 would be to just empty the
+array spot and shift all elements of the array left. This would leave the array
+partially fully, but would guarantee all the empty spots are at the end of the
+individual arrays to simplify things somewhat. While this means we can't guarantee
+the node has 8 items, because the tail will often not have 8 items our code will
+already have to accommodate that case so it should be relatively simple. Then if
+the array is now entirely empty you could delete the node by pointing its previous 
+to its next, and its next to its previous. This is \BigO{n} for the find, and
+\BigO{1} for the delete, shift, and possibly deleting the node, for an overall of
+\BigO{n}.
+
+Similar would be to do lazy deletions of elements in a node, and only
+delete the entire node when all elements have been lazily deleted. This would
+add yet another level of complexity, for little benefit, so I would recommend
+just leaving empty spots at the end of the array for the small additional fixed
+cost of shifting up to 7 elements.
+
+Deletion option 2 would be to compact the entire linked list, which would be much
+more expensive. First a \BigO{n} find. Then we'd need to delete the element, and
+shift all elements left in the node. Then we'd have to pop the first element from
+the next node into the last slot of this node, then proceed through the rest of
+the nodes shifting elements to the left, and taking the first from the next to be
+the last for the current. Only at the end if the tail has a single element would we
+delete the actual node. This would be \BigO{n} for the find, plus \BigO{n} for the
+delete, for an overall run time of \BigO{n}, albeit with a larger constant than
+option 1. 
+
+So overall the big-O class of the 8 element linked list isn't particularly worse,
+but code is more complicated and the constants are higher.
+
+
+\item 
+Output:
+\begin{verbatim}
+28  #Stack: [15]
+81  #Stack: [15, 3]
+3   #Stack: [15]
+1   #Stack: [15, 9]
+4   #Stack: [15, 9, 7]
+7   #Stack: [15, 9]
+4   #Stack: [15, 9]
+\end{verbatim}
+
+Final Stack: [15, 9]
 
 
 \end{enumerate} %end of questions

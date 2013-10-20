@@ -237,7 +237,7 @@ to only once, but both cases are \BigO{n}.
 
 create stack\;
 current = root\;
-\While{current is not null \textbf{or} stack is not empty}{
+\While{current is not null or stack is not empty}{
     \If(\tcc*[h]{pop from the stack, and head right}){current is null}{
         current = stack.pop\;
         process current\;
@@ -248,9 +248,18 @@ current = root\;
         current = current.left\;
     }
 }
+
 \end{algorithm}
 This algorithm is \BigO{n} because each node is only touched twice, once when
-it is pushed onto the stack, and once when it's popped off and processed.
+it is pushed onto the stack, and once when it's popped off and processed. 
 
+\item 
+Initial: 
+\Tree[.14   [.4 [.2 ] [.13 ]  ]
+            [.15 \edge[draw=none];[.{} ] [.18 [.17 ] [.39 ]]]]
+
+After deleting the root (14), we move smallest on right to root:\\
+\Tree[.15   [.4 [.2 ] [.13 ]  ]
+            [.18 [.17 ] [.39 ]]]
 \end{enumerate} %end of questions
 \end{document}

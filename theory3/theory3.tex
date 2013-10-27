@@ -152,10 +152,10 @@
 \item If in advance you knew the contents of a hash table you could potentially
 avoid a collision, but it would be incredibly inefficient. Using perfect hashing
 you have to calculate hashes and determine if anything collides. Then if they do
-ever collide you would switch table size, or hash function, to prevent the collision.
-However ultimately you'd end up doing substantially more work, and likely wasting
-more memory, since we'd want our hash table to be approximately $n^2$ to reduce the
-chance of collisions. 
+ever collide you would switch table size, or hash function, to prevent the
+collision. However ultimately you'd end up doing substantially more work, and
+likely wasting more memory, since we'd want our hash table to be approximately
+$n^2$ to reduce the chance of collisions.
 
 \newpage
 \item Assuming this is a min heap, such that every parent is smaller than both
@@ -215,43 +215,51 @@ Final:\\
           [.15 [.18 [.23 ] [.24 ] ]
                [.17 [.26 ] [.21 ] ] ] ]
 
-\newpage
-\item Chaining is one hash collision resolution strategy. Whenever an element
-collides with an existing element, you create a linked list and append the new
-element onto the old one. The advantages are that this is fairly straight forward,
-you don't have to lazily delete, and a large number of collisions in one position
-don't cause collisions in another. The downside is that the linked lists may become
-arbitrarily long, and searching in them is slow and unpredictable. Tracking linked list
-size will help know when to grow the table and reduce chain sizes.
+\newpage \item Chaining is one hash collision resolution strategy. Whenever an
+element collides with an existing element, you create a linked list and append
+the new element onto the old one. The advantages are that this is fairly
+straight forward, you don't have to lazily delete, and a large number of
+collisions in one position don't cause collisions in another. The downside is
+that the linked lists may become arbitrarily long, and searching in them is slow
+and unpredictable. Tracking linked list size will help know when to grow the
+table and reduce chain sizes.
 
-Another solution is cuckoo hashing, where a second hash table (or the second half of
-a much larger hash table) is used. When a collision occurs one of the entries is
-forced to move to the second table, where a different hash function is used. There
-may be a cascade of collisions, but with reasonable sizes and functions there will
-only rarely be a cycle. The biggest upside is that lookups are very fast, with
-only 2 possible locations for every element. The downside is that inserts are complex
-and expensive, and may require more memory to implement. Resolving collisions in a
-relatively full hash table can become very hard.
+Another solution is cuckoo hashing, where a second hash table (or the second
+half of a much larger hash table) is used. When a collision occurs one of the
+entries is forced to move to the second table, where a different hash function
+is used. There may be a cascade of collisions, but with reasonable sizes and
+functions there will only rarely be a cycle. The biggest upside is that lookups
+are very fast, with only 2 possible locations for every element. The downside is
+that inserts are complex and expensive, and may require more memory to
+implement. Resolving collisions in a relatively full hash table can become very
+hard.
 
-\item Technically this will work fine. A deleted item is left around after lazy 
-deletion to indicate that the space should be viewed as taken during searching in
-open addressing schemes. By replacing a lazily deleted element with a new element,
-searching still works. However whether it actually saves space or not depends on
-a number of assumptions about the structure of the table, and what is meant by
-saving space. The amount of memory consumed won't change, since hash tables are
-almost universally implemented as arrays with a fixed size, unless the deleted
-item can be freed, which is an independent question. 
+\item Duplicate items may not be properly detected in this scheme. If an
+preliminary search isn't done to determine if the element is in the list at all,
+by replacing the first lazily deleted element with a new element, we may be
+introducing a duplicate.
 
-\item This is \BigO{n} because... 
+Additionally whether it actually saves space or not depends on a number of
+assumptions about the structure of the table, and what is meant by saving space.
+The amount of memory consumed won't change, since hash tables are almost
+universally implemented as arrays with a fixed size, unless the deleted item can
+be freed, which is an independent question.
+
+\item If we want a min heap, and we're using an array to store the heap we're
+basically already done. A sorted list is a special case of a heap where all
+levels are also sorted. This will be \BigO{n} to copy the elements into the
+tree, and because we start with the min at the root, and every value we add is
+at least as large as all previous elements, no element will ever have to bubble
+up/down to maintain the heap property.
 
 \item Insertion sort is stable, because it can easily choose to respect original
 ordering when choosing where to place duplicates relative to each other.
 
-Selection sort can be stable at the cost of additional runtime complexity. Typically
-it's unstable because it simply swaps the original nth element with the nth
-largest element in the unsorted portion of the list. However if you add an
-additional check to verify that it always maintains the order of identical items
-during a swap, it will be stable.
+Selection sort can be stable at the cost of additional runtime complexity.
+Typically it's unstable because it simply swaps the original nth element with
+the nth largest element in the unsorted portion of the list. However if you add
+an additional check to verify that it always maintains the order of identical
+items during a swap, it will be stable.
 
 Bubble sort is stable, because it can view identical items as already in order,
 so it won't every alter their relative ordering.
@@ -264,8 +272,42 @@ ordering.
 
 Quicksort is not stable generally, since the partition swapping can change
 relative ordering. With care relative ordering may be preserved, at the cost of
-substantial extra time (to check if there are other equal elements). 
+substantial extra time (to check if there are other equal elements).
 
-\item 
+\item An AVL tree vs a Hashtable depends on the likely usage patterns.
+
+AVL trees offer \BigO{\log n} inserts, finds, and deletes, which is reasonably
+fast. The key feature of AVL trees are that because they're a BST the items are
+maintained in order, permitting relatively easy ordered traversal of the list,
+as well as getting the minimum and maximum values. They can also be more memory
+efficient, depending on the memory overhead of the node structure, since the
+only wasted space is the node overhead and pointers to the children.
+
+Hashtables offer \BigO{1} inserts, finds, and deletes, which makes them much
+faster for large ns. However they are unordered, and finding minimum and
+maximums is \BigO{n}. Additionally they require extra space depending on the
+load factor, generally at least double the actual number of elements. However
+since there is no overhead per element the actual space usage of AVL and Hash
+tables depends on implementation and language.
+
+\item Huffman compression is \BigO{n log n}. Using a heap to build the tree
+costs \BigO{n}, and taking the min each time costs \BigO{\log n}, for an overall
+runtime of \BigO{n \log n}.
+
+Decompression is simpler, each element is represented in the file, and each has
+to be touched once, meaning it's at least \BigO{n}. Luckily with any efficient
+lookup for the codes, say a perfect hash, lookup is \BigO{1}, for overall
+runtime of \BigO{n} for decompression.
+
+\item We know any arbitrary array can be converted to a heap in \BigO{n} steps
+through the buildheap algorithm. To convert the min heap to a max heap we can
+start at the leaves and check whether the heap property is satisfied, and if not
+bubble up the larger element until it is. Overall this is \BigO{n}. 
+
+It may be possible to have a \BigO{n} algorithm with a smaller constant multiple
+by first reversing the list, so that it more closely resembles a max heap and
+fewer bubble operations are required. However the big-O runtime would still be
+\BigO{n}.
+
 \end{enumerate} %end of questions
 \end{document}

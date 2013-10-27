@@ -150,10 +150,12 @@
 
 
 \item If in advance you knew the contents of a hash table you could potentially
-avoid a collision, but it would be incredibly inefficient. You'd have to effectively
-calculate hashes and determine if they collided before creating the actual table.
-Then if they did ever collide you could switch table size, or hash function, to
-avoid the collision. However ultimately you'd end up doing substantially more work.
+avoid a collision, but it would be incredibly inefficient. Using perfect hashing
+you have to calculate hashes and determine if anything collides. Then if they do
+ever collide you would switch table size, or hash function, to prevent the collision.
+However ultimately you'd end up doing substantially more work, and likely wasting
+more memory, since we'd want our hash table to be approximately $n^2$ to reduce the
+chance of collisions. 
 
 \newpage
 \item Assuming this is a min heap, such that every parent is smaller than both
@@ -214,203 +216,56 @@ Final:\\
                [.17 [.26 ] [.21 ] ] ] ]
 
 \newpage
-\item Let $l$ be the number of leaves, $n$ the total number of nodes, and $n_2$
-as the number of nodes of degree 2. Every node has exactly 1 parent, except the
-root. We shall prove $n_2 = l - 1$.
+\item Chaining is one hash collision resolution strategy. Whenever an element
+collides with an existing element, you create a linked list and append the new
+element onto the old one. The advantages are that this is fairly straight forward,
+you don't have to lazily delete, and a large number of collisions in one position
+don't cause collisions in another. The downside is that the linked lists may become
+arbitrarily long, and searching in them is slow and unpredictable. Tracking linked list
+size will help know when to grow the table and reduce chain sizes.
 
-If $n = 1$ we only have a root, which is a leaf. $l$ = 1, $n_2$ = 0. \checkmark
+Another solution is cuckoo hashing, where a second hash table (or the second half of
+a much larger hash table) is used. When a collision occurs one of the entries is
+forced to move to the second table, where a different hash function is used. There
+may be a cascade of collisions, but with reasonable sizes and functions there will
+only rarely be a cycle. The biggest upside is that lookups are very fast, with
+only 2 possible locations for every element. The downside is that inserts are complex
+and expensive, and may require more memory to implement. Resolving collisions in a
+relatively full hash table can become very hard.
 
-Adding a node to a tree already displaying exhibiting this property, there are two cases:
-\begin{itemize}
-\item If it's the first child of a former leaf, we add increment $l$ for the new
-node, but decrement $l$ because the former leaf is now degree 1. The degree of the grandparent, and all other nodes, is unchanged, so $n_2$ is unchanged. $l +1 -1 = l$, $n_2\prime = n_2$
-\checkmark
-\item If it's the second child of a former leaf, then both $n_2$ and $l$ are
-incremented by one, and since $n_2 = l -1$ adding 1 to each side, $n_2 + 1 = (l + 1) - 1$, the equality still holds. \checkmark
-\end{itemize}
+\item Technically this will work fine. A deleted item is left around after lazy 
+deletion to indicate that the space should be viewed as taken during searching in
+open addressing schemes. By replacing a lazily deleted element with a new element,
+searching still works. However whether it actually saves space or not depends on
+a number of assumptions about the structure of the table, and what is meant by
+saving space. The amount of memory consumed won't change, since hash tables are
+almost universally implemented as arrays with a fixed size, unless the deleted
+item can be freed, which is an independent question. 
 
+\item This is \BigO{n} because... 
 
-\item
-\tikzset{sibling distance=18pt}
+\item Insertion sort is stable, because it can easily choose to respect original
+ordering when choosing where to place duplicates relative to each other.
 
-a) \Tree[.18 ]
-\hskip .8in
-b) \Tree[.18   [.3 ]   \edge[draw=none];[.{} ] ]
-\hskip .8in
-c) \Tree[.18   [.3 ]
-            [.25 ] ]
-\hskip .8in
-d) \Tree[.18   [.3 [.0 ] \edge[draw=none];[.{} ] ]
-                [.25 ] ]
+Selection sort can be stable at the cost of additional runtime complexity. Typically
+it's unstable because it simply swaps the original nth element with the nth
+largest element in the unsorted portion of the list. However if you add an
+additional check to verify that it always maintains the order of identical items
+during a swap, it will be stable.
 
-f) \Tree[.18   [.3 [.0 ] \edge[draw=none];[.{} ] ]
-                [.25 \edge[draw=none];[.{} ] [.222 ] ] ]
-\hskip 1.5in
-g) \Tree[.18   [.3
-                    [.0 \edge[draw=none];[.{} ] [.2 ] ]
-                    \edge[draw=none];[.{} ] ]
-                [.25 \edge[draw=none];[.{} ] [.222 ] ] ]
+Bubble sort is stable, because it can view identical items as already in order,
+so it won't every alter their relative ordering.
 
-\-\\
+Merge sort is stable if coded properly. The merge simply has to bias toward the
+earlier sublist in the case of equal values, and the sort becomes stable.
 
-h) \Tree[.18   [.3
-                    [.0 \edge[draw=none];[.{} ] [.2 ] ]
-                    [.11 ] ]
-                [.25 \edge[draw=none];[.{} ] [.222 ] ] ]
-\hskip 1in
-i) \Tree[.18  [.3
-                    [.0 \edge[draw=none];[.{} ] [.2 ] ]
-                    [.11 \edge[draw=none];[.{} ] [.12 ] ] ]
-                [.25 \edge[draw=none];[.{} ] [.222 ] ] ]
+Heapsort is not stable, since establishing the heap property will break relative
+ordering.
 
-\-\\
-
-j) \Tree[.18  [.3
-                    [.0 \edge[draw=none];[.{} ] [.2 ] ]
-                    [.11 \edge[draw=none];[.{} ] [.12 ] ] ]
-                [.25
-                    \edge[draw=none];[.{} ]
-                    [.222 [.34 ] \edge[draw=none];[.{} ] ] ] ]
-\hskip .5in
-k) \Tree[.18  [.3
-                    [.0 \edge[draw=none];[.{} ] [.2 ] ]
-                    [.11 \edge[draw=none];[.{} ] [.12 ] ] ]
-                [.25
-                    \edge[draw=none];[.{} ]
-                    [.222
-                        [.34 [.30 ] \edge[draw=none];[.{} ] ]
-                        \edge[draw=none];[.{} ] ] ] ]
-
-\-\\
-
-l) Final: \Tree[.18  [.3
-                    [.0 \edge[draw=none];[.{} ] [.2 ] ]
-                    [.11 \edge[draw=none];[.{} ] [.12 ] ] ]
-                [.25
-                    \edge[draw=none];[.{} ]
-                    [.222
-                        [.34 [.30 ] [.40 ] ]
-                        \edge[draw=none];[.{} ] ] ] ]
-
-\-\\
-
-Pre-Order: 18, 3, 0, 2, 11, 12, 25, 222, 34, 30, 40
-
-Post-Order: 2, 0, 12, 11, 3, 30, 40, 34, 222, 25, 18
-
-In-order: 0, 2, 3, 11, 12, 18, 25, 30, 34, 40, 222
-
-\item First, set the root node's depth to 0. For each node set their children's
-depth to the node's depth + 1. Then recursively call the same routine on each of
-the children.
-
-This is \BigO{n} because every node is touched once when its depth is updated,
-and once to get all its children. With clever programming that could be reduced
-to only once, but both cases are \BigO{n}.
-
-\item  \hskip 1in
-
-\begin{algorithm}[H]
-\SetAlgoNoLine
-\KwData{Tree T}
-\KwResult{A \BigO{n} algorithm for non-recursively in-order traversing a binary tree.}
-
-create stack\;
-current = root\;
-\While{current is not null or stack is not empty}{
-    \If(\tcc*[h]{pop from the stack, and head right}){current is null}{
-        current = stack.pop\;
-        process current\;
-        current = current.right\;
-    }
-    \If(\tcc*[h]{push onto stack and proceed left}){current is not null}{
-        push current onto stack\;
-        current = current.left\;
-    }
-}
-\end{algorithm}
-
-This algorithm is \BigO{n} because each node is only touched twice, once when
-it is pushed onto the stack, and once when it's popped off and processed. 
+Quicksort is not stable generally, since the partition swapping can change
+relative ordering. With care relative ordering may be preserved, at the cost of
+substantial extra time (to check if there are other equal elements). 
 
 \item 
-Initial: 
-\Tree[.14   [.4 [.2 ] [.13 ]  ]
-            [.15 \edge[draw=none];[.{} ] [.18 [.17 ] [.39 ]]]]
-
-After deleting the root (14), we move smallest on right to root:\\
-\Tree[.15   [.4 [.2 ] [.13 ]  ]
-            [.18 [.17 ] [.39 ]]]
-
-\item After inserting 2, 1, 4, 5, 9, 10, 11:\\
-\Tree[.5  [.2  [.1 ]  [.4 ] ]
-          [.10  [.9 ]  [.11 ] ] ]
-
-After inserting 13, 3, 17, 33:\\
-\Tree[.5 [.2  [.1 ]
-              [.4  [.3  ] \edge[draw=none];[.{} ]  ] ]
-  [.13  [.10  [.9 ] [.11 ] ]
-        [.17  \edge[draw=none];[.{} ]  [.33 ]  ] ] ]
-
-\newpage
-\item B+Tree with M=5, L=7, after inserting: 4, 40, 23, 50, 11, 34, 62, 78, 66, 22, 90, 59, 25, 72, 64, 77, 10, 12.
-
-%\includegraphics{q10.pdf}
-
-\newpage
-\item This algorithm will work, called with isSimilar on the root nodes. 
-
-\begin{algorithm}[H]
-\SetAlgoNoLine
-\KwData{Tree a, Tree b}
-\KwResult{Recursively determine if two binary trees have the same shape}
-\SetKwProg{Fn}{Function}{ is}{end}
-
-\Fn{isSimilar(node a, node b)}{
-    \uIf{a is null and b is null}{
-        return true\;
-    }
-    \uElseIf{a is null and b is not null}{
-        return false\;
-    }
-    \uElseIf{a is not null and b is null}{
-        return false\;
-    }
-    \Else{
-        leftSimilar = isSimilar(a.left, b.left)\;
-        rightSimilar = isSimilar(a.right, b.right)\;
-        return (leftSimilar and rightSimilar)\;
-    }
-}
-\end{algorithm}
-
-The runtime is \BigO{n}, where n is the size of the smaller tree. It must touch
-every element in both trees to verify they're equal, hence \BigO{n}.
-
-\item AVL and Splay trees are both binary search trees that use auto balancing to
-prevent degenerate cases of unbalanced trees. They go about it in different ways.
-
-In an AVL tree the tree is balanced whenever a node is inserted or deleted. It
-ensures that along the entire insert path no nodes left and right sides have
-heights that differ by more than 1. If they do it performs rotations, either single
-or double, to bring the tree back into balance. Thus after every insert and delete
-it guarantees the left and right sides of every node will have similar heights.
-Insert, find, and delete are all \BigO{\log n}. 
-
-A splay tree uses similar rotations, called zig-zigs and zig-zags, to balance the
-tree. However splay trees balances on finds, rather than on inserts. Whenever a
-node is found, it is rotated to be the root node. By rotating along the way the
-tree comes closer into balance. This permits the tree to be quite unbalanced
-(even becoming a linked list in the worst case), but for a sequence of finds
-and inserts the tree performs with an amortized \BigO{\log n} runtime. In other
-words, for any $M$ operations the runtime is \BigO{M\log n}
-
-AVL trees guarantee that the height of the tree is always approximately $\log n$,
-however inserts can be slower, and they don't further optimize. Splay trees may
-have cases with very large heights, but they guarantee that more recently accessed
-nodes are near the top, which helps with real world usage. Further, splay trees
-ensure that the overall runtime is no worse than AVL for a large sequence of
-operations.
-
 \end{enumerate} %end of questions
 \end{document}

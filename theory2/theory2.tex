@@ -2,6 +2,8 @@
 \usepackage{tikz}
 \usepackage{tikz-qtree}
 \usepackage{algorithm2e}
+\usetikzlibrary{shapes}
+
 
 % info for header block in upper right hand corner
 \name{Chris Mulligan}
@@ -248,8 +250,8 @@ current = root\;
         current = current.left\;
     }
 }
-
 \end{algorithm}
+
 This algorithm is \BigO{n} because each node is only touched twice, once when
 it is pushed onto the stack, and once when it's popped off and processed. 
 
@@ -261,5 +263,76 @@ Initial:
 After deleting the root (14), we move smallest on right to root:\\
 \Tree[.15   [.4 [.2 ] [.13 ]  ]
             [.18 [.17 ] [.39 ]]]
+
+\item After inserting 2, 1, 4, 5, 9, 10, 11:\\
+\Tree[.5  [.2  [.1 ]  [.4 ] ]
+          [.10  [.9 ]  [.11 ] ] ]
+
+After inserting 13, 3, 17, 33:\\
+\Tree[.5 [.2  [.1 ]
+              [.4  [.3  ] \edge[draw=none];[.{} ]  ] ]
+  [.13  [.10  [.9 ] [.11 ] ]
+        [.17  \edge[draw=none];[.{} ]  [.33 ]  ] ] ]
+
+\newpage
+\item B+Tree with M=5, L=7, after inserting: 4, 40, 23, 50, 11, 34, 62, 78, 66, 22, 90, 59, 25, 72, 64, 77, 10, 12.
+
+\includegraphics{q10.pdf}
+
+\newpage
+\item This algorithm will work, called with isSimilar on the root nodes. 
+
+\begin{algorithm}[H]
+\SetAlgoNoLine
+\KwData{Tree a, Tree b}
+\KwResult{Recursively determine if two binary trees have the same shape}
+\SetKwProg{Fn}{Function}{ is}{end}
+
+\Fn{isSimilar(node a, node b)}{
+    \uIf{a is null and b is null}{
+        return true\;
+    }
+    \uElseIf{a is null and b is not null}{
+        return false\;
+    }
+    \uElseIf{a is not null and b is null}{
+        return false\;
+    }
+    \Else{
+        leftSimilar = isSimilar(a.left, b.left)\;
+        rightSimilar = isSimilar(a.right, b.right)\;
+        return (leftSimilar and rightSimilar)\;
+    }
+}
+\end{algorithm}
+
+The runtime is \BigO{n}, where n is the size of the smaller tree. It must touch
+every element in both trees to verify they're equal, hence \BigO{n}.
+
+\item AVL and Splay trees are both binary search trees that use auto balancing to
+prevent degenerate cases of unbalanced trees. They go about it in different ways.
+
+In an AVL tree the tree is balanced whenever a node is inserted or deleted. It
+ensures that along the entire insert path no nodes left and right sides have
+heights that differ by more than 1. If they do it performs rotations, either single
+or double, to bring the tree back into balance. Thus after every insert and delete
+it guarantees the left and right sides of every node will have similar heights.
+Insert, find, and delete are all \BigO{\log n}. 
+
+A splay tree uses similar rotations, called zig-zigs and zig-zags, to balance the
+tree. However splay trees balances on finds, rather than on inserts. Whenever a
+node is found, it is rotated to be the root node. By rotating along the way the
+tree comes closer into balance. This permits the tree to be quite unbalanced
+(even becoming a linked list in the worst case), but for a sequence of finds
+and inserts the tree performs with an amortized \BigO{\log n} runtime. In other
+words, for any $M$ operations the runtime is \BigO{M\log n}
+
+AVL trees guarantee that the height of the tree is always approximately $\log n$,
+however inserts can be slower, and they don't further optimize. Splay trees may
+have cases with very large heights, but they guarantee that more recently accessed
+nodes are near the top, which helps with real world usage. Further, splay trees
+ensure that the overall runtime is no worse than AVL for a large sequence of
+operations.
+
 \end{enumerate} %end of questions
 \end{document}

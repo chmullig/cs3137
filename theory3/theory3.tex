@@ -2,7 +2,7 @@
 \usepackage{tikz}
 \usepackage{tikz-qtree}
 \usepackage{algorithm2e}
-\usetikzlibrary{shapes}
+\usetikzlibrary{shapes,chains,fit,shapes,matrix}
 
 
 % info for header block in upper right hand corner
@@ -18,124 +18,202 @@
 \problemlist{Theory 3} %Give us a nice big title
 \begin{enumerate}
 
-\item There is little advantage to an 8 item Linked List node, unless you can
-make very strong assumptions regarding the contents of the Linked List. The
-advantages include reduced memory allocations, which can be quite slow, and
-an ability to proceed through a list in units of 8, particularly if you're able
-to ignore the contents of the array inside each node.
+\item \begin{enumerate} \renewcommand{\labelenumii}{\alph{enumii}.}
+    \item Chaining:
 
-The disadvantages include substantially increased complexity, an inability to
-trivially rearrange the linked list, and potentially wasted space. It only seems
-to make sense if you always have sets of 8, in which case it's really a normal
-Linked List with each object being an 8-tuple.
+        \begin{tikzpicture}
+        \tikzstyle{every path}=[very thick]
 
-Inserting a single element would be relatively easy, you would find the tail,
-see if it has any space in the current LinkedNode8, and either add the element
-to the end of the array if there's space, or allocate a new LinkedNode8 and 
-insert into the beginning of the data array if not. This would be a simple \BigO{1}
-operation, assuming we have a pointer to the tail.
+        \edef\sizetape{1cm}
+        \tikzstyle{ht}=[draw,minimum size=\sizetape]
+        \tikzstyle{num}=[draw=none]
+        \tikzstyle{value}=[draw]
 
-Finding an element would be similar to a normal linked list find, with the added
-complexity of checking all 8 spots in the arrays. You would start with head, check
-all 8 spots, then proceed to the next node where you check all 8 nodes, and so on
-until you reach the end or you find the element you're looking for. The result is
-a standard \BigO{n} linear search.
+        \begin{scope}[start chain=1 going right,node distance=-0.15mm]
+        \foreach \x in {0, 1,...,9} {
+            \node [on chain=1,ht] (\x) {};
+        };
+        \end{scope}
 
-Deleting an element is more complicated (I will assume we must preserve order,
-since that's a feature of linked lists). First you have to do a find at \BigO{n}.
-Then it depends on how you handle deletes. Option 1 would be to just empty the
-array spot and shift all elements of the array left. This would leave the array
-partially fully, but would guarantee all the empty spots are at the end of the
-individual arrays to simplify things somewhat. While this means we can't guarantee
-the node has 8 items, because the tail will often not have 8 items our code will
-already have to accommodate that case so it should be relatively simple. Then if
-the array is now entirely empty you could delete the node by pointing its previous 
-to its next, and its next to its previous. This is \BigO{n} for the find, and
-\BigO{1} for the delete, shift, and possibly deleting the node, for an overall of
-\BigO{n}.
+        %label the cells above
+        \foreach \x in {0, 1,...,9} {
+            \node [num,yshift=.3cm] at (\x.north) (\x_label) {$\x$};
+        };
 
-Similar would be to do lazy deletions of elements in a node, and only
-delete the entire node when all elements have been lazily deleted. This would
-add yet another level of complexity, for little benefit, so I would recommend
-just leaving empty spots at the end of the array for the small additional fixed
-cost of shifting up to 7 elements.
+        \node[value, yshift=-.7cm] at (1.south) (3471) {3471};
+        \draw[->] (1.center) -- (3471.north);
 
-Deletion option 2 would be to compact the entire linked list, which would be much
-more expensive. First a \BigO{n} find. Then we'd need to delete the element, and
-shift all elements left in the node. Then we'd have to pop the first element from
-the next node into the last slot of this node, then proceed through the rest of
-the nodes shifting elements to the left, and taking the first from the next to be
-the last for the current. Only at the end if the tail has a single element would we
-delete the actual node. This would be \BigO{n} for the find, plus \BigO{n} for the
-delete, for an overall run time of \BigO{n}, albeit with a larger constant than
-option 1. 
+        \node[value, yshift=-.7cm] at (3.south) (3123) {3123};
+        \draw[->] (3.center) -- (3123.north);
+        \node[value, yshift=-.7cm] at (3123.south) (1673) {1673};
+        \draw[->] (3123.south) -- (1673.north);
 
-So overall the big-O class of the 8 element linked list isn't particularly worse,
-but code is more complicated and the constants are higher.
+        \node[value, yshift=-.7cm] at (4.south) (3444) {3444};
+        \draw[->] (4.center) -- (3444.north);
+          
+        \node[value, yshift=-.7cm] at (9.south) (1499) {1499};
+        \draw[->] (9.center) -- (1499.north);
+        \node[value, yshift=-.7cm] at (1499.south) (6979) {6979};
+        \draw[->] (1499.south) -- (6979.north);
+        \node[value, yshift=-.7cm] at (6979.south) (8989) {8989};
+        \draw[->] (6979.south) -- (8989.north);
+        \end{tikzpicture}
 
+    \item Linear Probing:
 
-\item 
-Output:
-\begin{verbatim}
-28  #Stack: [15]
-81  #Stack: [15, 3]
-3   #Stack: [15]
-1   #Stack: [15, 9]
-4   #Stack: [15, 9, 7]
-7   #Stack: [15, 9]
-4   #Stack: [15, 9]
-\end{verbatim}
+        \begin{tikzpicture}
+        \tikzstyle{every path}=[very thick]
 
-Final Stack: [15, 9]
+        \edef\sizetape{1cm}
+        \tikzstyle{ht}=[draw,minimum size=\sizetape]
+        \tikzstyle{num}=[draw=none]
+        \tikzstyle{value}=[draw]
 
+        \begin{scope}[start chain=1 going right,node distance=-0.15mm]
+        \node [on chain=1,ht] (0) {6979};
+        \node [on chain=1,ht] (1) {3471};
+        \node [on chain=1,ht] (2) {8989};
+        \node [on chain=1,ht] (3) {3123};
+        \node [on chain=1,ht] (4) {1673};
+        \node [on chain=1,ht] (5) {3444};
+        \node [on chain=1,ht] (6) {};
+        \node [on chain=1,ht] (7) {};
+        \node [on chain=1,ht] (8) {};
+        \node [on chain=1,ht] (9) {1499};
+        \end{scope}
 
-\item \begin{enumerate} \renewcommand{\labelenumii}{\arabic{enumii}.}
-\item \begin{enumerate} \renewcommand{\labelenumiii}{\arabic{enumiii}.}
-\item The advantage to lazy deletion for arrays is that you can avoid frequently
-compacting the array by shifting elements left by one, and more occasionally
-compact the array by several. Compacting by any number of spaces requires
-approximately the same amount of work, \BigO{n}, so if you can avoid doing 4
-separate \BigO{n} shifts, and instead do a single one, you've reduced your runtime
-from $4n$ to $n$.
+        %label the cells above
+        \foreach \x in {0, 1,...,9} {
+            \node [num,yshift=.3cm] at (\x.north) (\x_label) {$\x$};
+        };
+        \end{tikzpicture}
 
-The biggest disadvantage is that you make the code more complicated, as it must
-now handle cases where elements have been deleted but remain in the list. It may
-change the meaning of getting the $k^{th}$ value, or require substantially
-increased runtime to determine which element actually is in position k. It can 
-also slightly increase the amount of time required to find an element by value, since it has to skip over some elements.
+    \item Quadratic Probing:
 
-Fortunately it doesn't require more memory, since the array has a fixed size,
-and we can always decide to compact before we grow (although I imagine growing
-and only copying alive values is more efficient for most uses). 
+        \begin{tikzpicture}
+        \tikzstyle{every path}=[very thick]
 
-\item For a standard linked list there are no advantages to lazy deletion. Instead
-of the standard \BigO{n} find plus \BigO{1} deletion after you find the element,
-you have the \BigO{n} find, \BigO{1} to mark the element as deleted. Then at
-some point another, separate \BigO{n} sweep to compact the list is required.
+        \edef\sizetape{1cm}
+        \tikzstyle{ht}=[draw,minimum size=\sizetape]
+        \tikzstyle{num}=[draw=none]
+        \tikzstyle{value}=[draw]
 
-Moreover it wastes a lot more memory, since in a standard linked list we can
-delete the node and immediately free the memory, with lazy deletion the node
-stays around, using memory.
+        \begin{scope}[start chain=1 going right,node distance=-0.15mm]
+        \node [on chain=1,ht] (0) {6979};
+        \node [on chain=1,ht] (1) {3471};
+        \node [on chain=1,ht] (2) {};
+        \node [on chain=1,ht] (3) {3123};
+        \node [on chain=1,ht] (4) {1673};
+        \node [on chain=1,ht] (5) {3444};
+        \node [on chain=1,ht] (6) {};
+        \node [on chain=1,ht] (7) {};
+        \node [on chain=1,ht] (8) {8989};
+        \node [on chain=1,ht] (9) {1499};
+        \end{scope}
 
-The one case it might make sense is if you were keeping an internal counter of
-elements, and if you keep an element with a count of 0 around for a little while,
-then if you re-add that element it will be faster to increment 0 than to create a
-new node. However this case would be relatively rare for most use cases.
+        %label the cells above
+        \foreach \x in {0, 1,...,9} {
+            \node [num,yshift=.3cm] at (\x.north) (\x_label) {$\x$};
+        };
+        \end{tikzpicture}
+
+    \item Second hash function $h_2(x) = 7 - (x \mod 7)$:
+
+        \begin{tikzpicture}
+        \tikzstyle{every path}=[very thick]
+
+        \edef\sizetape{1cm}
+        \tikzstyle{ht}=[draw,minimum size=\sizetape]
+        \tikzstyle{num}=[draw=none]
+        \tikzstyle{value}=[draw]
+
+        \begin{scope}[start chain=1 going right,node distance=-0.15mm]
+        \node [on chain=1,ht] (0) {1673};
+        \node [on chain=1,ht] (1) {3471};
+        \node [on chain=1,ht] (2) {};
+        \node [on chain=1,ht] (3) {3123};
+        \node [on chain=1,ht] (4) {3444};
+        \node [on chain=1,ht] (5) {8989};
+        \node [on chain=1,ht] (6) {6979};
+        \node [on chain=1,ht] (7) {};
+        \node [on chain=1,ht] (8) {};
+        \node [on chain=1,ht] (9) {1499};
+        \end{scope}
+
+        %label the cells above
+        \foreach \x in {0, 1,...,9} {
+            \node [num,yshift=.3cm] at (\x.north) (\x_label) {$\x$};
+        };
+        \end{tikzpicture}
+
 \end{enumerate}
 
-\item In a standard binary tree this will cause extra work, and the tree
-to be larger. That means the constants in the \BigO{\log n} runtime of operations
-will be larger, and the overall tree will be slower.
 
-In a binary search tree one advantage is that the tree will be reshuffled by
-small amounts less, which could result in more balanced trees than naively deleting
-as it occurs. Similarly in a self balancing tree, like AVL, you could do
-fewer rotations, which could save some time. However it would mean that your tree
-is larger, and therefore deeper for the same number of alive elements, slowing down operations.
+\item If in advance you knew the contents of a hash table you could potentially
+avoid a collision, but it would be incredibly inefficient. You'd have to effectively
+calculate hashes and determine if they collided before creating the actual table.
+Then if they did ever collide you could switch table size, or hash function, to
+avoid the collision. However ultimately you'd end up doing substantially more work.
 
-Overall this mostly makes the trees more complicated, for little gain. 
-\end{enumerate}
+\newpage
+\item Assuming this is a min heap, such that every parent is smaller than both
+of its children.
 
+%\Tree[.23 ]
+
+%\Tree[.23 [.25 ]  \edge[draw=none];[.{} ] ]
+After 23, 25, 14: \\
+\Tree[.14 [.25 ] [.23 ] ]
+
+%\Tree[.14 [.25 [.27 ] \edge[draw=none];[.{} ] ]
+%          [.23 ] ]
+
+%\Tree[.14 [.19 [.27 ] [.25 ] ]
+%          [.23 ] ]
+After 23, 25, 14, 27, 19, 18: \\
+\Tree[.14 [.19 [.27 ] [.25 ] ]
+          [.18 [.23 ] \edge[draw=none];[.{} ] ] ]
+
+%\Tree[.14 [.19 [.27 ] [.25 ] ]
+%          [.18 [.23 ] [.21 ] ] ]
+
+%\Tree[.14 [.19 [.27 [.28 ] \edge[draw=none];[.{} ] ]
+%               [.25 ] ]
+%          [.18 [.23 ] [.21 ] ] ]
+After 23, 25, 14, 27, 19, 18, 21, 28, 24: \\
+\Tree[.14 [.19 [.24 [.28 ] [.27 ] ]
+               [.25 ] ]
+          [.18 [.23 ] [.21 ] ] ]
+
+%\Tree[.14 [.19 [.24 [.28 ] [.27 ] ]
+%               [.22 [.25 ] \edge[draw=none];[.{} ]] ]
+%          [.18 [.23 ] [.21 ] ] ]
+
+%\Tree[.14 [.19 [.24 [.28 ] [.27 ] ]
+%               [.20 [.25 ] [.22 ] ] ]
+%          [.18 [.23 ] [.21 ] ] ]
+After 23, 25, 14, 27, 19, 18, 21, 28, 24, 22, 20, 17: \\
+\Tree[.14 [.19 [.24 [.28 ] [.27 ] ]
+               [.20 [.25 ] [.22 ] ] ]
+          [.17 [.18 [.23 ] \edge[draw=none];[.{} ] ]
+               [.21 ] ] ]
+
+%\Tree[.14 [.19 [.24 [.28 ] [.27 ] ]
+%               [.20 [.25 ] [.22 ] ] ]
+%          [.17 [.18 [.23 ] [.24 ] ]
+%               [.21 ] ] ]
+
+%\Tree[.14 [.19 [.24 [.28 ] [.27 ] ]
+%               [.20 [.25 ] [.22 ] ] ]
+%          [.17 [.18 [.23 ] [.24 ] ]
+%               [.21 [.26 ] \edge[draw=none];[.{} ] ] ] ]
+Final:\\
+\Tree[.14 [.19 [.24 [.28 ] [.27 ] ]
+               [.20 [.25 ] [.22 ] ] ]
+          [.15 [.18 [.23 ] [.24 ] ]
+               [.17 [.26 ] [.21 ] ] ] ]
+
+\newpage
 \item Let $l$ be the number of leaves, $n$ the total number of nodes, and $n_2$
 as the number of nodes of degree 2. Every node has exactly 1 parent, except the
 root. We shall prove $n_2 = l - 1$.
@@ -277,7 +355,7 @@ After inserting 13, 3, 17, 33:\\
 \newpage
 \item B+Tree with M=5, L=7, after inserting: 4, 40, 23, 50, 11, 34, 62, 78, 66, 22, 90, 59, 25, 72, 64, 77, 10, 12.
 
-\includegraphics{q10.pdf}
+%\includegraphics{q10.pdf}
 
 \newpage
 \item This algorithm will work, called with isSimilar on the root nodes. 

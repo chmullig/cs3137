@@ -11,7 +11,7 @@
 \class{COMS3137 Data Structures \& Algorithms}
 \professor{Hershkop}
 \assignment{Theory 4}
-\duedate{November 14, 2013\\2 Days Late}
+\duedate{November 14, 2013, \hspace{1em}  2 Days Late}
 
 \lstset{language=Java, numbers=none, frame=l, captionpos=n}
 \begin{document}
@@ -20,136 +20,129 @@
 
 \item I interpret this question to mean there are $N$ individuals, numbered
 $ i = 1, \ldots, N$. They each have $m_i$ miles, for a total of
-$M = \sum_{j=1}^{N}m_i$ miles. They want to reward the $\log N$ individuals who
-each have the most members.
+$M = \sum_{j=1}^{N}m_i$ miles. They want to reward the $\log N$ individuals 
+with the most miles.
 
-\item \begin{enumerate} \renewcommand{\labelenumii}{\alph{enumii}.}
-    \item Chaining:
+A maxheap of the fliers can be built in \BigO{N} time, sorted by number of accumulated miles. Then we need to pull out the $\log N$ largest individuals, which costs \BigO{\log N} each time, for a total removal runtime of \BigO{\log N\cdot \log N}. Because the removal runtime is dominated by the linear runtime, the overall the runtime is \BigO{N + \log N \cdot \log N} = \BigO{N}.
+
+
+\item A priority queue based on an array is a heap. Insert is \BigO{\log n}. You insert the node in the next available spot, and then perform a "bubble up" of the node in order to satisfy the heap parameter. Because the tree is at most $\log n$ high, the number of comparisons and swaps is at most \BigO{\log n}.
+
+Assuming this is a minheap, and that findmin returns and removes the minimum node, the runtime is also \BigO{\log n}. The minimum node will always be the root, so finding it is \BigO{1}. However once we remove it, we have to bubble down the empty space to maintain the heap ordering, which will cost at most the height of the tree, \BigO{\log n}. Thus the overall runtime for findmin is \BigO{\log n}.
+
+
+\item We can use a similar approach as quicksort or other methods that use a pivot. We put two pointers at the beginning and end of the array. We advance each towards the middle as long as the element it's pointing to is the correct color. If it's not correct (eg the left pointer is pointing to a red element), wait until both are incorrect, then swap the two. Those two elements will then be on the correct side, and we continue each pointer. Once the pointers meet, we know the array is sorted such that all blue elements are before all red elements. The runtime is simply \BigO{n} because it is complete after a single pass of checking every element.
+
+The most computationally simple method of extending to 3 colors is to make this a two pass algorithm. In the first pass you combine two colors, for example blue and green, and treat them as one color. That will separate the blue/green elements from the red elements. Then you call the same algorithm on the blue/green section to separate those two colors. This can extend to arbitrary numbers of colors, but will become very inefficient. The runtime will be \BigO{cn} where $c$ is the number of colors we wish to separate.
+
+
+\item We can create a hash table, and add each element to the hash table. If the element collides, we can check to see if it's an exact match, or just a hash collision. Adding each element should take \BigO{1}, for an overall runtime of \BigO{n}. You can iterate over the hash table to list the unique elements.
+
+\item
+
+\begin{enumerate} \renewcommand{\labelenumii}{\alph{enumii}.}
+    \item union(x, y) makes y the child of x:
 
         \begin{tikzpicture}
         \tikzstyle{every path}=[very thick]
 
-        \edef\sizetape{1cm}
+        \edef\sizetape{.7cm}
         \tikzstyle{ht}=[draw,minimum size=\sizetape]
         \tikzstyle{num}=[draw=none]
         \tikzstyle{value}=[draw]
 
         \begin{scope}[start chain=1 going right,node distance=-0.15mm]
-        \foreach \x in {0, 1,...,9} {
+        \foreach \x in {0, 1,...,16} {
             \node [on chain=1,ht] (\x) {};
+            \node [num] at (\x.north) (\x_label) {$\x$};
         };
         \end{scope}
 
-        %label the cells above
-        \foreach \x in {0, 1,...,9} {
-            \node [num,yshift=.3cm] at (\x.north) (\x_label) {$\x$};
-        };
-
-        \node[value, yshift=-.7cm] at (1.south) (3471) {3471};
-        \draw[->] (1.center) -- (3471.north);
-
-        \node[value, yshift=-.7cm] at (3.south) (3123) {3123};
-        \draw[->] (3.center) -- (3123.north);
-        \node[value, yshift=-.7cm] at (3123.south) (1673) {1673};
-        \draw[->] (3123.south) -- (1673.north);
-
-        \node[value, yshift=-.7cm] at (4.south) (3444) {3444};
-        \draw[->] (4.center) -- (3444.north);
-          
-        \node[value, yshift=-.7cm] at (9.south) (1499) {1499};
-        \draw[->] (9.center) -- (1499.north);
-        \node[value, yshift=-.7cm] at (1499.south) (6979) {6979};
-        \draw[->] (1499.south) -- (6979.north);
-        \node[value, yshift=-.7cm] at (6979.south) (8989) {8989};
-        \draw[->] (6979.south) -- (8989.north);
+        \draw[->, bend left=60] (15.250) to (14.290);   % 15->14
+        \draw[->, bend left=60] (13.250) to (12.290);   % 13->12
+        \draw[->, bend left=60] (14.250) to (9.290);    % 15->9
+        \draw[->, bend left=60] (12.250) to (10.290);   % 13->10
+        \draw[->, bend left=60] (8.250) to (7.290);     % 8->7
+        \draw[->, bend left=60] (9.250) to (8.290);     % 15->8
+        \draw[->, bend left=60] (10.250) to (6.290);    % 13->6
+        \draw[->, bend left=60] (6.250) to (5.290);    % 13->5
+        \draw[->, bend left=60] (5.250) to (3.290);    % 13->3
+        \draw[->, bend right=60] (1.250) to (2.290);    % 1->2
+        \draw[->, bend right=45] (0.250) to (16.290);    % 0->16
+        \draw[->, bend left=60] (2.250) to (0.290);    % 2->0
+        \draw[->, bend right=45] (7.250) to (13.290);    % 15->13
+        \draw[->, bend left=60] (3.250) to (2.290);    % 15->2
+        
         \end{tikzpicture}
 
-    \item Linear Probing:
+\item union by height:
 
         \begin{tikzpicture}
         \tikzstyle{every path}=[very thick]
 
-        \edef\sizetape{1cm}
+        \edef\sizetape{.7cm}
         \tikzstyle{ht}=[draw,minimum size=\sizetape]
         \tikzstyle{num}=[draw=none]
         \tikzstyle{value}=[draw]
 
         \begin{scope}[start chain=1 going right,node distance=-0.15mm]
-        \node [on chain=1,ht] (0) {6979};
-        \node [on chain=1,ht] (1) {3471};
-        \node [on chain=1,ht] (2) {8989};
-        \node [on chain=1,ht] (3) {3123};
-        \node [on chain=1,ht] (4) {1673};
-        \node [on chain=1,ht] (5) {3444};
-        \node [on chain=1,ht] (6) {};
-        \node [on chain=1,ht] (7) {};
-        \node [on chain=1,ht] (8) {};
-        \node [on chain=1,ht] (9) {1499};
+        \foreach \x in {0, 1,...,16} {
+            \node [on chain=1,ht] (\x) {};
+            \node [num, yshift=.25cm] at (\x.north) (\x_label) {$\x$};
+        };
         \end{scope}
 
-        %label the cells above
-        \foreach \x in {0, 1,...,9} {
-            \node [num,yshift=.3cm] at (\x.north) (\x_label) {$\x$};
-        };
+        \draw[->, bend left=60] (15.250) to (14.290);   % 15->14
+        \draw[->, bend left=60] (13.250) to (12.290);   % 13->12
+        \draw[->, bend right=60] (9.250) to (14.290);    % 15->9
+        \draw[->, bend right=60] (10.250) to (12.290);   % 13->10
+        \draw[->, bend left=60] (8.250) to (7.290);     % 8->7
+        \draw[->, bend right=60] (7.250) to (14.290);     % 15->8
+        \draw[->, bend right=60] (6.250) to (12.290);    % 13->6
+        \draw[->, bend right=60] (5.250) to (12.290);    % 13->5
+        \draw[->, bend right=60] (3.250) to (12.290);    % 13->3
+        \draw[->, bend left=60] (2.250) to (1.290);    % 1->2
+        \draw[->, bend left=25] (16.250) to (0.290);    % 0->16
+        \draw[->, bend left=60] (1.250) to (0.290);    % 2->0
+        \draw[->, bend right=45] (12.250) to (14.290);    % 15->13
+        \draw[->, bend right=60] (0.250) to (14.290);    % 15->2
+        
         \end{tikzpicture}
 
-    \item Quadratic Probing:
+    \item union by size:
 
         \begin{tikzpicture}
         \tikzstyle{every path}=[very thick]
 
-        \edef\sizetape{1cm}
+        \edef\sizetape{.7cm}
         \tikzstyle{ht}=[draw,minimum size=\sizetape]
         \tikzstyle{num}=[draw=none]
         \tikzstyle{value}=[draw]
 
         \begin{scope}[start chain=1 going right,node distance=-0.15mm]
-        \node [on chain=1,ht] (0) {6979};
-        \node [on chain=1,ht] (1) {3471};
-        \node [on chain=1,ht] (2) {};
-        \node [on chain=1,ht] (3) {3123};
-        \node [on chain=1,ht] (4) {1673};
-        \node [on chain=1,ht] (5) {3444};
-        \node [on chain=1,ht] (6) {};
-        \node [on chain=1,ht] (7) {};
-        \node [on chain=1,ht] (8) {8989};
-        \node [on chain=1,ht] (9) {1499};
+        \foreach \x in {0, 1,...,16} {
+            \node [on chain=1,ht] (\x) {};
+            \node [num] at (\x.north) (\x_label) {$\x$};
+        };
         \end{scope}
 
-        %label the cells above
-        \foreach \x in {0, 1,...,9} {
-            \node [num,yshift=.3cm] at (\x.north) (\x_label) {$\x$};
-        };
+        \draw[->, bend left=60] (15.south) to (14.south);   % 15->14
+        \draw[->, bend left=60] (13.south) to (12.south);   % 13->12
+        \draw[->, bend left=60] (9.south) to (14.south);    % 15->9
+        % \draw[->, bend left=60] (10.south) to (12.south);   % 13->10
+        % \draw[->, bend left=60] (8.south) to (7.south);     % 8->7
+        % \draw[->, bend left=60] (7.south) to (14.south);     % 15->8
+        % \draw[->, bend left=60] (6.south) to (12.south);    % 13->6
+        % \draw[->, bend left=60] (5.south) to (12.south);    % 13->5
+        % \draw[->, bend left=60] (3.south) to (12.south);    % 13->3
+        % \draw[->, bend left=60] (2.south) to (1.south);    % 1->2
+        % \draw[->, bend left=25] (16.south) to (0.south);    % 0->16
+        % \draw[->, bend left=60] (1.south) to (0.south);    % 2->0
+        % \draw[->, bend left=45] (12.south) to (14.south);    % 15->13
+        % \draw[->, bend left=60] (0.south) to (14.south);    % 15->2
+        
         \end{tikzpicture}
 
-    \item Second hash function $h_2(x) = 7 - (x \mod 7)$:
-
-        \begin{tikzpicture}
-        \tikzstyle{every path}=[very thick]
-
-        \edef\sizetape{1cm}
-        \tikzstyle{ht}=[draw,minimum size=\sizetape]
-        \tikzstyle{num}=[draw=none]
-        \tikzstyle{value}=[draw]
-
-        \begin{scope}[start chain=1 going right,node distance=-0.15mm]
-        \node [on chain=1,ht] (0) {1673};
-        \node [on chain=1,ht] (1) {3471};
-        \node [on chain=1,ht] (2) {};
-        \node [on chain=1,ht] (3) {3123};
-        \node [on chain=1,ht] (4) {3444};
-        \node [on chain=1,ht] (5) {8989};
-        \node [on chain=1,ht] (6) {6979};
-        \node [on chain=1,ht] (7) {};
-        \node [on chain=1,ht] (8) {};
-        \node [on chain=1,ht] (9) {1499};
-        \end{scope}
-
-        %label the cells above
-        \foreach \x in {0, 1,...,9} {
-            \node [num,yshift=.3cm] at (\x.north) (\x_label) {$\x$};
-        };
-        \end{tikzpicture}
 
 \end{enumerate}
 

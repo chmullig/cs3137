@@ -38,7 +38,7 @@ The most computationally simple method of extending to 3 colors is to make this 
 
 \item We can create a hash table, and add each element to the hash table. If the element collides, we can check to see if it's an exact match, or just a hash collision. Adding each element should take \BigO{1}, for an overall runtime of \BigO{n}. You can iterate over the hash table to list the unique elements.
 
-\item
+\item {\em Note: links above are left to right, links below are from right to left}
 
 \begin{enumerate} \renewcommand{\labelenumii}{\alph{enumii}.}
     \item union(x, y) makes y the child of x:
@@ -54,24 +54,24 @@ The most computationally simple method of extending to 3 colors is to make this 
         \begin{scope}[start chain=1 going right,node distance=-0.15mm]
         \foreach \x in {0, 1,...,16} {
             \node [on chain=1,ht] (\x) {};
-            \node [num] at (\x.north) (\x_label) {$\x$};
+            \node [num] at (\x.center) (\x_label) {$\x$};
         };
         \end{scope}
 
-        \draw[->, bend left=60] (15.250) to (14.290);   % 15->14
-        \draw[->, bend left=60] (13.250) to (12.290);   % 13->12
-        \draw[->, bend left=60] (14.250) to (9.290);    % 15->9
-        \draw[->, bend left=60] (12.250) to (10.290);   % 13->10
-        \draw[->, bend left=60] (8.250) to (7.290);     % 8->7
-        \draw[->, bend left=60] (9.250) to (8.290);     % 15->8
-        \draw[->, bend left=60] (10.250) to (6.290);    % 13->6
-        \draw[->, bend left=60] (6.250) to (5.290);    % 13->5
-        \draw[->, bend left=60] (5.250) to (3.290);    % 13->3
-        \draw[->, bend right=60] (1.250) to (2.290);    % 1->2
-        \draw[->, bend right=45] (0.250) to (16.290);    % 0->16
-        \draw[->, bend left=60] (2.250) to (0.290);    % 2->0
-        \draw[->, bend right=45] (7.250) to (13.290);    % 15->13
-        \draw[->, bend left=60] (3.250) to (2.290);    % 15->2
+        \draw[->, bend left=60] (15.south) to (14.south);   % 15->14
+        \draw[->, bend left=60] (13.south) to (12.south);   % 13->12
+        \draw[->, bend left=60] (14.south) to (9.south);    % 15->9
+        \draw[->, bend left=60] (12.south) to (10.south);   % 13->10
+        \draw[->, bend left=60] (8.south) to (7.south);     % 8->7
+        \draw[->, bend left=60] (9.south) to (8.south);     % 15->8
+        \draw[->, bend left=60] (10.south) to (6.south);    % 13->6
+        \draw[->, bend left=60] (6.south) to (5.south);    % 13->5
+        \draw[->, bend left=60] (5.south) to (3.south);    % 13->3
+        \draw[->, bend left=60] (1.north) to (2.north);    % 1->2
+        \draw[->, bend left=15] (0.north) to (16.north);    % 0->16
+        \draw[->, bend left=60] (2.south) to (0.south);    % 2->0
+        \draw[->, bend left=45] (7.north) to (13.north);    % 15->13
+        \draw[->, bend left=60] (3.south) to (2.south);    % 15->2
         
         \end{tikzpicture}
 
@@ -88,24 +88,24 @@ The most computationally simple method of extending to 3 colors is to make this 
         \begin{scope}[start chain=1 going right,node distance=-0.15mm]
         \foreach \x in {0, 1,...,16} {
             \node [on chain=1,ht] (\x) {};
-            \node [num, yshift=.25cm] at (\x.north) (\x_label) {$\x$};
+            \node [num] at (\x.center) (\x_label) {$\x$};
         };
         \end{scope}
 
-        \draw[->, bend left=60] (15.250) to (14.290);   % 15->14
-        \draw[->, bend left=60] (13.250) to (12.290);   % 13->12
-        \draw[->, bend right=60] (9.250) to (14.290);    % 15->9
-        \draw[->, bend right=60] (10.250) to (12.290);   % 13->10
-        \draw[->, bend left=60] (8.250) to (7.290);     % 8->7
-        \draw[->, bend right=60] (7.250) to (14.290);     % 15->8
-        \draw[->, bend right=60] (6.250) to (12.290);    % 13->6
-        \draw[->, bend right=60] (5.250) to (12.290);    % 13->5
-        \draw[->, bend right=60] (3.250) to (12.290);    % 13->3
-        \draw[->, bend left=60] (2.250) to (1.290);    % 1->2
-        \draw[->, bend left=25] (16.250) to (0.290);    % 0->16
-        \draw[->, bend left=60] (1.250) to (0.290);    % 2->0
-        \draw[->, bend right=45] (12.250) to (14.290);    % 15->13
-        \draw[->, bend right=60] (0.250) to (14.290);    % 15->2
+        \draw[->, bend left=60] (15.south) to (14.south);   % 15->14
+        \draw[->, bend left=60] (13.south) to (12.south);   % 13->12
+        \draw[->, bend left=60] (9.north) to (14.north);    % 15->9
+        \draw[->, bend left=60] (10.north) to (12.north);   % 13->10
+        \draw[->, bend left=60] (8.south) to (7.south);     % 8->7
+        \draw[->, bend left=60] (7.north) to (14.north);     % 15->8
+        \draw[->, bend left=60] (6.north) to (12.north);    % 13->6
+        \draw[->, bend left=60] (5.north) to (12.north);    % 13->5
+        \draw[->, bend left=60] (3.north) to (12.north);    % 13->3
+        \draw[->, bend left=60] (2.south) to (1.south);    % 1->2
+        \draw[->, bend left=25] (16.south) to (0.south);    % 0->16
+        \draw[->, bend left=60] (1.south) to (0.south);    % 2->0
+        \draw[->, bend left=45] (12.north) to (14.north);    % 15->13
+        \draw[->, bend left=60] (0.north) to (14.north);    % 15->2
         
         \end{tikzpicture}
 
@@ -122,190 +122,31 @@ The most computationally simple method of extending to 3 colors is to make this 
         \begin{scope}[start chain=1 going right,node distance=-0.15mm]
         \foreach \x in {0, 1,...,16} {
             \node [on chain=1,ht] (\x) {};
-            \node [num] at (\x.north) (\x_label) {$\x$};
+            \node [num] at (\x.center) (\x_label) {$\x$};
         };
         \end{scope}
 
         \draw[->, bend left=60] (15.south) to (14.south);   % 15->14
         \draw[->, bend left=60] (13.south) to (12.south);   % 13->12
-        \draw[->, bend left=60] (9.south) to (14.south);    % 15->9
-        % \draw[->, bend left=60] (10.south) to (12.south);   % 13->10
-        % \draw[->, bend left=60] (8.south) to (7.south);     % 8->7
-        % \draw[->, bend left=60] (7.south) to (14.south);     % 15->8
-        % \draw[->, bend left=60] (6.south) to (12.south);    % 13->6
-        % \draw[->, bend left=60] (5.south) to (12.south);    % 13->5
-        % \draw[->, bend left=60] (3.south) to (12.south);    % 13->3
-        % \draw[->, bend left=60] (2.south) to (1.south);    % 1->2
-        % \draw[->, bend left=25] (16.south) to (0.south);    % 0->16
-        % \draw[->, bend left=60] (1.south) to (0.south);    % 2->0
-        % \draw[->, bend left=45] (12.south) to (14.south);    % 15->13
-        % \draw[->, bend left=60] (0.south) to (14.south);    % 15->2
+        \draw[->, bend left=60] (9.north) to (14.north);    % 15->9
+        \draw[->, bend left=60] (10.north) to (12.north);   % 13->10
+        \draw[->, bend left=60] (8.south) to (7.south);     % 8->7
+        \draw[->, bend left=60] (7.north) to (14.north);     % 15->8
+        \draw[->, bend left=60] (6.north) to (12.north);    % 13->6
+        \draw[->, bend left=60] (5.north) to (12.north);    % 13->5
+        \draw[->, bend left=60] (3.north) to (12.north);    % 13->3
+        \draw[->, bend left=60] (2.south) to (1.south);    % 1->2
+        \draw[->, bend left=25] (16.south) to (0.south);    % 0->16
+        \draw[->, bend left=60] (1.south) to (0.south);    % 2->0
+        \draw[->, bend left=45] (14.south) to (12.south);    % 15->13
+        \draw[->, bend left=60] (0.north) to (12.north);    % 15->2
         
         \end{tikzpicture}
 
 
 \end{enumerate}
 
-
-\item If in advance you knew the contents of a hash table you could potentially
-avoid a collision, but it would be incredibly inefficient. Using perfect hashing
-you have to calculate hashes and determine if anything collides. Then if they do
-ever collide you would switch table size, or hash function, to prevent the
-collision. However ultimately you'd end up doing substantially more work, and
-likely wasting more memory, since we'd want our hash table to be approximately
-$n^2$ to reduce the chance of collisions.
-
-\newpage
-\item Assuming this is a min heap, such that every parent is smaller than both
-of its children.
-
-%\Tree[.23 ]
-
-%\Tree[.23 [.25 ]  \edge[draw=none];[.{} ] ]
-After 23, 25, 14: \\
-\Tree[.14 [.25 ] [.23 ] ]
-
-%\Tree[.14 [.25 [.27 ] \edge[draw=none];[.{} ] ]
-%          [.23 ] ]
-
-%\Tree[.14 [.19 [.27 ] [.25 ] ]
-%          [.23 ] ]
-After 23, 25, 14, 27, 19, 18: \\
-\Tree[.14 [.19 [.27 ] [.25 ] ]
-          [.18 [.23 ] \edge[draw=none];[.{} ] ] ]
-
-%\Tree[.14 [.19 [.27 ] [.25 ] ]
-%          [.18 [.23 ] [.21 ] ] ]
-
-%\Tree[.14 [.19 [.27 [.28 ] \edge[draw=none];[.{} ] ]
-%               [.25 ] ]
-%          [.18 [.23 ] [.21 ] ] ]
-After 23, 25, 14, 27, 19, 18, 21, 28, 24: \\
-\Tree[.14 [.19 [.24 [.28 ] [.27 ] ]
-               [.25 ] ]
-          [.18 [.23 ] [.21 ] ] ]
-
-%\Tree[.14 [.19 [.24 [.28 ] [.27 ] ]
-%               [.22 [.25 ] \edge[draw=none];[.{} ]] ]
-%          [.18 [.23 ] [.21 ] ] ]
-
-%\Tree[.14 [.19 [.24 [.28 ] [.27 ] ]
-%               [.20 [.25 ] [.22 ] ] ]
-%          [.18 [.23 ] [.21 ] ] ]
-After 23, 25, 14, 27, 19, 18, 21, 28, 24, 22, 20, 17: \\
-\Tree[.14 [.19 [.24 [.28 ] [.27 ] ]
-               [.20 [.25 ] [.22 ] ] ]
-          [.17 [.18 [.23 ] \edge[draw=none];[.{} ] ]
-               [.21 ] ] ]
-
-%\Tree[.14 [.19 [.24 [.28 ] [.27 ] ]
-%               [.20 [.25 ] [.22 ] ] ]
-%          [.17 [.18 [.23 ] [.24 ] ]
-%               [.21 ] ] ]
-
-%\Tree[.14 [.19 [.24 [.28 ] [.27 ] ]
-%               [.20 [.25 ] [.22 ] ] ]
-%          [.17 [.18 [.23 ] [.24 ] ]
-%               [.21 [.26 ] \edge[draw=none];[.{} ] ] ] ]
-Final:\\
-\Tree[.14 [.19 [.24 [.28 ] [.27 ] ]
-               [.20 [.25 ] [.22 ] ] ]
-          [.15 [.18 [.23 ] [.24 ] ]
-               [.17 [.26 ] [.21 ] ] ] ]
-
-\newpage \item Chaining is one hash collision resolution strategy. Whenever an
-element collides with an existing element, you create a linked list and append
-the new element onto the old one. The advantages are that this is fairly
-straight forward, you don't have to lazily delete, and a large number of
-collisions in one position don't cause collisions in another. The downside is
-that the linked lists may become arbitrarily long, and searching in them is slow
-and unpredictable. Tracking linked list size will help know when to grow the
-table and reduce chain sizes.
-
-Another solution is cuckoo hashing, where a second hash table (or the second
-half of a much larger hash table) is used. When a collision occurs one of the
-entries is forced to move to the second table, where a different hash function
-is used. There may be a cascade of collisions, but with reasonable sizes and
-functions there will only rarely be a cycle. The biggest upside is that lookups
-are very fast, with only 2 possible locations for every element. The downside is
-that inserts are complex and expensive, and may require more memory to
-implement. Resolving collisions in a relatively full hash table can become very
-hard.
-
-\item Duplicate items may not be properly detected in this scheme. If an
-preliminary search isn't done to determine if the element is in the list at all,
-by replacing the first lazily deleted element with a new element, we may be
-introducing a duplicate.
-
-Additionally whether it actually saves space or not depends on a number of
-assumptions about the structure of the table, and what is meant by saving space.
-The amount of memory consumed won't change, since hash tables are almost
-universally implemented as arrays with a fixed size, unless the deleted item can
-be freed, which is an independent question.
-
-\item If we want a min heap, and we're using an array to store the heap we're
-basically already done. A sorted list is a special case of a heap where all
-levels are also sorted. This will be \BigO{n} to copy the elements into the
-tree, and because we start with the min at the root, and every value we add is
-at least as large as all previous elements, no element will ever have to bubble
-up/down to maintain the heap property.
-
-\item Insertion sort is stable, because it can easily choose to respect original
-ordering when choosing where to place duplicates relative to each other.
-
-Selection sort can be stable at the cost of additional runtime complexity.
-Typically it's unstable because it simply swaps the original nth element with
-the nth largest element in the unsorted portion of the list. However if you add
-an additional check to verify that it always maintains the order of identical
-items during a swap, it will be stable.
-
-Bubble sort is stable, because it can view identical items as already in order,
-so it won't every alter their relative ordering.
-
-Merge sort is stable if coded properly. The merge simply has to bias toward the
-earlier sublist in the case of equal values, and the sort becomes stable.
-
-Heapsort is not stable, since establishing the heap property will break relative
-ordering.
-
-Quicksort is not stable generally, since the partition swapping can change
-relative ordering. With care relative ordering may be preserved, at the cost of
-substantial extra time (to check if there are other equal elements).
-
-\item An AVL tree vs a Hashtable depends on the likely usage patterns.
-
-AVL trees offer \BigO{\log n} inserts, finds, and deletes, which is reasonably
-fast. The key feature of AVL trees are that because they're a BST the items are
-maintained in order, permitting relatively easy ordered traversal of the list,
-as well as getting the minimum and maximum values. They can also be more memory
-efficient, depending on the memory overhead of the node structure, since the
-only wasted space is the node overhead and pointers to the children.
-
-Hashtables offer \BigO{1} inserts, finds, and deletes, which makes them much
-faster for large ns. However they are unordered, and finding minimum and
-maximums is \BigO{n}. Additionally they require extra space depending on the
-load factor, generally at least double the actual number of elements. However
-since there is no overhead per element the actual space usage of AVL and Hash
-tables depends on implementation and language.
-
-\item Huffman compression is \BigO{n log n}. Using a heap to build the tree
-costs \BigO{n}, and taking the min each time costs \BigO{\log n}, for an overall
-runtime of \BigO{n \log n}.
-
-Decompression is simpler, each element is represented in the file, and each has
-to be touched once, meaning it's at least \BigO{n}. Luckily with any efficient
-lookup for the codes, say a perfect hash, lookup is \BigO{1}, for overall
-runtime of \BigO{n} for decompression.
-
-\item We know any arbitrary array can be converted to a heap in \BigO{n} steps
-through the buildheap algorithm. To convert the min heap to a max heap we can
-start at the leaves and check whether the heap property is satisfied, and if not
-bubble up the larger element until it is. Overall this is \BigO{n}. 
-
-It may be possible to have a \BigO{n} algorithm with a smaller constant multiple
-by first reversing the list, so that it more closely resembles a max heap and
-fewer bubble operations are required. However the big-O runtime would still be
-\BigO{n}.
+\item One of the (many) disadvantages of bubble sort is that small elements at the end take a very long time to move to the beginning, requiring each element to swap with it. By alternating reverse passes Hubble Sort can quickly move these small elements towards the front. This does not change the big-O runtime of the algorithm from \BigO{n^2}, but it may be slightly faster in a practical sense by avoiding certain worst case scenarios. On modern computers it may also have slightly  better than expected performance due decreased cache misses.
 
 \end{enumerate} %end of questions
 \end{document}

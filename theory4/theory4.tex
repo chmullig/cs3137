@@ -146,7 +146,20 @@ The most computationally simple method of extending to 3 colors is to make this 
 
 \end{enumerate}
 
+
 \item One of the (many) disadvantages of bubble sort is that small elements at the end take a very long time to move to the beginning, requiring each element to swap with it. By alternating reverse passes Hubble Sort can quickly move these small elements towards the front. This does not change the big-O runtime of the algorithm from \BigO{n^2}, but it may be slightly faster in a practical sense by avoiding certain worst case scenarios. On modern computers it may also have slightly  better than expected performance due decreased cache misses.
+
+
+\item Performing a 3-way partition with a list that contains many duplicates will improve the performance. By moving all elements equal to the pivot to the beginning during sorting, then swapping them in together to the appropriate place, a large number of comparisons and swaps has been avoided. Once the size of the interval grows small it's probably not worth it, and as is usual with quicksort some other simpler sort, like insertion, may be best for the small n.
+
+There are certain degenerate cases that would need to be handled, in particular this could first unsort an already sorted, highly duplicated list before eventually sorting it, leading to near worst case performance.
+
+
+\item The first method is choosing a random element. This is \BigO{1}, where the constant is determined by the speed of the PRNG. For systems with a fast PRNG, this will be quite fast. The problem is that it provides no assurance that the pivot is anywhere close to the ideal, the median. It could result in a pivot is such that nearly all $n$ elements must be moved.
+
+A more complex system would be to choose $k$ (with $k$ odd) elements, and pick the median of those $k$. This is done most simply by choosing evenly spaced elements $0, \lfloor\frac{k}{n}\rfloor, \lfloor2\frac{k}{n}\rfloor, ..., n$. The median can then be calculated in \BigO{k \log k}, which is constant for all $n$. This is often taken with $k = 3$, but can be extended to larger amounts.
+
+\item If the AVL tree rebalances every other operation, there are no guarantees that the behavior doesn't end up as close to a worst case binary search tree. A pathological sequence could ensure that we every operation that precedes a rebalance is on one subtree (say the root's right), and every other is on the opposite (the root's left). In this case the root may appear to be balanced, but the left could devolve into a linked list. It will be bounded by the height of the balanced subtree, I think $2 \log n$, but it will still be far from optimal.
 
 \end{enumerate} %end of questions
 \end{document}

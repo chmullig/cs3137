@@ -351,7 +351,16 @@ assuming $m \approx kn$ this is \BigO{n}.
 
 \end{enumerate}
 
+\item Quicksort and merge sort are both reasonable \BigO{n \log n} sorts
+suitable for a range of problems. I would generally default to using quicksort,
+since it's typically faster in real world problems on real world systems. The
+key differences are that quicksort is generally unstable, and quicksort doesn't
+work as well with non-array-like data structures. For example, merge sort is much
+easier to implement for linked lists, because the append operation is cheap, but
+random access is very expensive.
 
+\item Randomly generated graph:
+\includegraphics[width=6cm]{q6.png}
 
 \end{enumerate} %end of questions
 \end{document}

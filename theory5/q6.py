@@ -5,6 +5,7 @@ V = 8
 E = 16
 nodes = range(V)
 links = []
+
 for i in xrange(E):
     e1 = random.choice(nodes)
     e2 = random.choice(nodes)
@@ -18,6 +19,8 @@ for i in xrange(E):
 
 
 print "graph G {\noverlap=scalexy;"
+for e in nodes:
+    print "%s;" % e
 for e1, e2, w in links:
     print "\t %s -- %s [label=\"%s\"];" % (e1, e2, w)
 print "}"

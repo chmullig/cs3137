@@ -1,0 +1,14 @@
+graph G {
+overlap=scalexy;
+	 2 -- 6 [label="6"];
+	 5 -- 0 [label="6"];
+	 3 -- 7 [label="3"];
+	 4 -- 0 [label="0"];
+	 7 -- 0 [label="5"];
+	 7 -- 1 [label="6"];
+	 4 -- 2 [label="2"];
+	 5 -- 7 [label="2"];
+	 1 -- 0 [label="0"];
+	 2 -- 5 [label="5"];
+	 3 -- 5 [label="1"];
+}

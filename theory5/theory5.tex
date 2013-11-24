@@ -61,6 +61,107 @@ F & 8 & E & \checkmark \\
 G & 6 & B & \checkmark \\
 \end{tabular}
 
+
+\item Initial: \\
+\begin{tikzpicture}[->,node distance=2cm, shorten >=1pt, thick]
+\tikzstyle{nd}=[circle,draw=black,text=black]
+\node[nd, label={$\infty$}] (A)                    {A};
+\node[nd, label={0}]        (B) [below right of=A] {B};
+\node[nd, label={$\infty$}] (C) [      right of=A] {C};
+\node[nd, label={$\infty$}] (D) [      right of=C] {D};
+\node[nd, label={$\infty$}] (E) [below right of=C] {E};
+\node[nd, label={$\infty$}] (F) [below right of=D] {F};
+\node[nd, label={$\infty$}] (G) [below right of=B] {G};
+\path 
+(A) edge              (C)
+    edge              (B)
+(B) edge              (G)
+    edge              (C)
+    edge              (E)
+(G) edge              (E)
+(C) edge              (E)
+    edge              (D)
+(E) edge              (D)
+    edge              (F)
+(D) edge              (F)
+    edge [bend right] (A);
+\end{tikzpicture}
+
+Pop B, enqueue C, E, G: \\
+\begin{tikzpicture}[->,node distance=2cm, shorten >=1pt, thick]
+\tikzstyle{nd}=[circle,draw=black,text=black]
+\node[nd, label={$\infty$}] (A)                    {A};
+\node[nd, label={0}]        (B) [below right of=A] {B};
+\node[nd, label={1}] (C) [      right of=A] {C};
+\node[nd, label={$\infty$}] (D) [      right of=C] {D};
+\node[nd, label={1}] (E) [below right of=C] {E};
+\node[nd, label={$\infty$}] (F) [below right of=D] {F};
+\node[nd, label={1}] (G) [below right of=B] {G};
+\path 
+(A) edge              (C)
+    edge              (B)
+(B) edge              (G)
+    edge              (C)
+    edge              (E)
+(G) edge              (E)
+(C) edge              (E)
+    edge              (D)
+(E) edge              (D)
+    edge              (F)
+(D) edge              (F)
+    edge [bend right] (A);
+\end{tikzpicture}
+
+Pop C, enqueue D, E: \\
+\begin{tikzpicture}[->,node distance=2cm, shorten >=1pt, thick]
+\tikzstyle{nd}=[circle,draw=black,text=black]
+\node[nd, label={$\infty$}] (A)                    {A};
+\node[nd, label={0}]        (B) [below right of=A] {B};
+\node[nd, label={1}]        (C) [      right of=A] {C};
+\node[nd, label={2}]        (D) [      right of=C] {D};
+\node[nd, label={1}]        (E) [below right of=C] {E};
+\node[nd, label={$\infty$}] (F) [below right of=D] {F};
+\node[nd, label={1}]        (G) [below right of=B] {G};
+\path 
+(A) edge              (C)
+    edge              (B)
+(B) edge              (G)
+    edge              (C)
+    edge              (E)
+(G) edge              (E)
+(C) edge              (E)
+    edge              (D)
+(E) edge              (D)
+    edge              (F)
+(D) edge              (F)
+    edge [bend right] (A);
+\end{tikzpicture}
+
+Pop E, enqueue D, F: \\
+\begin{tikzpicture}[->,node distance=2cm, shorten >=1pt, thick]
+\tikzstyle{nd}=[circle,draw=black,text=black]
+\node[nd, label={$\infty$}] (A)                    {A};
+\node[nd, label={0}]        (B) [below right of=A] {B};
+\node[nd, label={1}]        (C) [      right of=A] {C};
+\node[nd, label={2}]        (D) [      right of=C] {D};
+\node[nd, label={1}]        (E) [below right of=C] {E};
+\node[nd, label={2}]        (F) [below right of=D] {F};
+\node[nd, label={1}]        (G) [below right of=B] {G};
+\path 
+(A) edge              (C)
+    edge              (B)
+(B) edge              (G)
+    edge              (C)
+    edge              (E)
+(G) edge              (E)
+(C) edge              (E)
+    edge              (D)
+(E) edge              (D)
+    edge              (F)
+(D) edge              (F)
+    edge [bend right] (A);
+\end{tikzpicture}
+
 \item I interpret this question to mean there are $N$ individuals, numbered
 $ i = 1, \ldots, N$. They each have $m_i$ miles, for a total of
 $M = \sum_{j=1}^{N}m_i$ miles. They want to reward the $\log N$ individuals 

@@ -3,6 +3,7 @@
 \usepackage{tikz-qtree}
 \usepackage{algorithm2e}
 \usetikzlibrary{shapes,chains,fit,shapes,matrix}
+\usepackage{multicol}
 
 
 % info for header block in upper right hand corner
@@ -359,8 +360,61 @@ work as well with non-array-like data structures. For example, merge sort is muc
 easier to implement for linked lists, because the append operation is cheap, but
 random access is very expensive.
 
-\item Randomly generated graph:
-\includegraphics[width=6cm]{q6.png}
+\newpage
+\item I have constructed an 8 vertex graph with 16 randomly generated edges (such that the graph is
+connected and simple).
+
+\begin{minipage}{0.65\linewidth}
+\includegraphics[width=0.6\linewidth]{q6.png}
+\end{minipage}
+\begin{minipage}{0.2\linewidth}
+Our edges are: \\
+\begin{tabular}{l | l}
+Weight & Edges \\
+\hline
+0 & 0 - 1 \\
+1 & 3 - 1 \\
+1 & 4 - 0 \\
+2 & 1 - 7 \\
+2 & 5 - 3 \\
+2 & 6 - 3 \\
+3 & 5 - 0 \\
+5 & 2 - 3 \\
+5 & 4 - 3 \\
+6 & 2 - 6 \\
+6 & 4 - 7 \\
+7 & 4 - 1 \\
+7 & 5 - 1 \\
+7 & 6 - 0 \\
+9 & 0 - 2 \\
+9 & 7 - 5 \\
+\end{tabular}
+\end{minipage}
+
+For Kruskal's Algorithm we process the sorted edges in order to add them to our
+tree. Steps: Add 0-1; Add 3-1; Add 4-0; Add 1-7; Add 5-3; Add 6-3; skip 5-0; Add 2-3.
+
+
+All nodes are now connected, and we've constructed our MST.
+
+\begin{minipage}{0.7\linewidth}
+\includegraphics[width=0.35\linewidth]{q6_mst.png}
+\end{minipage}
+\begin{minipage}{0.2\linewidth}
+Our edges are: \\
+\begin{tabular}{l | l}
+Weight & Edges \\
+\hline
+0 & 0 - 1 \\
+1 & 3 - 1 \\
+1 & 4 - 0 \\
+2 & 1 - 7 \\
+2 & 5 - 3 \\
+2 & 6 - 3 \\
+5 & 2 - 3 \\
+\end{tabular}
+\end{minipage}
+
 
 \end{enumerate} %end of questions
 \end{document}

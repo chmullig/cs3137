@@ -6,7 +6,7 @@ E = 16
 nodes = range(V)
 links = []
 
-for i in xrange(E):
+while len(links) < E:
     e1 = random.choice(nodes)
     e2 = random.choice(nodes)
     if e1 == e2:
@@ -18,9 +18,9 @@ for i in xrange(E):
     links.append((e1, e2, random.randint(0, 9)))
 
 
-print "graph G {\noverlap=scalexy;"
+print "graph G {" #\noverlap=scalexy;"
 for e in nodes:
     print "%s;" % e
-for e1, e2, w in links:
+for e1, e2, w in sorted(links, key=lambda x: x[2]):
     print "\t %s -- %s [label=\"%s\"];" % (e1, e2, w)
 print "}"

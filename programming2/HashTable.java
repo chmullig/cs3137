@@ -13,24 +13,11 @@ import java.util.logging.Logger;
  *
  */
 public class HashTable<K, V> implements Map<K, V> {
-	
-	private class KeyWrapper<K> {
-		public boolean deleted;
-		public K key;
-		public KeyWrapper (K key) {
-			this.key = key;
-			this.deleted = false;
-		}
-		public String toString() {
-			return key.toString();
-		}
-	}
-	
 	private int capacity;
 	private int size;
 	private final double loadFactor = 0.66;
 	
-	private KeyWrapper<K>[] keys;
+	private K[] keys;
 	private V[] values;
 	
 	private static Logger LOGGER = Logger.getLogger("HashTable");
@@ -45,7 +32,7 @@ public class HashTable<K, V> implements Map<K, V> {
 	public HashTable() {
 		capacity = primes[0];
 		size = 0;
-		keys = (KeyWrapper<K>[]) new KeyWrapper[capacity];
+		keys = (K[]) new Object[capacity];
 		values = (V[]) new Object[capacity];
 		
 		LOGGER.setLevel(Level.ALL);
@@ -61,87 +48,27 @@ public class HashTable<K, V> implements Map<K, V> {
 	 * @return
 	 */
 	private int find(Object key) {
-		return find(new KeyWrapper<K>((K) key), keys);
-	}
-	
-	/**
-	 * Do the actual find of position for a key, based on key, and 
-	 * 
-	 * 
-	 * @param key 
-	 * @param capacity
-	 * @param tempKeys
-	 * @return
-	 */
-	private int find(KeyWrapper<K> key, KeyWrapper<K>[] tempKeys) {
-		System.out.print("[");
-		for (int i = 0; i < tempKeys.length; i++) {
-			System.out.print(tempKeys[i] + ", ");
-		}
-		System.out.println("]");
 		
-		
-		int initialPos = Math.abs(key.key.hashCode() % tempKeys.length);
+		int initialPos = Math.abs(key.hashCode() % capacity);
 		int finalPos = -1;
-		int deletedPos = -1;
-		boolean found = false;
 		
-		LOGGER.log(Level.FINE, "Finding " + key.key.toString() + ". Hash code:" + key.key.hashCode() + ". Initial Pos: " + initialPos);
+		LOGGER.log(Level.FINE, "Finding " + key.toString() + ". Hash code:" + key.hashCode() + ". Initial Pos: " + initialPos);
 
 		for (int i = 0; ; i++) {
-			finalPos = (initialPos+(i*i)) % tempKeys.length;
-			LOGGER.log(Level.FINE, "Probing with i = " + i + " and new position " + finalPos);
-			if (tempKeys[finalPos] == null)  {
-				//not in the table
-				System.out.println("not equals");
+			finalPos = (initialPos+(i*i)) % capacity;
+			if (keys[finalPos] == null)  {
+				//we found it
 				break;
-			} else if (tempKeys[finalPos].deleted && deletedPos == -1) {
-				System.out.println("deleted");
-				deletedPos = finalPos;
-			} else if (tempKeys[finalPos].key.equals((K) key)){
-				System.out.println("equals");
-				//it's in the table
-				found = true;
+			} else if (keys[finalPos].equals(key)){
+				//it's not in the table
 				break;
 			}
 		}
 		LOGGER.log(Level.FINE, "Final Pos: " + finalPos);
-		//We want to return deletedPos only when we don't find it and there is
-		//a deleted spot we can reuse.
-		if (found) {
-			return finalPos;
-		} else if (deletedPos >= 0) {
-			return deletedPos;
-		} else {
-			return finalPos;
-		}
+		return finalPos;
 	}
 	
 	private void grow() {
-		int i;
-		for (i = 0; i < primes.length; i++) {
-			if (primes[i] > capacity)
-				break;
-		}
-		int newCapacity = primes[i];
-		LOGGER.log(Level.FINE, "Growing from: " + capacity + " to " + newCapacity);
-		
-		KeyWrapper<K>[] newKeys = (KeyWrapper<K>[]) new KeyWrapper[capacity];
-		V[] newValues = (V[]) new Object[newCapacity];
-		
-		//Copy each value from the old thingie to the new thingie
-		for (int oldPos = 0; oldPos < capacity; oldPos++) {
-			if (keys[oldPos] != null && !keys[oldPos].deleted) {
-				int newPos = find(keys[oldPos], newKeys);
-				newKeys[newPos] = keys[oldPos];
-				newValues[newPos] = values[oldPos];
-			}
-		}
-		
-		//Swap them in!
-		this.keys = newKeys;
-		this.values = newValues;
-		this.capacity = newCapacity;
 		
 	}
 
@@ -149,25 +76,23 @@ public class HashTable<K, V> implements Map<K, V> {
 	@Override
 	public V put(K key, V value) {
 		int pos = find(key);
-		if (keys[pos] == null || keys[pos].deleted) {
-			keys[pos] = new KeyWrapper<K>(key);
+		if (keys[pos] == null) {
+			keys[pos] = key;
 			values[pos] = value;
 			size++;
 			if (((float)size / capacity) > loadFactor) {
 				grow();
 			}
-		} else if (keys[pos].key.equals(key)) {
+		} else if (keys[pos].equals(key)) {
 			values[pos] = value;
 		}
 		return value;
 	}
 	
 	@Override
-	public V get(Object targetKey) {
-		K target = (K)targetKey;
-		int pos = find(target);
-		LOGGER.log(Level.FINE, "Getting " + target + ". Pos is " + pos + "found... " + keys[pos]);
-		if (pos > -1 && keys[pos].key.equals((K)target)) {
+	public V get(Object key) {
+		int pos = find(key);
+		if (keys[pos].equals(key)) {
 			return values[pos];
 		} else {
 			return null;
@@ -216,18 +141,14 @@ public class HashTable<K, V> implements Map<K, V> {
 
 	@Override
 	public V remove(Object key) {
-		int pos = find(key);
-		if (pos > -1) {
-			keys[pos].deleted = true;
-			size--;
-			return values[pos];
-		}
+		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
 	public int size() {
-		return size;
+		// TODO Auto-generated method stub
+		return 0;
 	}
 
 	@Override
@@ -239,9 +160,8 @@ public class HashTable<K, V> implements Map<K, V> {
 
 	@Override
 	public void clear() {
-		size = 0;
-		keys = (KeyWrapper<K>[]) new Object[capacity];
-		values = (V[]) new Object[capacity];
+		// TODO Auto-generated method stub
+		
 	}
 
 

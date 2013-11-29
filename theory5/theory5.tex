@@ -62,7 +62,7 @@ F & 8 & E & \checkmark \\
 G & 6 & B & \checkmark \\
 \end{tabular}
 
-\newpage
+
 \item Initial: \\
 \begin{tikzpicture}[->,node distance=2cm, shorten >=1pt, thick]
 \tikzstyle{nd}=[circle,draw=black,text=black]
@@ -235,10 +235,10 @@ array we're using to store nodes, which like most ArrayLists should be an
 amortized constant operation (we only need to grow the array once it's currently
 full).
 
-deleteVertex() ends up taking \BigO{m}. Finding the vertex is \BigO{1}, it's
-constant to remove it from the hash table, and then either \BigO{n} to
-remove it from the array and compact the array, or just \BigO{1} if we
-lazily delete.  However, we finally have to remove all edges pointing to this
+deleteVertex() ends up taking \BigO{m}. Identifying and deleting the node itself
+is \BigO{1}, it's constant to remove it from the hash table, and \BigO{n} to
+remove it from the array and compact the array (this could be \BigO{1} if we
+lazily delete).  However, we finally have to remove all edges pointing to this
 vertex, so we need to do a \BigO{m} scan through all edges to delete them, but
 fortunately each delete is constant. Thus the overall time is \BigO{n+m} and
 assuming $m \approx kn$ this is \BigO{n}.

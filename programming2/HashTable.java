@@ -16,6 +16,7 @@ public class HashTable<K, V> implements Map<K, V> {
 	private int capacity;
 	private int size;
 	private final double loadFactor = 0.66;
+	private final K DELETED = (K) (new Boolean(false));
 	
 	private K[] keys;
 	private V[] values;
@@ -48,35 +49,65 @@ public class HashTable<K, V> implements Map<K, V> {
 	 * @return
 	 */
 	private int find(Object key) {
-		
-		int initialPos = Math.abs(key.hashCode() % capacity);
-		int finalPos = -1;
-		
-		LOGGER.log(Level.FINE, "Finding " + key.toString() + ". Hash code:" + key.hashCode() + ". Initial Pos: " + initialPos);
-
+		return find(key, keys);
+	}
+	
+	private int find(Object key, K[] keys) {
+		int initialPos = Math.abs(key.hashCode() % keys.length);
+		int finalPos, deletedPos = -1;
+		boolean found = false;
+	
 		for (int i = 0; ; i++) {
-			finalPos = (initialPos+(i*i)) % capacity;
+			finalPos = (initialPos+(i*i)) % keys.length;
 			if (keys[finalPos] == null)  {
-				//we found it
-				break;
-			} else if (keys[finalPos].equals(key)){
 				//it's not in the table
 				break;
+			} else if (keys[finalPos] == DELETED && deletedPos == -1) {
+				deletedPos = finalPos;
+			} else if (keys[finalPos].equals(key)){
+				//we found it
+				return finalPos;
 			}
 		}
-		LOGGER.log(Level.FINE, "Final Pos: " + finalPos);
-		return finalPos;
+		
+		if (deletedPos >= 0)
+			return deletedPos;
+		else
+			return finalPos;
 	}
 	
 	private void grow() {
-		
+        int i;
+        for (i = 0; i < primes.length; i++) {
+                if (primes[i] > capacity)
+                        break;
+        }
+        int newCapacity = primes[i];
+        LOGGER.log(Level.FINE, "Growing from: " + capacity + " to " + newCapacity);
+        
+        K[] newKeys = (K[]) new Object[newCapacity];
+        V[] newValues = (V[]) new Object[newCapacity];
+        
+        //Copy each value from the old thingie to the new thingie
+        for (int oldPos = 0; oldPos < capacity; oldPos++) {
+                if (keys[oldPos] != null && keys[oldPos] != DELETED) {
+                        int newPos = find(keys[oldPos], newKeys);
+                        newKeys[newPos] = keys[oldPos];
+                        newValues[newPos] = values[oldPos];
+                }
+        }
+        
+        //Swap them in!
+        this.keys = newKeys;
+        this.values = newValues;
+        this.capacity = newCapacity;
 	}
 
 
 	@Override
 	public V put(K key, V value) {
 		int pos = find(key);
-		if (keys[pos] == null) {
+		if (keys[pos] == null || keys[pos] == DELETED) {
 			keys[pos] = key;
 			values[pos] = value;
 			size++;
@@ -121,8 +152,7 @@ public class HashTable<K, V> implements Map<K, V> {
 
 	@Override
 	public boolean isEmpty() {
-		// TODO Auto-generated method stub
-		return false;
+		return size == 0;
 	}
 
 	@Override
@@ -141,14 +171,21 @@ public class HashTable<K, V> implements Map<K, V> {
 
 	@Override
 	public V remove(Object key) {
-		// TODO Auto-generated method stub
-		return null;
+		int pos = find(key);
+		V ret = null;
+		if (pos > -1) {
+			keys[pos] = (K) DELETED;
+			ret = values[pos];
+			values[pos] = null;
+			size--;
+		}
+		return ret;
 	}
 
 	@Override
 	public int size() {
 		// TODO Auto-generated method stub
-		return 0;
+		return size;
 	}
 
 	@Override
@@ -160,8 +197,9 @@ public class HashTable<K, V> implements Map<K, V> {
 
 	@Override
 	public void clear() {
-		// TODO Auto-generated method stub
-		
+		size = 0;
+		keys = (K[]) new Object[capacity];
+		values = (V[]) new Object[capacity];
 	}
 
 

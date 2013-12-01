@@ -1,8 +1,7 @@
 import java.lang.reflect.Array;
 import java.util.*;
-import java.util.logging.ConsoleHandler;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.util.logging.*;
+import java.lang.*;
 
 /**
  * 
@@ -132,14 +131,17 @@ public class HashTable<K, V> implements Map<K, V> {
 
 	@Override
 	public boolean containsKey(Object key) {
-		// TODO Auto-generated method stub
-		return false;
+		int pos = find(key);
+		if (keys[pos] != null && keys[pos].equals(key)) {
+			return true;
+		} else {
+			return false;
+		}
 	}
 
 	@Override
 	public boolean containsValue(Object value) {
-		// TODO Auto-generated method stub
-		return false;
+		throw new UnsupportedOperationException();
 	}
 
 	@Override

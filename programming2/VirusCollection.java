@@ -6,13 +6,18 @@ import java.util.logging.*;
 
 
 
-public class VirusCollection {
+public class VirusCollection implements Serializable {
+	private static final long serialVersionUID = 1L;
 	private static Logger LOGGER = Logger.getLogger("VirusCollection");
 	private HashTable<String, Integer> viruses;
 	private HashTable<String, Integer> benign;
+	private HashTable<String, Double> thetas;
+	private HashTable<String, Double> oneMinusThetas;
 	private int numViruses = 0;
 	private int numBenign = 0;
-	private int n = 6;
+	private int n = 10;
+	private double alpha = 5;
+	private double beta = 10;
 	private boolean cached = false;
 	
 	public VirusCollection() {
@@ -89,22 +94,65 @@ public class VirusCollection {
 		return fileCount;
 	}
 	
+	private void loadCache() {
+		LOGGER.log(Level.FINE, "Loading cache");
+		Set<String> allKeys = viruses.keySet();
+		allKeys.addAll(benign.keySet());
+		thetas = new HashTable<String, Double>((int) (allKeys.size()*1.51));
+		oneMinusThetas = new HashTable<String, Double>((int) (allKeys.size()*1.51));
+		for (String key: allKeys) {
+			Double vCount;
+			Integer rawVcount = viruses.get(key);
+			if (rawVcount == null)
+				vCount = 0.0;
+			else
+				vCount = rawVcount.doubleValue();
+			
+			Double bCount;
+			Integer rawBcount = viruses.get(key);
+			if (rawBcount == null)
+				bCount = 0.0;
+			else
+				bCount = rawBcount.doubleValue();
+
+			double theta = (vCount + alpha)/(vCount + bCount + beta);
+			double oneMinus = (1 - ((vCount + alpha)/(vCount + bCount + beta)));
+			thetas.put(key, theta);
+			oneMinusThetas.put(key, oneMinus);
+		}
+		cached = true;
+		LOGGER.log(Level.FINE, "Cache loaded");
+	}
+	
 	/**
-	 * Takes an already cleaned up hex file
+	 * Takes an already cleaned up hex file. 
 	 * 
 	 * @param newFile
 	 * @return
 	 */
 	public double computeNB(String newFile) {
-		
-		for (int i = 0; i < newFile.length(); i++) {
-			String ngram = newFile.substring(i, i+n);
-			int virusCount = viruses.get(ngram);
-			int benignCount = benign.get(ngram);
+		if (!cached) {
+			loadCache();
 		}
+		double missing = 1.0 / 10.0;
+		double total = 1.0;
+		double oneminustotal = 1.0;
+		for (int i = 0; i < newFile.length() - n; i++) {
+			String ngram = newFile.substring(i, i+n);
+			Double theta = thetas.get(ngram);
+			Double oneminus;
+			if (theta == null) {
+				theta = missing;
+				oneminus =  1- missing;
+			} else {
+				oneminus = oneMinusThetas.get(ngram);
+			}
+			total *= theta;
+			oneminustotal *= oneminus;
+		} 
+		//double log_Pvirus= Math.log(numViruses / (double) (numViruses + numBenign));
 		
-		return 0.0;
-		
+		return Math.exp(total) / (Math.exp(total) + Math.exp(oneminustotal));
 	}
 	
 	

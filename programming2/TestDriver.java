@@ -1,4 +1,5 @@
 import java.util.*;
+import java.util.logging.Level;
 import java.io.*;
 import java.lang.*;
 
@@ -33,11 +34,61 @@ public class TestDriver {
 		File virusDir = new File("/Users/chmullig/Documents/Columbia/Current Classes/COMS3137 DSA/programming2/hwv");
 		File benignDir = new File("/Users/chmullig/Documents/Columbia/Current Classes/COMS3137 DSA/programming2/hwb");
 		
-		VirusCollection myVC = new VirusCollection();
-		myVC.loadDirectory(virusDir, true);
-		myVC.loadDirectory(benignDir, false);
+		VirusCollection myVC = null;
+//		boolean loaded = false;
+//		try {
+//			FileInputStream fileIn = new FileInputStream("myVirusCollection.ser");
+//			ObjectInputStream in = new ObjectInputStream(fileIn);
+//			System.out.println("Loading serialized virus collection...");
+//			myVC = (VirusCollection) in.readObject();
+//			in.close();
+//			fileIn.close();
+//			loaded = true;
+//		} catch(IOException i) {
+//			System.out.println("Unable to load serialized virus collection");
+//		}catch(ClassNotFoundException c) {
+//			System.out.println("VirusCollection class not found");
+//			c.printStackTrace();
+//			return;
+//		}
 		
-
+		if (myVC == null) {
+			myVC = new VirusCollection();
+			myVC.loadDirectory(virusDir, true);
+			myVC.loadDirectory(benignDir, false);
+		}
+		
+		File testDir = new File("/Users/chmullig/Documents/Columbia/Current Classes/COMS3137 DSA/programming2/test");  
+		for (File file: testDir.listFiles()) {
+			try {
+				FileReader fileReader = new FileReader(file);
+				BufferedReader fileBuffer = new BufferedReader(fileReader);
+				StringBuffer contents = new StringBuffer();
+				contents.append(fileBuffer.readLine().replaceAll(" ", ""));
+				
+				double prediction = myVC.computeNB(contents.toString());
+				System.out.println("File " + file.getName() + " prediction: " + prediction);
+				
+				fileBuffer.close();
+			} catch (FileNotFoundException e) {
+				e.printStackTrace();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+		
+//		if (!loaded) {
+//			try {
+//				FileOutputStream fileOut = new FileOutputStream("myVirusCollection.ser");
+//				ObjectOutputStream out = new ObjectOutputStream(fileOut);
+//				out.writeObject(myVC);
+//				out.close();
+//				fileOut.close();
+//				System.out.printf("Serialized data is saved");
+//			} catch(IOException i) {
+//				i.printStackTrace();
+//			}
+//		}
 
 	}
 

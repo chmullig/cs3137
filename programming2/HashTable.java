@@ -1,3 +1,4 @@
+import java.io.Serializable;
 import java.lang.reflect.Array;
 import java.util.*;
 import java.util.logging.*;
@@ -11,7 +12,8 @@ import java.lang.*;
  * @author chmullig
  *
  */
-public class HashTable<K, V> implements Map<K, V> {
+public class HashTable<K, V> implements Map<K, V>, Serializable {
+	private static final long serialVersionUID = 1L;
 	private int capacity;
 	private int size;
 	private final double loadFactor = 0.66;
@@ -26,11 +28,20 @@ public class HashTable<K, V> implements Map<K, V> {
 	// Primes from: http://planetmath.org/goodhashtableprimes
 	final private int[] primes = {11, 53, 97, 193, 389, 769, 1543, 3079, 6151,
 			12289, 24593, 49157, 98317, 196613, 393241, 786433, 1572869,
-			3145739, 6291469,12582917, 25165843, 50331653, 100663319, 201326611,
+			3145739, 6291469, 12582917, 25165843, 50331653, 100663319, 201326611,
 			402653189, 805306457, 1610612741};
 	
 	public HashTable() {
-		capacity = primes[0];
+		this(11);
+	}
+	
+	public HashTable(int targetCapacity) {
+		int i;
+        for (i = 0; i < primes.length; i++) {
+                if (primes[i] >= targetCapacity)
+                        break;
+        }
+        capacity = primes[i];
 		size = 0;
 		keys = (K[]) new Object[capacity];
 		values = (V[]) new Object[capacity];
@@ -122,7 +133,7 @@ public class HashTable<K, V> implements Map<K, V> {
 	@Override
 	public V get(Object key) {
 		int pos = find(key);
-		if (keys[pos].equals(key)) {
+		if (keys[pos] != null && keys[pos].equals(key)) {
 			return values[pos];
 		} else {
 			return null;
@@ -159,8 +170,13 @@ public class HashTable<K, V> implements Map<K, V> {
 
 	@Override
 	public Set<K> keySet() {
-		// TODO Auto-generated method stub
-		return null;
+		Set<K> setOfKeys = new HashSet<K>(size);
+		for (K key: keys) {
+			if (key != null && key != DELETED) {
+				setOfKeys.add(key);
+			}
+		}
+		return setOfKeys;
 	}
 
 

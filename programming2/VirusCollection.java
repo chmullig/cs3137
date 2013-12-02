@@ -7,7 +7,7 @@ import java.util.logging.*;
 
 
 public class VirusCollection implements Serializable {
-	private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 2L;
 	private static Logger LOGGER = Logger.getLogger("VirusCollection");
 	private HashTable<String, Integer> viruses;
 	private HashTable<String, Integer> benign;
@@ -15,9 +15,9 @@ public class VirusCollection implements Serializable {
 	private HashTable<String, Double> oneMinusThetas;
 	private int numViruses = 0;
 	private int numBenign = 0;
-	private int n = 10;
+	private int n = 8;
 	private double alpha = 5;
-	private double beta = 10;
+	private double beta = 20;
 	private boolean cached = false;
 	
 	public VirusCollection() {
@@ -115,8 +115,8 @@ public class VirusCollection implements Serializable {
 			else
 				bCount = rawBcount.doubleValue();
 
-			double theta = (vCount + alpha)/(vCount + bCount + beta);
-			double oneMinus = (1 - ((vCount + alpha)/(vCount + bCount + beta)));
+			double theta = Math.log(vCount + alpha)/(vCount + bCount + beta);
+			double oneMinus = Math.log(1 - ((vCount + alpha)/(vCount + bCount + beta)));
 			thetas.put(key, theta);
 			oneMinusThetas.put(key, oneMinus);
 		}
@@ -134,34 +134,49 @@ public class VirusCollection implements Serializable {
 		if (!cached) {
 			loadCache();
 		}
-		double missing = 1.0 / 10.0;
-		double total = 1.0;
-		double oneminustotal = 1.0;
+		double missing = Math.log(4.0 / 10.0);
+		double oneminusmissing = Math.log(1 - (4.0 / 10.0));
+		double aeta = 0.0;
 		for (int i = 0; i < newFile.length() - n; i++) {
 			String ngram = newFile.substring(i, i+n);
 			Double theta = thetas.get(ngram);
 			Double oneminus;
 			if (theta == null) {
 				theta = missing;
-				oneminus =  1- missing;
+				oneminus =  oneminusmissing;
 			} else {
 				oneminus = oneMinusThetas.get(ngram);
 			}
-			total *= theta;
-			oneminustotal *= oneminus;
+			aeta = aeta - oneminus + theta;
 		} 
-		//double log_Pvirus= Math.log(numViruses / (double) (numViruses + numBenign));
 		
-		return Math.exp(total) / (Math.exp(total) + Math.exp(oneminustotal));
+		return 1/(1+Math.exp(aeta));
 	}
-	
-	
-	public int getN(){
+
+	public int getN() {
 		return n;
 	}
-	
-	public void setN(int newN) {
-		n = newN;
+
+	public void setN(int n) {
+		this.n = n;
+	}
+
+	public double getAlpha() {
+		return alpha;
+	}
+
+	public void setAlpha(double alpha) {
+		cached = false;
+		this.alpha = alpha;
+	}
+
+	public double getBeta() {		
+		return beta;
+	}
+
+	public void setBeta(double beta) {
+		cached = false;
+		this.beta = beta;
 	}
 	
 }

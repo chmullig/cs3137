@@ -17,6 +17,7 @@ public class HashTable<K, V> implements Map<K, V>, Serializable {
 	private int capacity;
 	private int size;
 	private final double loadFactor = 0.66;
+	@SuppressWarnings("unchecked")
 	private final K DELETED = (K) (new Boolean(false));
 	
 	private K[] keys;
@@ -32,9 +33,10 @@ public class HashTable<K, V> implements Map<K, V>, Serializable {
 			402653189, 805306457, 1610612741};
 	
 	public HashTable() {
-		this(11);
+		this(53);
 	}
 	
+	@SuppressWarnings("unchecked")
 	public HashTable(int targetCapacity) {
 		int i;
         for (i = 0; i < primes.length; i++) {
@@ -86,6 +88,7 @@ public class HashTable<K, V> implements Map<K, V>, Serializable {
 			return finalPos;
 	}
 	
+	@SuppressWarnings("unchecked")
 	private void grow() {
         int i;
         for (i = 0; i < primes.length; i++) {
@@ -93,7 +96,7 @@ public class HashTable<K, V> implements Map<K, V>, Serializable {
                         break;
         }
         int newCapacity = primes[i];
-        LOGGER.log(Level.FINE, "Growing from: " + capacity + " to " + newCapacity);
+        //LOGGER.log(Level.FINE, "Growing from: " + capacity + " to " + newCapacity);
         
         K[] newKeys = (K[]) new Object[newCapacity];
         V[] newValues = (V[]) new Object[newCapacity];
@@ -213,6 +216,7 @@ public class HashTable<K, V> implements Map<K, V>, Serializable {
 	}
 	
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public void clear() {
 		size = 0;

@@ -124,6 +124,20 @@ public class VirusCollection implements Serializable {
 		LOGGER.log(Level.FINE, "Cache loaded");
 	}
 	
+	public double predict(File file) {
+		try {
+			FileReader fileReader = new FileReader(file);
+			BufferedReader fileBuffer = new BufferedReader(fileReader);
+			StringBuffer contents = new StringBuffer();
+			contents.append(fileBuffer.readLine().replaceAll(" ", ""));
+			fileBuffer.close();
+			return computeNB(contents.toString());
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return -1;
+	}
+	
 	/**
 	 * Takes an already cleaned up hex file. 
 	 * 
@@ -177,6 +191,11 @@ public class VirusCollection implements Serializable {
 	public void setBeta(double beta) {
 		cached = false;
 		this.beta = beta;
+	}
+
+	public Double[] testDirectory() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 	
 }

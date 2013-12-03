@@ -9,9 +9,10 @@ CLASSES = \
 	Virus.java \
 	VirusChecker.java \
 	VirusCollection.java \
+	TestFile.java
 
 default: classes
-	jar cfe clm2186_programming_2.jar VirusChecker  $(CLASSES:.java=.class) lib/*.jar
+	jar cfe clm2186_programming_2.jar VirusChecker  $(CLASSES:.java=.class) org/apache/commons/cli/
 
 classes: $(CLASSES:.java=.class)
 
@@ -25,7 +26,10 @@ clean:
 all: clean default docs
 
 test: default
-	java -jar clm2186_programming_2.jar words.txt
+	java -Xmx4g -jar clm2186_programming_2.jar VirusChecker -b hwb/ -v hwv/ -t test -t hwb -t hwv  -save makefile.ser
+
+testser: default
+	java -Xmx4g -jar clm2186_programming_2.jar VirusChecker -ser makefile.ser -t test/
 
 clm2186_programming_2.tar.gz: default docs
 	tar czf clm2186_programming_2.tar.gz README.txt *.java clm2186_programming_2.jar docs

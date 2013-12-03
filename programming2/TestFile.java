@@ -1,3 +1,9 @@
+/**
+ * @author Chris Mulligan <clm2186>
+ * 
+ * Trivial object to hold 3 values, since it's non-trivial to make a 3-tuple
+ *
+ */
 public class TestFile {
 	public String body;
 	public String name;

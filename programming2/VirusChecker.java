@@ -6,6 +6,23 @@ import java.util.logging.*;
 import org.apache.commons.cli.*;
 
 
+/**
+ * @author Chris Mulligan <clm2186>
+ * 
+ * Command Line Virus Checker program!
+ * 
+ * Uses the Apache Commons CLI library to parse command line arguments.
+ * 
+ * It takes either a -ser <serialized.ser> saved serialization file, or both a
+ * virus directory and a benign directory to build a training data set.
+ * 
+ * It tests it on the -t test directory.
+ * 
+ * This does very little work, it's almost all handled by
+ * {@link VirusCollection}. This just loads files in the directories and calls
+ * the virus collection.
+ *
+ */
 public class VirusChecker {
 
 	public static void main(String[] args) {
@@ -125,8 +142,8 @@ public class VirusChecker {
 	    
 	    
 	    if (line.hasOption("probe")) {
-	    	// We want to probe values of alpha and beta! Let's take beta from
-	    	// 2 to 20, and alpha from 1 to beta
+	    	// We want to probe values of alpha and beta!
+	    	// The probe values have been checked over time to get something sensible
 	    	
 	    	//Do some precomputing to make iterating fast.
 	    	ArrayList<TestFile> testFiles = new ArrayList<TestFile>();
@@ -162,22 +179,21 @@ public class VirusChecker {
 	    	}
 	    	
 	    	
-	    	System.out.println("beta,alpha,type,name,prediction");
-	    	for (double beta = 2; beta < 20; beta+=2) {
+	    	System.out.println("n,beta,alpha,type,name,prediction");
+	    	for (double beta = 100; beta < 200.1; beta+=10) {
 	    		myVC.setBeta(beta);
-	    		for (double alpha = 1; alpha < beta; alpha++) {
+	    		for (double alpha = 1; alpha < 2; alpha++) {
 	    			myVC.setAlpha(alpha);
 	    	    	for (TestFile testFile: testFiles) {
 	    	    		double prediction = myVC.computeNB(testFile.body);
-	    	    		System.out.println(beta+","+alpha+","+testFile.type+","+testFile.name+","+prediction);
+	    	    		System.out.println(myVC.getN()+","+beta+","+alpha+","+testFile.type+","+testFile.name+","+prediction);
 	    	    	}	    					
 	    		}
 	    	}
 	    }
 	    
 	    
-	    if (line.hasOption("t")) {
-	    	
+	    if (line.hasOption("t")) {   	
 	    	for (String testFolderName: line.getOptionValues("t")) {
 				for (File file: new File(testFolderName).listFiles()) {
 					try {

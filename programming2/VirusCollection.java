@@ -4,8 +4,27 @@ import java.util.*;
 import java.util.logging.*;
 
 
-
-
+/**
+ * @author Chris Mulligan <clm2186@columbia.edu>
+ *
+ * This is the core of my lovely virus checker. It creates n-grams, where each
+ * is a hex character from a hexdump of a virus or benign file.
+ * 
+ * It uses {@link HashTable} extensively for storing the ngrams, and for caching
+ * probabilities to save time. It is not especially memory efficient.
+ * 
+ * My Na•ve Bayes approach is based on three resources:
+ * Paul Graham's spam essay at http://www.paulgraham.com/spam.html, 
+ * Wikipedia's articles on NB and Spam Filtering http://en.wikipedia.org/wiki/Bayesian_spam_filtering
+ * Schutt & O'Neil, Doing Data Science, 2013. 
+ * 
+ * I calculate theta = P(Virus|Byte) = [(times in Virus) + alpha] / [(times in Virus) + (times in Benign) + beta].
+ * alpha and beta determined experimentally to be 1 and 100.
+ * I then store log(theta) and log(1-theta) in hash tables for later use. To 
+ * compute P(virus|bytes) I let aeta = sum((1-theta_i) - theta_i), then the
+ * overall probability is 1/(1+e^aeta).
+ *
+ */
 public class VirusCollection implements Serializable {
 	private static final long serialVersionUID = 2L;
 	private static Logger LOGGER = Logger.getLogger("VirusCollection");
@@ -13,16 +32,22 @@ public class VirusCollection implements Serializable {
 	private HashTable<String, Integer> benign;
 	private HashTable<String, Double> thetas;
 	private HashTable<String, Double> oneMinusThetas;
-	private int numViruses = 0;
-	private int numBenign = 0;
+	private ArrayList<String> virusFileNames;
+	private ArrayList<String> benignFileNames;
 	private int n = 8;
-	private double alpha = 5;
+	private double alpha = 1;
 	private double beta = 20;
 	private boolean cached = false;
 	
+	/**
+	 * Standard Constructor
+	 */
 	public VirusCollection() {
 		viruses = new HashTable<String, Integer>();
 		benign = new HashTable<String, Integer>();
+		
+		virusFileNames = new ArrayList<String>();
+		benignFileNames = new ArrayList<String>();
 		
 		LOGGER.setLevel(Level.ALL);
 		ConsoleHandler handler = new ConsoleHandler();
@@ -30,18 +55,78 @@ public class VirusCollection implements Serializable {
 		LOGGER.addHandler(handler);
 	}
 	
+	
+	/**
+	 * Load a virus, and store the file name for later use
+	 * 
+	 * @param source
+	 * @return
+	 * @throws FileNotFoundException
+	 */
+	public int loadVirus(File source) throws FileNotFoundException {
+		cached = false;
+		FileReader sourceRdr = new FileReader(source);
+		virusFileNames.add(source.getName());
+		return load(sourceRdr, viruses);
+	}
+	
+	/**
+	 * Anonymously load a virus from a FileReader.
+	 * 
+	 * @param source
+	 * @return
+	 */
 	public int loadVirus(FileReader source) {
-		numViruses++;
 		cached = false;
 		return load(source, viruses);
 	}
 	
+	public int loadFile(File source, boolean virus) throws FileNotFoundException {
+		cached= false;
+		FileReader sourceRdr = new FileReader(source);
+		if (virus) {
+			virusFileNames.add(source.getName());
+			return load(sourceRdr, viruses);
+		} else {
+			benignFileNames.add(source.getName());
+			return load(sourceRdr, benign);
+		}
+	}
+	
+	/**
+	 * Load a benign file, and store the file name for later use.
+	 * 
+	 * @param source
+	 * @return
+	 * @throws FileNotFoundException
+	 */
+	public int loadBenign(File source) throws FileNotFoundException {
+		cached = false;
+		benignFileNames.add(source.getName());
+		FileReader sourceRdr = new FileReader(source);
+		return load(sourceRdr, benign);
+	}
+	
+	/**
+	 * Anonymously load a benign file
+	 * 
+	 * @param source
+	 * @return
+	 */
 	public int loadBenign(FileReader source) {
-		numBenign++;
 		cached = false;
 		return load(source, benign);
 	}
 	
+	/**
+	 * Behind the scenes to load from a file reader into a hash table. Because
+	 * there's no meaningful difference we only do this once, and have each
+	 * call this with the appropriate arguments.
+	 * 
+	 * @param source
+	 * @param destination
+	 * @return
+	 */
 	private int load(FileReader source, HashTable<String, Integer> destination) {
 		int count = 0;
 		BufferedReader bufReader = new BufferedReader(source);
@@ -69,6 +154,13 @@ public class VirusCollection implements Serializable {
 		return count;
 	}
 	
+	/**
+	 * Load an entire directory of viruses or benign files!
+	 * 
+	 * @param directory
+	 * @param virus
+	 * @return
+	 */
 	public int loadDirectory(File directory, boolean virus) {
 		if (!directory.isDirectory() || !directory.canExecute() || !directory.canRead()) {
 			return -1;
@@ -78,14 +170,7 @@ public class VirusCollection implements Serializable {
 		File[] files = directory.listFiles();
 		for (File file: files) {
 			try {
-				FileReader fileReader = new FileReader(file);
-				if (virus) {
-					LOGGER.log(Level.FINE, "Loading virus " + file.getName());
-					loadVirus(fileReader);
-				} else {
-					LOGGER.log(Level.FINE, "Loading benign " + file.getName());
-					loadBenign(fileReader);
-				}
+				loadFile(file, virus);
 				fileCount ++;
 			} catch (FileNotFoundException e) {
 				e.printStackTrace();
@@ -94,6 +179,13 @@ public class VirusCollection implements Serializable {
 		return fileCount;
 	}
 	
+	/**
+	 * Prep the cache by computing all the word probabilities and storing them
+	 * in two hash tables (for theta and 1-theta).
+	 * 
+	 * This is called whenever we try to computed a probability and the cache
+	 * is invalid. Cache is invalidated if 
+	 */
 	private void loadCache() {
 		LOGGER.log(Level.FINE, "Loading cache");
 		Set<String> allKeys = viruses.keySet();
@@ -124,22 +216,26 @@ public class VirusCollection implements Serializable {
 		LOGGER.log(Level.FINE, "Cache loaded");
 	}
 	
-	public double predict(File file) {
-		try {
-			FileReader fileReader = new FileReader(file);
-			BufferedReader fileBuffer = new BufferedReader(fileReader);
-			StringBuffer contents = new StringBuffer();
-			contents.append(fileBuffer.readLine().replaceAll(" ", ""));
-			fileBuffer.close();
-			return computeNB(contents.toString());
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		return -1;
+	/**
+	 * Takes a file object (instead of a precomputed string), cleans it up,
+	 * then calls computeNB on the cleaned up string. Merely a convenience. 
+	 * 
+	 * @param file
+	 * @return
+	 * @throws IOException If there is a problem with the file
+	 */
+	public double predict(File file) throws IOException {
+		FileReader fileReader = new FileReader(file);
+		BufferedReader fileBuffer = new BufferedReader(fileReader);
+		StringBuffer contents = new StringBuffer();
+		contents.append(fileBuffer.readLine().replaceAll(" ", ""));
+		fileBuffer.close();
+		return computeNB(contents.toString());
 	}
 	
 	/**
-	 * Takes an already cleaned up hex file. 
+	 * Takes a string representing an already cleaned up hex file, and compute
+	 * the naive bayes score. 
 	 * 
 	 * @param newFile
 	 * @return
@@ -148,8 +244,8 @@ public class VirusCollection implements Serializable {
 		if (!cached) {
 			loadCache();
 		}
-		double missing = Math.log(4.0 / 10.0);
-		double oneminusmissing = Math.log(1 - (4.0 / 10.0));
+		double missing = Math.log(alpha / beta);
+		double oneminusmissing = Math.log(1 - (alpha / beta));
 		double aeta = 0.0;
 		for (int i = 0; i < newFile.length() - n; i++) {
 			String ngram = newFile.substring(i, i+n);
@@ -161,20 +257,36 @@ public class VirusCollection implements Serializable {
 			} else {
 				oneminus = oneMinusThetas.get(ngram);
 			}
-			aeta = aeta - oneminus + theta;
+			aeta = aeta + oneminus - theta;
 		} 
 		
 		return 1/(1+Math.exp(aeta));
 	}
 
-	public int getN() {
-		return n;
+	public boolean alreadyLoaded() {
+		if (viruses.size() > 0 || benign.size() > 0)
+			return true;
+		return false;
 	}
-
+	
+	/**
+	 * Set the n for the n-grams. NOTE, this may not be changed after loading
+	 * files, you MUST create a new instance of this class and setN immediately
+	 * before loading any files.
+	 * 
+	 * @param n
+	 */
 	public void setN(int n) {
+		if (alreadyLoaded())
+			throw new IllegalStateException();
 		this.n = n;
 	}
 
+	//getters/setters below
+	public int getN() {
+		return n;
+	}
+	
 	public double getAlpha() {
 		return alpha;
 	}
@@ -193,9 +305,12 @@ public class VirusCollection implements Serializable {
 		this.beta = beta;
 	}
 
-	public Double[] testDirectory() {
-		// TODO Auto-generated method stub
-		return null;
+	public ArrayList<String> getVirusFileNames() {
+		return virusFileNames;
+	}
+
+	public ArrayList<String> getBenignFileNames() {
+		return benignFileNames;
 	}
 	
 }

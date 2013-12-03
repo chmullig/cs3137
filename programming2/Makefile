@@ -30,10 +30,10 @@ clean:
 all: clean default docs
 
 test: default
-	java -Xmx4g -jar clm2186_programming_2.jar -b hwb/ -v hwv/ -t test -t hwb -t hwv  -save makefile.ser
+	java -Xmx4g -jar clm2186_programming_2_cli.jar -b hwb/ -v hwv/ -t test -t hwb -t hwv  -save makefile.ser
 
 testser: default
-	java -Xmx4g -jar clm2186_programming_2.jar -ser makefile.ser -t test/
+	java -Xmx4g -jar clm2186_programming_2_cli.jar -ser makefile.ser -t test/
 
 clm2186_programming_2.tar.gz: default docs
-	tar czf clm2186_programming_2.tar.gz README.txt *.java clm2186_programming_2.jar docs
+	tar czf clm2186_programming_2.tar.gz README.md *.java *.jar docs org Makefile

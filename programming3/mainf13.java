@@ -6,7 +6,7 @@ import java.io.*;
  * @author Chris Mulligan <clm2186@columbia.edu>
  *
  */
-public class GPS {
+public class mainf13 {
 
 	/**
 	 * @param args

@@ -6,16 +6,16 @@ import java.io.*;
  * @author Chris Mulligan <clm2186@columbia.edu>
  *
  */
-public class FlightMap {
+public class MyGraphMap13 {
 	private HashMap<String, City> cities;
 	private int cityCount = 0;
 	private int flightCount = 0;
 
-	public FlightMap() {
+	public MyGraphMap13() {
 		cities = new HashMap<String, City>();
 	}
 	
-	public FlightMap(int size) {
+	public MyGraphMap13(int size) {
 		cities = new HashMap<String, City>(size);
 	}
 	

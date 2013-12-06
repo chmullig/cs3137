@@ -17,8 +17,6 @@ public class mainf13 {
 		try {
 			cityFileName = args[0];
 			cityFileReader = new BufferedReader(new FileReader(cityFileName));
-			while (cityFileReader.ready())
-				System.out.println(cityFileReader.readLine());
 		} catch (ArrayIndexOutOfBoundsException e) {
 			System.err.println("Please specify a city file!");
 			System.exit(1);
@@ -29,6 +27,11 @@ public class mainf13 {
 			System.err.println("IO Error.");
 			System.exit(1);
 		}
+		
+		MyGraphMap13 map = new MyGraphMap13();
+		int numCities = map.loadFile(cityFileReader);
+		System.out.println("Loaded " + numCities);
+		
 		
 
 	}

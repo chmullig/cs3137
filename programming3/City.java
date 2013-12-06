@@ -12,11 +12,15 @@ public class City {
 	private String fullname;
 	private List<Flight> outbound;
 	private List<Flight> inbound;
+	double latitude;
+	double longitude;
 	
-	public City(String name, String state) {
+	public City(String name, String state, double latitude, double longitude) {
 		super();
 		this.name = name;
 		this.state = state;
+		this.latitude = latitude;
+		this.longitude = longitude;
 	}
 	
 	public City(String full) {
@@ -60,6 +64,22 @@ public class City {
 
 	public List<Flight> getInbound() {
 		return inbound;
+	}
+
+	public double getLatitude() {
+		return latitude;
+	}
+
+	public void setLatitude(double latitude) {
+		this.latitude = latitude;
+	}
+
+	public double getLongitude() {
+		return longitude;
+	}
+
+	public void setLongitude(double longitude) {
+		this.longitude = longitude;
 	}
 
 }

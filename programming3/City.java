@@ -6,25 +6,57 @@ import java.io.*;
  * @author Chris Mulligan <clm2186@columbia.edu>
  *
  */
-public class City {
+public class City implements Comparable<City> {
 	private String name;
 	private String state;
 	private String fullname;
 	private List<Flight> outbound;
 	private List<Flight> inbound;
-	double latitude;
-	double longitude;
+	private double latitude;
+	private double longitude;
+	private int id;
+	private int distance;
+	private boolean visited;
+	private City parent;
 	
-	public City(String name, String state, double latitude, double longitude) {
-		super();
+	public City(int id, String name, String state, double latitude, double longitude) {
+		this.id = id;
 		this.name = name;
 		this.state = state;
 		this.latitude = latitude;
 		this.longitude = longitude;
+		this.fullname = name + ", " + state;
+		initialize();
 	}
 	
-	public City(String full) {
+	public City(int id, String fullname, String name, String state, double latitude, double longitude) {
+		this.id = id;
+		this.fullname = fullname;
+		this.name = name;
+		this.state = state;
+		this.latitude = latitude;
+		this.longitude = longitude;
+		initialize();
+	}
+	
+	public City(int id, String full, double latitude, double longitude) {
+		this.id = id;
 		setName(full);
+		this.latitude = latitude;
+		this.longitude = longitude;
+		initialize();
+	}
+	
+	private void initialize() {
+		outbound = new LinkedList<Flight>();
+		inbound = new LinkedList<Flight>();
+		reset();
+	}
+	
+	public void reset() {
+		distance = Integer.MAX_VALUE;
+		visited = false;
+		parent = null;
 	}
 	
 	public void setName(String full) {
@@ -81,5 +113,58 @@ public class City {
 	public void setLongitude(double longitude) {
 		this.longitude = longitude;
 	}
+	
+	public String getState() {
+		return state;
+	}
 
+	public void setState(String state) {
+		this.state = state;
+	}
+
+	public int getId() {
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
+	}
+
+	public int getDistance() {
+		return distance;
+	}
+
+	public void setDistance(int distance) {
+		this.distance = distance;
+	}
+
+	public boolean isVisited() {
+		return visited;
+	}
+
+	public void setVisited(boolean visited) {
+		this.visited = visited;
+	}
+
+	public City getParent() {
+		return parent;
+	}
+
+	public void setParent(City parent) {
+		this.parent = parent;
+	}
+
+	public String getName() {
+		return name;
+	}	
+
+	
+	public String toString() {
+		return id + ": " + fullname + " (" + latitude +", " + longitude +")";
+	}
+
+	@Override
+	public int compareTo(City other) {
+		return this.distance - other.getDistance();
+	}
 }

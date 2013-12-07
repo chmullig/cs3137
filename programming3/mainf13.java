@@ -30,8 +30,30 @@ public class mainf13 {
 		
 		MyGraphMap13 map = new MyGraphMap13();
 		int numCities = map.loadFile(cityFileReader);
-		System.out.println("Loaded " + numCities);
 		
+		List<City> cities = map.getCities();
+		
+		map.addRandomFlights(2, 8, 100, 2000);
+		
+		System.out.println("Loaded " + numCities);
+		try {
+			PrintStream dot = new PrintStream(args[0]+".dot");
+			map.makeGraphviz(dot);
+			dot.close();
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		City source = cities.get(0);
+		map.setCurrentCity(source);
+		List<City> closest = map.nByCost(99);
+		
+		map.print(System.err);
+		
+		for (City city: closest) {
+			System.out.println(city);
+		}
 		
 
 	}

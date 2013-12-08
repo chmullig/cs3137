@@ -90,7 +90,7 @@ public class MapApplication {
 			}
 			results.append("\n");
 			for (Flight flight: match.getOutbound()) {
-				results.append(String.format("   out-> %-35s  $%6s  %6skm\n", flight.getOrigin().getFullname(), flight.getCost(), Math.round(flight.getDistance())));
+				results.append(String.format("   out-> %-35s  $%6s  %6skm\n", flight.getDestination().getFullname(), flight.getCost(), Math.round(flight.getDistance())));
 			}
 		}
 		return results.toString();
@@ -123,7 +123,7 @@ public class MapApplication {
 			}
 			results.append("\n");
 			for (Flight flight: current.getOutbound()) {
-				results.append(String.format("   out-> %-35s  $%6s  %6skm\n", flight.getOrigin().getFullname(), flight.getCost(), Math.round(flight.getDistance())));
+				results.append(String.format("   out-> %-35s  $%6s  %6skm\n", flight.getDestination().getFullname(), flight.getCost(), Math.round(flight.getDistance())));
 			}
 			return results.toString();
 		} else {

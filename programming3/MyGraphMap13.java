@@ -289,8 +289,11 @@ public class MyGraphMap13 {
 
 
 	public void makeGraphviz(PrintStream out) {
-		out.println("digraph G {");
+		out.println("digraph G {\n    graph [outputorder=edgesfirst]\n" +
+					"edge [penwidth=1,color=\"#000000FF\"]\n" +
+					"node [style=filled fillcolor=\"#FFFFFFAA\"]");
 		for (City city: getCities()) {
+			out.println("\"" + city.getFullname() + "\"[pos=\"" + city.getLongitude() +","+city.getLatitude()+ "!\"];");
 			for (Flight flight: city.getOutbound()) {
 				out.println("\"" + city.getFullname() + "\" -> \"" + flight.getDestination().getFullname() + "\";");
 			}

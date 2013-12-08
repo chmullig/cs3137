@@ -82,6 +82,17 @@ public class mainf13 {
 					System.out.println(app.h(targetID));
 				} else if (command.equals("i")) {
 					System.exit(0);
+					
+				//Bonus below
+				} else if (command.equals("j")) {
+					System.out.print("Dot output filename (do not enter extension): ");
+					String filename = getInput(scn, batch);
+					app.j(filename);
+				} else if (command.equals("k")) {
+					System.out.print("Gephi output base filename (do not enter extension): ");
+					String filename = getInput(scn, batch);
+					app.k(filename);
+					
 				} else {
 					System.out.println("Unknown command!");
 					printHelp();
@@ -98,15 +109,19 @@ public class mainf13 {
 		System.out.println(
 				"COMMANDS:\n"+
 				"=========\n" +
-				"a. Load up a city file into the system\n" +
-				"b. Search for state and list all cities there with their in/out counts.\n" +
-				"c. Search for city and display some information about it.\n" +
-				"d. Set current city as the starting point.\n" +
-				"e. Show current city\n" + 
-				"f. Find n closest cities to current city using gps distances.\n" +
-				"g. Find n closest cities to current city using directed edge costs\n" +
-				"h. Find shortest path between current and some target city\n" +
-				"i. quit");
+				"  a. Load up a city file into the system\n" +
+				"  b. Search for state and list all cities there with their in/out counts.\n" +
+				"  c. Search for city and display some information about it.\n" +
+				"  d. Set current city as the starting point.\n" +
+				"  e. Show current city\n" + 
+				"  f. Find n closest cities to current city using gps distances.\n" +
+				"  g. Find n closest cities to current city using directed edge costs\n" +
+				"  h. Find shortest path between current and some target city\n" +
+				"  i. quit"
+				+ "\n-----Bonus Commands------\n" +
+				"  j. write GraphViz .dot file\n" +
+				"  k. write Gephi .csv files"
+				);
 	}
 	
 	public static String getInput(Scanner scn, boolean batch) {

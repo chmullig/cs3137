@@ -8,13 +8,17 @@ import java.io.*;
  *
  */
 public class MapApplication {
-	private MyGraphMap13 map;
-	private List<String> loadedFiles;
+	public MyGraphMap13 map;
+	public List<String> loadedFiles;
 	
 	
 	public MapApplication() {
 		map = new MyGraphMap13();
 		loadedFiles = new LinkedList<String>();
+	}
+	
+	public boolean hasCities() {
+		return !loadedFiles.isEmpty();
 	}
 	
 	/**
@@ -160,7 +164,16 @@ public class MapApplication {
 		return results.toString();
 	}
 	
-	public boolean hasCities() {
-		return !loadedFiles.isEmpty();
+	public void j(String filename) throws FileNotFoundException {
+		PrintStream dot = new PrintStream(filename +".dot");
+		map.makeGraphviz(dot);
 	}
+	
+	public void k(String filename) throws FileNotFoundException {
+		PrintStream nodes = new PrintStream(filename +"_nodes.csv");
+		map.makeGephiNodes(nodes);
+		PrintStream edges = new PrintStream(filename +"_edges.csv");
+		map.makeGephiEdges(edges);
+	}
+
 }

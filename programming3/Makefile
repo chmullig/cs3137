@@ -2,24 +2,32 @@ JFLAGS = -g
 JC = javac
 .SUFFIXES: .java .class
 .java.class:
-	$(JC) $(JFLAGS) $*.java
+	$(JC) $(JFLAGS) $<
 
-CLASSES = \
+SRC = \
 	BinaryHeap.java \
 	City.java \
 	Flight.java \
 	MyGraphMap13.java \
 	MapApplication.java \
+	guif13.java \
+	MapPanel.java \
 	mainf13.java
 
-default: clm2186_programming_3_cli.jar
+CLASSES = $(SRC:.java=.class)
 
-clm2186_programming_3_cli.jar: $(CLASSES:.java=.class)
-	jar cfe clm2186_programming_3_cli.jar mainf13 $(CLASSES:.java=.class) MyGraphMap13*.class
+default: clm2186_programming_3_cli.jar clm2186_programming_3_gui.jar
+
+clm2186_programming_3_cli.jar: $(CLASSES)
+	jar cfe clm2186_programming_3_cli.jar mainf13 $(SRC:.java=.class) *.class
+
+clm2186_programming_3_gui.jar: $(CLASSES)
+	jar cfe clm2186_programming_3_gui.jar guif13 $(SRC:.java=.class) *.class
 
 
-docs: $(CLASSES)
-	javadoc -private -d docs $(CLASSES)
+
+docs: $(SRC)
+	javadoc -private -d docs $(SRC)
 
 .PHONY: clean all test
 clean:
@@ -30,5 +38,11 @@ all: clean default docs
 test: default
 	java -Xmx2g -jar clm2186_programming_3_cli.jar input.txt
 
-clm2186_programming_3.tar.gz: default docs
-	tar czf clm2186_programming_3.tar.gz README.md *.java *.jar docs Makefile
+world.png: test
+	neato -Tpng world.dot -o world.png
+
+tgz: clm2186_programming_3.tar.gz
+
+clm2186_programming_3.tar.gz: default docs world.png
+	tar czf clm2186_programming_3.tar.gz README.md *.java *.jar docs Makefile world.dot world.png input.txt worldcity.txt
+

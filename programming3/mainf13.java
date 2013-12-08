@@ -40,19 +40,28 @@ public class mainf13 {
 			PrintStream dot = new PrintStream(args[0]+".dot");
 			map.makeGraphviz(dot);
 			dot.close();
+			
+			map.makeGephiEdges(new PrintStream(args[0]+"_edges.csv"));
+			map.makeGephiNodes(new PrintStream(args[0]+"_nodes.csv"));
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		
+		
 		City source = cities.get(0);
 		map.setCurrentCity(source);
-		List<City> closest = map.nByCost(99);
+		List<City> closest = map.nByCost(15);
 		
-		map.print(System.err);
 		
 		for (City city: closest) {
 			System.out.println(city);
+		}
+		
+		System.out.println("\n\nSHORTEST PATH FROM " + source +" TO " + closest.get(10));
+		List<Flight> path = map.cheapestPath(closest.get(10));
+		for (Flight flt: path) {
+			System.out.println(flt);
 		}
 		
 

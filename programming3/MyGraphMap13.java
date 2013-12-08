@@ -1,5 +1,6 @@
 import java.util.*;
 import java.lang.*;
+import java.beans.DesignMode;
 import java.io.*;
 
 /**
@@ -7,22 +8,30 @@ import java.io.*;
  *
  */
 public class MyGraphMap13 {
-	private HashMap<String, City> cities;
+	private List<City> cities;
+	private HashMap<String, City> luCities;
 	private int cityCount = 0;
 	private int flightCount = 0;
 	private City current;
-	private int lastcityid = 0;
+	private Flight[][] distances;
+	private boolean distancesCalced = false;
+	private Random rand;
 
 	public MyGraphMap13() {
-		cities = new HashMap<String, City>();
+		cities = new ArrayList<City>();
+		luCities = new HashMap<String, City>();
 		current = null;
+		rand = new Random();
+		rand.setSeed(237465);
 	}
 	
 	public MyGraphMap13(int size) {
-		cities = new HashMap<String, City>(size);
+		cities = new ArrayList<City>();
+		luCities = new HashMap<String, City>(size);
 		current = null;
+		rand = new Random();
+		rand.setSeed(237465);
 	}
-	
 	
 	public int loadFile(BufferedReader cityFileReader) {
 		int numCities = 0;
@@ -34,8 +43,8 @@ public class MyGraphMap13 {
 				String name = null;
 				String state = null;
 				String rawname = cityFileReader.readLine();
-				String latStr = cityFileReader.readLine();
 				String longStr = cityFileReader.readLine();
+				String latStr = cityFileReader.readLine();
 				if (rawname.contains(",")) {
 					fullname = rawname.trim();
 					String[] split = rawname.split(",");
@@ -57,8 +66,7 @@ public class MyGraphMap13 {
 					System.err.println(longStr);
 				}
 				
-				lastcityid++;
-				City city = new City(lastcityid, fullname, name, state, latitude, longitude);
+				City city = new City(fullname, name, state, latitude, longitude);
 				addCity(city);
 				loaded++;
 			}
@@ -67,24 +75,32 @@ public class MyGraphMap13 {
 		} catch (IOException e) {
 			System.err.println("Error, improperly formatted city file!");
 		}
-		cityCount += loaded;
 		return loaded;
 	}
 	
+	public void addCity(City city) {
+		if (!cities.contains(city)) {
+			city.setId(cities.size());
+			cities.add(city);
+			luCities.put(city.getFullname(), city);
+			cityCount++;
+			distancesCalced = false;
+		}
+	}
 	
-	
-	
+
 	public void addFlight(Flight flight) {
 		City origin = flight.getOrigin();
-		if (!cities.containsKey(origin.getFullname())) {
-			cities.put(origin.getFullname(), origin);
+		if (!luCities.containsKey(origin.getFullname())) {
+			luCities.put(origin.getFullname(), origin);
 		}
 		City dest = flight.getDestination();
-		if (!cities.containsKey(dest.getFullname())) {
-			cities.put(dest.getFullname(), dest);
+		if (!luCities.containsKey(dest.getFullname())) {
+			luCities.put(dest.getFullname(), dest);
 		}
 		origin.addOutbound(flight);
 		dest.addInbound(flight);
+		flightCount++;
 	}
 	
 	public void addFlight(City origin, City destination, int cost) {
@@ -92,39 +108,54 @@ public class MyGraphMap13 {
 		addFlight(myFlight);
 	}
 	
-	public void addCity(City city) {
-		if (!cities.containsKey(city.getFullname())) {
-			cities.put(city.getFullname(), city);
-		}
-	}
-	
-	public void addCity(String name, String state, double latitude, double longitude) {
-		lastcityid++;
-		City newCity = new City(lastcityid, name, state, latitude, longitude);
-		addCity(newCity);
-		cityCount++;
-	}
-	
 	public boolean containsCity(String name) {
-		return cities.containsKey(name);
+		return luCities.containsKey(name);
 	}
 	
 	public City findCity(String name) {
-		City city = cities.get(name);
+		City city = luCities.get(name);
 		return city;
 	}
 	
-	public ArrayList<City> getCities() {
-		Collection<City> cc= cities.values();
-		ArrayList<City> cl = new ArrayList<City>(cc);
-		return cl;
+	public City findCity(int id) {
+		return cities.get(id);
+	}
+	
+	public List<City> getCities() {
+		return cities;
+	}
+	
+	public List<City> getCitiesInState(String state) {
+		List<City> matching = new LinkedList<City>();
+		for (City city: cities) {
+			if (city.getState().equals(state))
+				matching.add(city);
+		}
+		return matching;
+	}
+	
+	public void calcDistances() {
+		distances = new Flight[cityCount][cityCount];
+		for (int i = 0; i < cityCount; i++) {
+			City origin = cities.get(i);
+			for (int j = i+1; j < cityCount; j++) {
+				City dest = cities.get(j);
+				distances[i][j] = new Flight(origin, dest);
+				distances[j][i] = new Flight(dest, origin);
+//				for (Flight out: origin.getOutbound()) {
+//					if (out.getDestination() == dest)
+//						distances[i][j] = out;		
+//				}
+//				for (Flight in: origin.getInbound()) {
+//					if (in.getOrigin() == dest)
+//						distances[j][i] = in;
+//				}
+			}
+		}
 	}
 	
 	public void addRandomFlights(int lowerN, int upperN, int lowerCost, int upperCost) {
-		List<City> cities = getCities();
-		Random rand = new Random(1674473376168722L);
-		for (City city: getCities()) {
-			Collections.shuffle(cities);
+		for (City city: cities) {
 			int nOutbound = rand.nextInt(upperN-lowerN)+lowerN;
 			for (int i = 0; i < nOutbound; i++) {
 				int cost = rand.nextInt(upperCost-lowerCost)+lowerCost;
@@ -132,7 +163,8 @@ public class MyGraphMap13 {
 					nOutbound++;
 					continue;
 				}
-				Flight flt = new Flight(city, cities.get(i), cost);
+				int destI = rand.nextInt(cityCount);
+				Flight flt = new Flight(city, cities.get(destI), cost);
 				addFlight(flt);
 			}
 		}
@@ -149,11 +181,12 @@ public class MyGraphMap13 {
 	
 	
 	public List<City> nByCost(int n) {
+		// TODO: cache dijkstra
 		if (current == null) {
 			throw new IllegalStateException("must set current city first");
 		}
 		
-		for (City city: getCities()) {
+		for (City city: cities) {
 			city.reset();
 		}
 		current.setParent(null);
@@ -169,7 +202,8 @@ public class MyGraphMap13 {
 				int alt = u.getDistance() + flight.getCost();
 				if (alt < dest.getDistance()) {
 					dest.setDistance(alt);
-					dest.setParent(current);
+					dest.setParent(u);
+					dest.setParentFlight(flight);
 					if (!dest.isVisited()) {
 						q.insert(dest);
 					}
@@ -177,12 +211,31 @@ public class MyGraphMap13 {
 			}
 		}
 		
-		ArrayList<City> cities = getCities();
-		Collections.sort(cities);
+		List<City> sortedCities = new ArrayList<City>(cities);
+		Collections.sort(sortedCities);
 		
-		return cities.subList(0, n);
+		if (n != cityCount)
+			return sortedCities.subList(0, n);
+		else
+			return sortedCities;
 	}
 	
+	public List<Flight> cheapestPath(City destination) {
+		List<Flight> shortestPath = new LinkedList<Flight>();
+		City u = destination;
+		while (u != current) {
+			shortestPath.add(u.getParentFlight());
+			u = u.getParent();
+		}
+		
+		Collections.reverse(shortestPath);
+		return shortestPath;
+	}
+	
+	public Flight getDistance(City origin, City destination) {
+		calcDistances();
+		return distances[origin.getId()][destination.getId()];
+	}
 	
 
 	public void print(PrintStream out) {
@@ -194,6 +247,29 @@ public class MyGraphMap13 {
 			out.println("}");
 		}
 	}
+	
+	public void makeGephiEdges(PrintStream out) {
+		out.println("source,target,distance,weight");
+		for (City city: getCities()) {
+			for (Flight flight: city.getOutbound()) {
+				out.print("\"" + city.getFullname() +"\",");
+				out.print("\"" + flight.getDestination().getFullname() +"\",");
+				out.print(-flight.getDistance()/1000 +",");
+				out.println((double)flight.getCost()/1000.0 +",");
+			}
+		}
+	}
+	
+	public void makeGephiNodes(PrintStream out) {
+		out.println("id,label,latitude,longitude");
+		for (City city: cities) {
+			out.print("\""+ city.getFullname() +"\",");
+			out.print("\""+ city.getFullname() +"\",");
+			out.print(city.getLatitude() +",");
+			out.println(city.getLongitude() +",");
+		}
+	}
+
 
 	public void makeGraphviz(PrintStream out) {
 		out.println("digraph G {");

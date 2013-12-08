@@ -1,0 +1,302 @@
+100
+Rajgarh, Rajasthan
+75.38
+28.63
+Mbini, Equatorial Guinea
+9.62
+1.58
+Divo, Ivory Coast
+-5.37
+5.85
+Mankulam, Sri Lanka
+80.43
+9.13
+Al Fayyum, Egypt
+30.83
+29.32
+Thoubal, Manipur
+94.02
+24.63
+Alturas, California
+-120.54
+41.48
+Gzira, Malta
+14.49
+35.9
+Arad, Bahrain
+50.62
+26.25
+Batticaloa, Sri Lanka
+81.7
+7.72
+Tucson, Arizona
+-110.96
+32.24
+Ang Mo Kio, Singapore
+103.83
+1.37
+Petlad, Gujarat
+72.8
+22.47
+Chhota Udepur, Gujarat
+74.02
+22.32
+Rocha, Uruguay
+-54.33
+-34.48
+Gudiyattam, Tamil Nadu
+78.87
+12.95
+Skiros, Greece
+24.57
+38.9
+Biloku, Guyana
+-58.55
+1.77
+Mobaye, Central African Republic
+21.18
+4.32
+Flin Flon, Manitoba
+-101.88
+54.77
+Chidambaram, Tamil Nadu
+79.7
+11.4
+Waverly, Ohio
+-83
+39.12
+Baguio City, Philippines
+120.6
+16.42
+Ngukurr, Northern Territory
+134.73
+-14.73
+Gallup, New Mexico
+-108.74
+35.52
+Pensacola, Florida
+-87.2
+30.42
+Chelan, Washington
+-120.01
+47.84
+Mavrovo, Macedonia
+20.73
+41.65
+Cherven Bryag, Bulgaria
+24.1
+43.27
+Neemuch, Madhya Pradesh
+74.52
+24.27
+Zomba, Malawi
+35.33
+-15.38
+Grand Junction, Colorado
+-108.55
+39.06
+Coimbatore, Tamil Nadu
+76.97
+11
+Guayabal, Cuba
+-77.6
+20.7
+Kornesti, Moldova
+27.98
+47.37
+Rogaska Slatina, Slovenia
+15.63
+46.25
+Murzuq, Libya
+13.92
+25.92
+Tangail, Bangladesh
+89.92
+24.25
+Armenia, El Salvador
+-89.48
+13.73
+Ohonua, Tonga
+-174.95
+-21.33
+Jilib, Somalia
+42.77
+0.48
+Red Cliffs, Victoria
+142.18
+-34.32
+Onitsha, Nigeria
+6.78
+6.17
+Tungshih, Taiwan
+120.82
+24.25
+Bolzano, Italy
+11.37
+46.52
+Tiruchchirappalli, Tamil Nadu
+78.68
+10.82
+Astoria, Oregon
+-123.81
+46.19
+Cunnamulla, Queensland
+145.68
+-28.07
+Gabrovo, Bulgaria
+25.32
+42.87
+Jambi, Indonesia
+103.62
+-1.6
+Duba, Saudi Arabia
+35.67
+27.35
+Timisoara, Romania
+21.22
+45.75
+Masan, Korea
+128.72
+35.23
+Bassikounou, Mauritania
+-5.95
+15.87
+Mariupol, Ukraine
+37.55
+47.1
+Kunlong, Burma
+98.65
+23.42
+Kegalla, Sri Lanka
+80.35
+7.25
+Manneville, Haiti
+-72.05
+18.65
+Mol, Belgium
+5.1
+51.18
+Muncie, Indiana
+-85.38
+40.2
+Ogre, Latvia
+24.6
+56.82
+Kotzebue, Alaska
+-162.78
+66.93
+Biloxi, Mississippi
+-88.88
+30.4
+Ciego de Avila, Cuba
+-78.75
+21.83
+Krasnoperekopsk, Ukraine
+33.78
+45.95
+Bissora, Guinea-Bissau
+-15.45
+12.22
+Sallyan, Nepal
+82.17
+28.37
+Alexandria, Louisiana
+-92.44
+31.32
+Belmopan, Belize
+-88.77
+17.25
+Al Mukalla, Yemen
+49.13
+14.53
+Bambari, Central African Republic
+20.67
+5.75
+Arvayheer, Mongolia
+102.77
+46.25
+Chinde, Mozambique
+36.45
+-18.57
+Paranam, Suriname
+-55.1
+5.62
+Reutte, Austria
+10.72
+47.48
+Al Ahmadi, Kuwait
+48.07
+29.08
+Tchien, Liberia
+-8.13
+6.07
+Baharagora, Bihar
+86.72
+22.28
+Adana, Turkey
+35.3
+37.02
+Dzhirgatal, Tajikistan
+71.2
+39.22
+Kittanning, Pennsylvania
+-79.52
+40.82
+Simferopol, Ukraine
+34.1
+44.95
+Cangamba, Angola
+19.87
+-13.68
+Negombo, Sri Lanka
+79.83
+7.22
+Tunduru, Tanzania
+37.35
+-11.12
+Carmelo, Uruguay
+-58.28
+-33.98
+Birak, Libya
+14.28
+27.53
+Ahvaz, Iran
+48.7
+31.32
+Magburaka, Sierra Leone
+-11.95
+8.72
+Skopje, Macedonia
+21.49
+42.04
+Fukushima, Japan
+138.93
+36.25
+Marshall, Liberia
+-10.38
+6.15
+Umlazi, South Africa
+30.88
+-29.97
+Al Minya, Egypt
+30.75
+28.1
+Guba, Ethiopia
+35.28
+11.27
+Basse Santa Su, Gambia
+-14.24
+13.32
+Grants Pass, Oregon
+-123.33
+42.44
+Pilibhit, Uttar Pradesh
+79.8
+28.63
+Karanpur, Rajasthan
+73.45
+29.83
+Brewarrina, New South Wales
+146.87
+-29.95
+

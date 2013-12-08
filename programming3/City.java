@@ -18,6 +18,11 @@ public class City implements Comparable<City> {
 	private int distance;
 	private boolean visited;
 	private City parent;
+	private Flight parentFlight;
+	
+	public City(String name, String state, double latitude, double longitude) {
+		this(-1, name, state, latitude, longitude);
+	}
 	
 	public City(int id, String name, String state, double latitude, double longitude) {
 		this.id = id;
@@ -28,6 +33,11 @@ public class City implements Comparable<City> {
 		this.fullname = name + ", " + state;
 		initialize();
 	}
+	
+	public City(String fullname, String name, String state, double latitude, double longitude) {
+		this(-1, fullname, name, state, latitude, longitude);
+	}
+	
 	
 	public City(int id, String fullname, String name, String state, double latitude, double longitude) {
 		this.id = id;
@@ -57,6 +67,7 @@ public class City implements Comparable<City> {
 		distance = Integer.MAX_VALUE;
 		visited = false;
 		parent = null;
+		parentFlight = null;
 	}
 	
 	public void setName(String full) {
@@ -154,13 +165,21 @@ public class City implements Comparable<City> {
 		this.parent = parent;
 	}
 
+	public Flight getParentFlight() {
+		return parentFlight;
+	}
+
+	public void setParentFlight(Flight parentFlight) {
+		this.parentFlight = parentFlight;
+	}
+
 	public String getName() {
 		return name;
 	}	
 
 	
 	public String toString() {
-		return id + ": " + fullname + " (" + latitude +", " + longitude +")";
+		return "{" + id + ": " + fullname + " (" + latitude +", " + longitude +") In: " + inbound.size() + " Out: " + outbound.size() + "}";
 	}
 
 	@Override

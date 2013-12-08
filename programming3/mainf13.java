@@ -92,6 +92,8 @@ public class mainf13 {
 					System.out.print("Gephi output base filename (do not enter extension): ");
 					String filename = getInput(scn, batch);
 					app.k(filename);
+				} else if (command.equals("z")) {
+					app.map.print(System.out);
 					
 				} else {
 					System.out.println("Unknown command!");

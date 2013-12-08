@@ -5,6 +5,10 @@ import java.io.*;
 /**
  * @author Chris Mulligan <clm2186@columbia.edu>
  *
+ * City. Has 3 names, the city name, the state name, and the full name. Also
+ * contains lists of incoming and outgoing flights. Keeps track of data for
+ * DJikstra's algorithm.
+ *
  */
 public class City implements Comparable<City> {
 	private String name;
@@ -63,6 +67,10 @@ public class City implements Comparable<City> {
 		reset();
 	}
 	
+	/**
+	 * Reset the temporary info (distance, visited,  parent, parentFlight) for
+	 * {@link MyGraphMap13#dijkstra(DistanceMetric, int)}
+	 */
 	public void reset() {
 		distance = Integer.MAX_VALUE;
 		visited = false;
@@ -178,10 +186,20 @@ public class City implements Comparable<City> {
 	}	
 
 	
+	/** Include in and out count.
+	 * 
+	 * {NAME. In: # Out: #}
+	 * 
+	 * @see java.lang.Object#toString()
+	 */
 	public String toString() {
-		return "{" + id + ": " + fullname + " (" + latitude +", " + longitude +") In: " + inbound.size() + " Out: " + outbound.size() + "}";
+		return "{" + id + ": " + fullname + ". In: " + inbound.size() + " Out: " + outbound.size() + "}";
 	}
 
+	/** This compares based on DISTANCE! This is semi-nonsensical in other contexts
+	 * but whatever.
+	 * @see java.lang.Comparable#compareTo(java.lang.Object)
+	 */
 	@Override
 	public int compareTo(City other) {
 		return this.distance - other.getDistance();

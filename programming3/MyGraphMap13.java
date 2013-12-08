@@ -370,11 +370,16 @@ public class MyGraphMap13 {
 
 	
 
+	/**
+	 * Print it out in a reasonably appealing manner.
+	 * 
+	 * @param out
+	 */
 	public void print(PrintStream out) {
 		for (City city: getCities()) {
-			out.print(city.toString() + " -> {");
+			out.print(city.toString() + "  ->  {");
 			for (Flight flight: city.getOutbound()) {
-				out.print(flight.getDestination().getFullname() +" $" + flight.getCost() +"; ");
+				out.print(flight.getDestination().getFullname() +" $" + flight.getCost() +"/" + Math.round(flight.getDistance()) + "km;  ");
 			}
 			out.println("}");
 		}

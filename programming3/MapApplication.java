@@ -81,7 +81,17 @@ public class MapApplication {
 	 */
 	public String c(int id) {
 		City match = map.findCity(id);
-		return match.toString();
+		StringBuffer results = new StringBuffer();
+		results.append(match.toString());
+		results.append("\n");
+		for (Flight flight: match.getInbound()) {
+			results.append("\tin<- " + flight.getOrigin().getFullname() +"  $" + flight.getCost() +"   " + Math.round(flight.getDistance()) + "km\n");
+		}
+		results.append("\n");
+		for (Flight flight: match.getOutbound()) {
+			results.append("\tout-> " + flight.getDestination().getFullname() +"  $" + flight.getCost() +"   " + Math.round(flight.getDistance()) + "km\n");
+		}
+		return results.toString();
 	}
 	
 
@@ -103,7 +113,7 @@ public class MapApplication {
 	public String e() {
 		City current = map.getCurrentCity();
 		if (current != null)
-			return current.toString();
+			return c(current.getId());
 		else
 			return "none";
 	}
@@ -126,7 +136,7 @@ public class MapApplication {
 			results.append(city.toString() + " " + city.getDistance() + "km");
 			
 			City u = city;
-			results.append(" via ");
+			results.append("\t via ");
 			List<String> path = new LinkedList<String>();
 			while (u != null) {
 				path.add(u.getFullname());
@@ -163,7 +173,7 @@ public class MapApplication {
 			results.append(city.toString() + " $" + city.getDistance());
 			
 			City u = city;
-			results.append(" via ");
+			results.append("\t via ");
 			List<String> path = new LinkedList<String>();
 			while (u != null) {
 				path.add(u.getFullname());

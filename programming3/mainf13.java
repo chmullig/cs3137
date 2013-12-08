@@ -5,6 +5,7 @@ import java.io.*;
 /**
  * @author Chris Mulligan <clm2186@columbia.edu>
  *
+ *Command Line Interface interface to the MyGraphMap13 application. Uses
  */
 public class mainf13 {
 
@@ -21,7 +22,7 @@ public class mainf13 {
 		Scanner scn;
 		if (args.length == 1) {
 			scn = new Scanner(new File(args[0]));
-			System.out.println("entering batch mode");
+			System.out.println("Entering batch mode...");
 			batch = true;
 		} else {
 			scn = new Scanner(System.in);
@@ -121,7 +122,8 @@ public class mainf13 {
 				"  i. quit"
 				+ "\n-----Bonus Commands------\n" +
 				"  j. write GraphViz .dot file\n" +
-				"  k. write Gephi .csv files"
+				"  k. write Gephi .csv files\n" +
+				"  z. print out the adjacency list\n"
 				);
 	}
 	

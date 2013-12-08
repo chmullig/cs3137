@@ -86,11 +86,11 @@ public class MapApplication {
 			results.append(match.toString());
 			results.append("\n");
 			for (Flight flight: match.getInbound()) {
-				results.append("\tin<- " + flight.getOrigin().getFullname() +"  $" + flight.getCost() +"   " + Math.round(flight.getDistance()) + "km\n");
+				results.append(String.format("   in<- %-36s  $%6s  %6skm\n", flight.getOrigin().getFullname(), flight.getCost(), Math.round(flight.getDistance())));
 			}
 			results.append("\n");
 			for (Flight flight: match.getOutbound()) {
-				results.append("\tout-> " + flight.getDestination().getFullname() +"  $" + flight.getCost() +"   " + Math.round(flight.getDistance()) + "km\n");
+				results.append(String.format("   out-> %-35s  $%6s  %6skm\n", flight.getOrigin().getFullname(), flight.getCost(), Math.round(flight.getDistance())));
 			}
 		}
 		return results.toString();
@@ -119,11 +119,11 @@ public class MapApplication {
 			results.append(current.toString());
 			results.append("\n");
 			for (Flight flight: current.getInbound()) {
-			        results.append("\tin<- " + flight.getOrigin().getFullname() +"  $" + flight.getCost() +"   " + Math.round(flight.getDistance()) + "km\n");
+					results.append(String.format("   in<- %-36s  $%6s  %6skm\n", flight.getOrigin().getFullname(), flight.getCost(), Math.round(flight.getDistance())));
 			}
 			results.append("\n");
 			for (Flight flight: current.getOutbound()) {
-			        results.append("\tout-> " + flight.getDestination().getFullname() +"  $" + flight.getCost() +"   " + Math.round(flight.getDistance()) + "km\n");	
+				results.append(String.format("   out-> %-35s  $%6s  %6skm\n", flight.getOrigin().getFullname(), flight.getCost(), Math.round(flight.getDistance())));
 			}
 			return results.toString();
 		} else {
@@ -146,7 +146,7 @@ public class MapApplication {
 		
 		StringBuffer results = new StringBuffer();
 		for (City city: closestN) {
-			results.append(city.toString() + " " + city.getDistance() + "km");
+			results.append(String.format("%-55s %6skm", city.toString(), city.getDistance()));
 			
 			City u = city;
 			results.append("\t via ");
@@ -183,7 +183,7 @@ public class MapApplication {
 		
 		StringBuffer results = new StringBuffer();
 		for (City city: closestN) {
-			results.append(city.toString() + " $" + city.getDistance());
+			results.append(String.format("%-55s $%6s", city.toString(), city.getDistance()));;
 			
 			City u = city;
 			results.append("\t via ");
@@ -228,9 +228,7 @@ public class MapApplication {
 		for (Flight flight: path) {
 			totalCost += flight.getCost();
 			totalDistance += flight.getDistance();
-			results.append(flight.toString());
-			results.append("  total: $" + totalCost + " / " + totalDistance +"km");
-			results.append("\n");
+			results.append(String.format("   %-75s  total: $%6s    %6skm\n", flight, totalCost, totalDistance));
 		}
 		return results.toString();
 	}

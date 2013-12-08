@@ -1,4 +1,5 @@
 import java.util.*;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.lang.*;
 import java.beans.DesignMode;
 import java.io.*;
@@ -184,7 +185,7 @@ public class MyGraphMap13 {
 	 * @return
 	 */
 	public List<City> getCities() {
-		return cities;
+		return new CopyOnWriteArrayList<City>(cities);
 	}
 	
 	/**
@@ -293,6 +294,8 @@ public class MyGraphMap13 {
 	 * cities' distance, and parents to correct based on the DistanceMetric
 	 * passed in. Thus it helps solve the {@link #cheapestPath(City)} problem. 
 	 * 
+	 * Returns null if n=0, to avoid copying/sorting unnecessarily.
+	 * 
 	 * @param metric
 	 * @param n
 	 * @return
@@ -333,10 +336,13 @@ public class MyGraphMap13 {
 			}
 		}
 		
-		List<City> sortedCities = new ArrayList<City>(cities);
-		Collections.sort(sortedCities);
-		
-		return sortedCities.subList(1, n+1);
+		if (n > 0) {
+			List<City> sortedCities = new ArrayList<City>(cities);
+			Collections.sort(sortedCities);
+			return sortedCities.subList(1, n+1);
+		} else {
+			return null;
+		}
 	}
 	
 	/**
@@ -352,7 +358,7 @@ public class MyGraphMap13 {
 	public List<Flight> cheapestPath(City destination) {
 		List<Flight> shortestPath = new LinkedList<Flight>();
 		City u = destination;
-		dijkstra(DistanceMetric.COST, 1);
+		dijkstra(DistanceMetric.COST, 0);
 		if (u.getDistance() == Integer.MAX_VALUE) {
 			return null;
 		}
@@ -374,7 +380,7 @@ public class MyGraphMap13 {
 	public List<Flight> shortestPath(City destination) {
 		List<Flight> shortestPath = new LinkedList<Flight>();
 		City u = destination;
-		dijkstra(DistanceMetric.DISTANCE, 1);
+		dijkstra(DistanceMetric.DISTANCE, 0);
 		while (u != current) {
 			shortestPath.add(u.getParentFlight());
 			u = u.getParent();
@@ -387,13 +393,17 @@ public class MyGraphMap13 {
 	
 
 	/**
-	 * Print it out in a reasonably appealing manner.
+	 * Print out the adjacency list in a reasonably readable manner. Each city
+	 * gets a line, and prints out the list of outgoing flights with cost and
+	 * distance. 
+	 * 
+	 * {City Name. In Out}   ->  {Destination $/km; Destination $/km;...}
 	 * 
 	 * @param out
 	 */
 	public void print(PrintStream out) {
 		for (City city: getCities()) {
-			out.print(city.toString() + "  ->  {");
+			out.print(String.format("%-55s", city.toString()) + "  ->  {");
 			for (Flight flight: city.getOutbound()) {
 				out.print(flight.getDestination().getFullname() +" $" + flight.getCost() +"/" + Math.round(flight.getDistance()) + "km;  ");
 			}
@@ -401,6 +411,11 @@ public class MyGraphMap13 {
 		}
 	}
 	
+	/**
+	 * Printout a gephi CSV of the edges, source, target, distance, and cost=weight.
+	 * 
+	 * @param out
+	 */
 	public void makeGephiEdges(PrintStream out) {
 		out.println("source,target,distance,weight");
 		for (City city: getCities()) {
@@ -413,6 +428,11 @@ public class MyGraphMap13 {
 		}
 	}
 	
+	/**
+	 * Print out a gephi CSV of the nodes, including latitude and longitude!
+	 * 
+	 * @param out
+	 */
 	public void makeGephiNodes(PrintStream out) {
 		out.println("id,label,latitude,longitude");
 		for (City city: cities) {
@@ -424,6 +444,11 @@ public class MyGraphMap13 {
 	}
 
 
+	/**
+	 * Print out a graphviz .dot file of all the cities and edges. It includes
+	 * the lat/long of the city as position, but does not include edge weight.
+	 * @param out
+	 */
 	public void makeGraphviz(PrintStream out) {
 		out.println("digraph G {\n    graph [outputorder=edgesfirst]\n" +
 					"edge [penwidth=1,color=\"#000000FF\"]\n" +

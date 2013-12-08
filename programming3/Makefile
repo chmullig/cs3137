@@ -41,7 +41,10 @@ test: default
 world.png: test
 	neato -Tpng world.dot -o world.png
 
-tgz: clm2186_programming_3.tar.gz
+README.html: README.md
+	markdown README.md > README.html
 
-clm2186_programming_3.tar.gz: default docs world.png
-	tar czf clm2186_programming_3.tar.gz README.md *.java *.jar docs Makefile world.dot world.png input.txt worldcity.txt worldcities.txt
+clm2186_programming_3.tar.gz: default docs world.png README.html
+	tar czf clm2186_programming_3.tar.gz README.md README.html *.java *.jar docs Makefile world.dot world.png input.txt worldcity.txt worldcities.txt
+
+tgz: clm2186_programming_3.tar.gz

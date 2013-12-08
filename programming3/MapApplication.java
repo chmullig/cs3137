@@ -159,4 +159,8 @@ public class MapApplication {
 		}
 		return results.toString();
 	}
+	
+	public boolean hasCities() {
+		return !loadedFiles.isEmpty();
+	}
 }

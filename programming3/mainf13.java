@@ -16,43 +16,34 @@ public class mainf13 {
 		
 		MapApplication app = new MapApplication();
 
-		try {
-			String cityFileName = args[0];
-			app.a(cityFileName, false);
-		} catch (ArrayIndexOutOfBoundsException e) {
-			System.err.println("Please specify a city file!");
-			System.exit(1);
-		} catch (FileNotFoundException e) {
-			System.err.println("Please specify a city file!");
-			System.exit(1);
+		
+		boolean batch = false;
+		Scanner scn;
+		if (args.length == 1) {
+			scn = new Scanner(new File(args[0]));
+			System.out.println("entering batch mode");
+			batch = true;
+		} else {
+			scn = new Scanner(System.in);
 		}
 		
-		InputStream source = null;
-		if (args.length == 3) {
-			try {
-				source = new FileInputStream(args[1]);
-			} catch (FileNotFoundException e) {
-				System.err.println("In batch mode, pelase specify a valid command file!");
-				System.exit(1);
-			}
-		} else {
-			source = System.in;
-		}
-		Scanner scn = new Scanner(source);
 		printHelp();
 		while (true) {
 			try {
-				System.out.print("Command? ");
-				String command = scn.nextLine().trim().toLowerCase();
+				System.out.print("Command: ");
+
+				String command = getInput(scn, batch);
 				if (command.equals("a")) {
-					System.out.print("Would you like to reset the database? ");
-					String resetCommand = scn.nextLine().trim().toLowerCase();
 					boolean reset = false;
-					if (resetCommand.startsWith("y") || resetCommand.equals("true")) {
-						reset = true;
+					if (app.hasCities()) {
+						System.out.print("Would you like to reset the database? ");
+						String resetCommand = getInput(scn, batch).toLowerCase();
+						if (resetCommand.startsWith("y") || resetCommand.equals("true")) {
+							reset = true;
+						}
 					}
 					System.out.print("What file would you like to load? ");
-					String filename = scn.nextLine().trim();
+					String filename = getInput(scn, batch);
 					try {
 						System.out.println("Loaded " + app.a(filename, reset));
 					} catch (FileNotFoundException e) {
@@ -60,33 +51,33 @@ public class mainf13 {
 					}
 				} else if (command.equals("b")) {
 					System.out.print("State to search for: ");
-					String state = scn.nextLine().trim();
+					String state = getInput(scn, batch);
 					System.out.println(app.b(state));
 				} else if (command.equals("c")) {
 					System.out.print("CityID to search for: ");
-					String cityStr = scn.nextLine().trim();
+					String cityStr = getInput(scn, batch);
 					Integer cityID = Integer.parseInt(cityStr);
 					System.out.println(app.c(cityID));
 				} else if (command.equals("d")) {
 					System.out.print("Set current cityID to: ");
-					String cityStr = scn.nextLine().trim();
+					String cityStr = getInput(scn, batch);
 					Integer cityID = Integer.parseInt(cityStr);
 					app.d(cityID);
 				} else if (command.equals("e")) {
 					System.out.println(app.e());
 				} else if (command.equals("f")) {
 					System.out.print("closest by distance: n ?= ");
-					String nStr = scn.nextLine().trim();
+					String nStr = getInput(scn, batch);
 					int n = Integer.parseInt(nStr);
 					System.out.println(app.f(n));
 				} else if (command.equals("g")) {
 					System.out.print("cheapest route: n ?= ");
-					String nStr = scn.nextLine().trim();
+					String nStr = getInput(scn, batch);
 					int n = Integer.parseInt(nStr);
 					System.out.println(app.g(n));
 				} else if (command.equals("h")) {
 					System.out.print("Target CityID: ");
-					String cityStr = scn.nextLine().trim();
+					String cityStr = getInput(scn, batch);
 					Integer targetID = Integer.parseInt(cityStr);
 					System.out.println(app.h(targetID));
 				} else if (command.equals("i")) {
@@ -95,6 +86,8 @@ public class mainf13 {
 					System.out.println("Unknown command!");
 					printHelp();
 				}
+			} catch (java.util.NoSuchElementException e) {
+				break;
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
@@ -114,6 +107,14 @@ public class mainf13 {
 				"g. Find n closest cities to current city using directed edge costs\n" +
 				"h. Find shortest path between current and some target city\n" +
 				"i. quit");
+	}
+	
+	public static String getInput(Scanner scn, boolean batch) {
+		String input = scn.nextLine();
+		input = input.trim();
+		if (batch)
+			System.out.println(input);
+		return input;
 	}
 
 }

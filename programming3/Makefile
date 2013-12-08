@@ -28,7 +28,7 @@ clean:
 all: clean default docs
 
 test: default
-	java -Xmx2g -jar clm2186_programming_3_cli.jar worldcities.txt
+	java -Xmx2g -jar clm2186_programming_3_cli.jar input.txt
 
 clm2186_programming_3.tar.gz: default docs
 	tar czf clm2186_programming_3.tar.gz README.md *.java *.jar docs Makefile

@@ -50,16 +50,31 @@ public class mainf13 {
 		
 		
 		City source = cities.get(0);
+		City target = cities.get(11);
+		for (Flight out: source.getOutbound()) {
+			System.out.println("\t" + out);
+		}
 		map.setCurrentCity(source);
 		List<City> closest = map.nByCost(15);
 		
+//		System.out.println("\n\nn by cost");
+//		for (City city: closest) {
+//			System.out.println(city);
+//		}
 		
-		for (City city: closest) {
-			System.out.println(city);
+		System.out.println("\n\nSHORTEST COST PATH FROM " + source +" TO " + target);
+		List<Flight> path = map.cheapestPath(target);
+		for (Flight flt: path) {
+			System.out.println(flt);
 		}
 		
-		System.out.println("\n\nSHORTEST PATH FROM " + source +" TO " + closest.get(10));
-		List<Flight> path = map.cheapestPath(closest.get(10));
+//		System.out.println("\n\nn by distance");
+//		closest = map.nByDistance(15);
+//		for (City city: closest) {
+//			System.out.println(city);
+//		}
+		System.out.println("\n\nSHORTEST DISTANCE PATH FROM " + source +" TO " + target);
+		path = map.shortestPath(target);
 		for (Flight flt: path) {
 			System.out.println(flt);
 		}

@@ -5,9 +5,11 @@ JC = javac
 	$(JC) $(JFLAGS) $*.java
 
 CLASSES = \
+	BinaryHeap.java \
 	City.java \
 	Flight.java \
 	MyGraphMap13.java \
+	MapApplication.java \
 	mainf13.java
 
 default: clm2186_programming_3_cli.jar

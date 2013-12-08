@@ -13,9 +13,10 @@ public class MyGraphMap13 {
 	private int cityCount = 0;
 	private int flightCount = 0;
 	private City current;
-	private Flight[][] distances;
-	private boolean distancesCalced = false;
 	private Random rand;
+	public enum DistanceMetric {
+		COST, DISTANCE;
+	}
 
 	public MyGraphMap13() {
 		cities = new ArrayList<City>();
@@ -84,7 +85,6 @@ public class MyGraphMap13 {
 			cities.add(city);
 			luCities.put(city.getFullname(), city);
 			cityCount++;
-			distancesCalced = false;
 		}
 	}
 	
@@ -125,6 +125,15 @@ public class MyGraphMap13 {
 		return cities;
 	}
 	
+	public List<String> listStates() {
+		List<String> states = new LinkedList<String>();
+		for (City city: cities) {
+			if (!states.contains(city.getState()))
+				states.add(city.getState());
+		}
+		return states;
+	}
+	
 	public List<City> getCitiesInState(String state) {
 		List<City> matching = new LinkedList<City>();
 		for (City city: cities) {
@@ -132,26 +141,6 @@ public class MyGraphMap13 {
 				matching.add(city);
 		}
 		return matching;
-	}
-	
-	public void calcDistances() {
-		distances = new Flight[cityCount][cityCount];
-		for (int i = 0; i < cityCount; i++) {
-			City origin = cities.get(i);
-			for (int j = i+1; j < cityCount; j++) {
-				City dest = cities.get(j);
-				distances[i][j] = new Flight(origin, dest);
-				distances[j][i] = new Flight(dest, origin);
-//				for (Flight out: origin.getOutbound()) {
-//					if (out.getDestination() == dest)
-//						distances[i][j] = out;		
-//				}
-//				for (Flight in: origin.getInbound()) {
-//					if (in.getOrigin() == dest)
-//						distances[j][i] = in;
-//				}
-			}
-		}
 	}
 	
 	public void addRandomFlights(int lowerN, int upperN, int lowerCost, int upperCost) {
@@ -180,8 +169,20 @@ public class MyGraphMap13 {
 	}
 	
 	
+	public int getCityCount() {
+		return cityCount;
+	}
+	
+	
 	public List<City> nByCost(int n) {
-		// TODO: cache dijkstra
+		return dijkstra(DistanceMetric.COST, n);
+	}
+	
+	public List<City> nByDistance(int n) {
+		return dijkstra(DistanceMetric.DISTANCE, n);
+	}
+	
+	private List<City> dijkstra(DistanceMetric metric, int n) {
 		if (current == null) {
 			throw new IllegalStateException("must set current city first");
 		}
@@ -199,7 +200,13 @@ public class MyGraphMap13 {
 			u.setVisited(true);
 			for (Flight flight: u.getOutbound()) {
 				City dest = flight.getDestination();
-				int alt = u.getDistance() + flight.getCost();
+
+				int alt = Integer.MAX_VALUE;
+				if (metric == DistanceMetric.COST) {
+					alt = u.getDistance() + flight.getCost();
+				} else if (metric == DistanceMetric.DISTANCE) {
+					alt = (int) (u.getDistance() + flight.getDistance());
+				}
 				if (alt < dest.getDistance()) {
 					dest.setDistance(alt);
 					dest.setParent(u);
@@ -223,6 +230,7 @@ public class MyGraphMap13 {
 	public List<Flight> cheapestPath(City destination) {
 		List<Flight> shortestPath = new LinkedList<Flight>();
 		City u = destination;
+		dijkstra(DistanceMetric.COST, 1);
 		while (u != current) {
 			shortestPath.add(u.getParentFlight());
 			u = u.getParent();
@@ -232,10 +240,19 @@ public class MyGraphMap13 {
 		return shortestPath;
 	}
 	
-	public Flight getDistance(City origin, City destination) {
-		calcDistances();
-		return distances[origin.getId()][destination.getId()];
+	public List<Flight> shortestPath(City destination) {
+		List<Flight> shortestPath = new LinkedList<Flight>();
+		City u = destination;
+		dijkstra(DistanceMetric.DISTANCE, 1);
+		while (u != current) {
+			shortestPath.add(u.getParentFlight());
+			u = u.getParent();
+		}
+		
+		Collections.reverse(shortestPath);
+		return shortestPath;
 	}
+
 	
 
 	public void print(PrintStream out) {

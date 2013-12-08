@@ -152,6 +152,22 @@ public class MyGraphMap13 {
 	}
 	
 	/**
+	 * Return the city based on full name.
+	 * @param name
+	 * @return
+	 */
+	public List<City> findCities(String name) {
+		List<City> matches = new LinkedList<City>();
+		name = name.toLowerCase().trim();
+		for (City city: cities) {
+			if (city.getName().toLowerCase().equals(name)) {
+				matches.add(city);
+			}
+		}
+		return matches;
+	}
+	
+	/**
 	 * Return a city by its unique ID number.
 	 * 
 	 * @param id

@@ -54,10 +54,9 @@ public class mainf13 {
 					String state = getInput(scn, batch);
 					System.out.println(app.b(state));
 				} else if (command.equals("c")) {
-					System.out.print("CityID to search for: ");
+					System.out.print("City Name to search for: ");
 					String cityStr = getInput(scn, batch);
-					Integer cityID = Integer.parseInt(cityStr);
-					System.out.println(app.c(cityID));
+					System.out.println(app.c(cityStr));
 				} else if (command.equals("d")) {
 					System.out.print("Set current cityID to: ");
 					String cityStr = getInput(scn, batch);

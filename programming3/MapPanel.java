@@ -182,11 +182,10 @@ public class MapPanel extends JPanel {
 	}
 	public void c() {
 		String cityText = JOptionPane.showInputDialog(null,
-				  "Which city ID do you want?",
-				  "CityID",
+				  "What city do you want to search for?",
+				  "City Search",
 				  JOptionPane.QUESTION_MESSAGE);
-		int cityID = Integer.parseInt(cityText);
-		outputArea.setText(app.c(cityID));
+		outputArea.setText(app.c(cityText));
 	}
 	public void d() {
 		String cityText = JOptionPane.showInputDialog(null,

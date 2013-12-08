@@ -79,17 +79,19 @@ public class MapApplication {
 	 * @param id city id number
 	 * @return the city's toString()
 	 */
-	public String c(int id) {
-		City match = map.findCity(id);
+	public String c(String qry) {
+		List<City> matches = map.findCities(qry);
 		StringBuffer results = new StringBuffer();
-		results.append(match.toString());
-		results.append("\n");
-		for (Flight flight: match.getInbound()) {
-			results.append("\tin<- " + flight.getOrigin().getFullname() +"  $" + flight.getCost() +"   " + Math.round(flight.getDistance()) + "km\n");
-		}
-		results.append("\n");
-		for (Flight flight: match.getOutbound()) {
-			results.append("\tout-> " + flight.getDestination().getFullname() +"  $" + flight.getCost() +"   " + Math.round(flight.getDistance()) + "km\n");
+		for (City match: matches) {
+			results.append(match.toString());
+			results.append("\n");
+			for (Flight flight: match.getInbound()) {
+				results.append("\tin<- " + flight.getOrigin().getFullname() +"  $" + flight.getCost() +"   " + Math.round(flight.getDistance()) + "km\n");
+			}
+			results.append("\n");
+			for (Flight flight: match.getOutbound()) {
+				results.append("\tout-> " + flight.getDestination().getFullname() +"  $" + flight.getCost() +"   " + Math.round(flight.getDistance()) + "km\n");
+			}
 		}
 		return results.toString();
 	}
@@ -112,10 +114,21 @@ public class MapApplication {
 	 */
 	public String e() {
 		City current = map.getCurrentCity();
-		if (current != null)
-			return c(current.getId());
-		else
+		if (current != null) {
+			StringBuffer results = new StringBuffer();
+			results.append(current.toString());
+			results.append("\n");
+			for (Flight flight: current.getInbound()) {
+			        results.append("\tin<- " + flight.getOrigin().getFullname() +"  $" + flight.getCost() +"   " + Math.round(flight.getDistance()) + "km\n");
+			}
+			results.append("\n");
+			for (Flight flight: current.getOutbound()) {
+			        results.append("\tout-> " + flight.getDestination().getFullname() +"  $" + flight.getCost() +"   " + Math.round(flight.getDistance()) + "km\n");	
+			}
+			return results.toString();
+		} else {
 			return "none";
+		}
 	}
 	
 	/**
@@ -207,9 +220,16 @@ public class MapApplication {
 		City target = map.findCity(targetID);
 		List<Flight> path = map.cheapestPath(target);
 		
+		int totalCost = 0;
+		int totalDistance = 0;
+		
+		
 		StringBuffer results = new StringBuffer();
 		for (Flight flight: path) {
+			totalCost += flight.getCost();
+			totalDistance += flight.getDistance();
 			results.append(flight.toString());
+			results.append("  total: $" + totalCost + " / " + totalDistance +"km");
 			results.append("\n");
 		}
 		return results.toString();

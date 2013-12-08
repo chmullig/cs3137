@@ -79,8 +79,30 @@ public class MapPanel extends JPanel {
 		}
 		
 		commandPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
-		add(commandPanel, BorderLayout.EAST);
+		add(commandPanel, BorderLayout.WEST);
 		
+		
+		//Center output window
+		JPanel midPanel = new JPanel();
+		midPanel.setLayout(new BoxLayout(midPanel, BoxLayout.Y_AXIS));
+		
+		midPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
+		add(midPanel, BorderLayout.CENTER);
+		currentCity = new JLabel("Current City: none");
+		currentCity.setAlignmentX(JLabel.LEFT_ALIGNMENT);
+		currentCity.setHorizontalAlignment(SwingConstants.LEFT);
+		midPanel.add(currentCity);
+
+		JLabel outputLabel = new JLabel("Output:");
+		outputLabel.setAlignmentX(JLabel.LEFT_ALIGNMENT);
+		outputLabel.setHorizontalAlignment(SwingConstants.LEFT);
+		midPanel.add(outputLabel);
+
+		outputArea = new JTextArea(30, 60);
+		outputArea.setEditable(false);
+		JScrollPane sp = new JScrollPane(outputArea);
+		sp.setAlignmentX(JLabel.LEFT_ALIGNMENT);
+		midPanel.add(sp);
 		
 		
 		
@@ -90,9 +112,9 @@ public class MapPanel extends JPanel {
 		status = new JLabel(" ");
 		bottom.add(status);
         add(bottom, BorderLayout.SOUTH);
-
-		
 	}
+	
+	
 	
 	protected void setAllButtons(boolean enabled) {
 		for (JButton b: buttons) 
@@ -109,6 +131,7 @@ public class MapPanel extends JPanel {
 		super.paintComponent(page);
 		
 		headerStatus.setText("Files Loaded: " + app.loadedFiles.toString());
+		currentCity.setText("Current City: " + app.e());
 	}
 	
 	public void a() {
@@ -128,7 +151,7 @@ public class MapPanel extends JPanel {
 			status.setText("Loading " + file.getName());
 			status.repaint();
 			try {
-				app.a(file.getName(), true);
+				app.a(file.getName(), false);
 				status.setText("Loaded!");
 			} catch (FileNotFoundException e) {
 				status.setText("Error loading!");
@@ -139,29 +162,58 @@ public class MapPanel extends JPanel {
 		}
 	}
 	public void b() {
-		
+		String state = JOptionPane.showInputDialog(null,
+				  "What state do you want to search for?",
+				  "State",
+				  JOptionPane.QUESTION_MESSAGE);
+		outputArea.setText(app.b(state));
 	}
 	public void c() {
-	
+		String cityText = JOptionPane.showInputDialog(null,
+				  "Which city ID do you want?",
+				  "CityID",
+				  JOptionPane.QUESTION_MESSAGE);
+		int cityID = Integer.parseInt(cityText);
+		outputArea.setText(app.c(cityID));
 	}
 	public void d() {
-	
+		String cityText = JOptionPane.showInputDialog(null,
+				  "Which city ID do you want?",
+				  "CityID",
+				  JOptionPane.QUESTION_MESSAGE);
+		int cityID = Integer.parseInt(cityText);
+		app.d(cityID);
 	}
 
 	public void e() {
-		
+		outputArea.setText(app.e());
 	}
 
 	public void f() {
-		
+		String nText = JOptionPane.showInputDialog(null,
+				  "n = ?",
+				  "Find n closest by GPS distance",
+				  JOptionPane.QUESTION_MESSAGE);
+		int n = Integer.parseInt(nText);
+		outputArea.setText(app.f(n));
 	}
 
 	public void g() {
-		
+		String nText = JOptionPane.showInputDialog(null,
+				  "n = ?",
+				  "Find n closest by edge costs",
+				  JOptionPane.QUESTION_MESSAGE);
+		int n = Integer.parseInt(nText);
+		outputArea.setText(app.g(n));
 	}
 
 	public void h() {
-		
+		String targetText = JOptionPane.showInputDialog(null,
+				  "Which target city ID do you want?",
+				  "Target CityID",
+				  JOptionPane.QUESTION_MESSAGE);
+		int targetID = Integer.parseInt(targetText);
+		outputArea.setText(app.h(targetID));
 	}
 
 	public void i() {
@@ -169,11 +221,29 @@ public class MapPanel extends JPanel {
 	}
 
 	public void j() {
-		
+		String fileBase = JOptionPane.showInputDialog(null,
+				  "Save Graphviz File as foo.dot. What is foo?",
+				  "Save Graphviz",
+				  JOptionPane.QUESTION_MESSAGE);
+		try {
+			app.j(fileBase);
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 	public void k() {
-		
+		String fileBase = JOptionPane.showInputDialog(null,
+				  "Save Gephi File as foo_edge.csv and foo_node.csv. What is foo?",
+				  "Save Gephi",
+				  JOptionPane.QUESTION_MESSAGE);
+		try {
+			app.k(fileBase);
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 	
 	/**
@@ -182,6 +252,7 @@ public class MapPanel extends JPanel {
 	 */
 	private class ButtonListener implements ActionListener {
 		public void actionPerformed(ActionEvent event) {
+			status.setText(" ");
 			if (event.getSource() == buttons[0]) {
 				a();
 			} else if (event.getSource() == buttons[1]) {

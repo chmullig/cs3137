@@ -11,9 +11,10 @@ it's pretty reasonable.
 I created a City class, and a Flight class to represent edges between cities. I
 then create a map class, MyGraphMap13, that manages the list of cities, finding
 distances, etc, etc. There's then a MapApplication that contains functions for
-each of the commands a-i. The MapApplication is used by mainf13 to implement a
-command line interface. However it is also used by guif13 to implement a
-graphical interface.
+each of the commands a-i. The MapApplication is used by `mainf13` to implement a
+command line interface.
+
+It is also used by `guif13` to implement a graphical interface.
 
 The data structures I use are Java's List (both ArrayList and LinkedList),
 HashMap, and Arrays. I also use Weiss' BinaryHeap for Dijkstra's priority queue

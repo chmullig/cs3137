@@ -24,12 +24,18 @@ public class MapApplication {
 	 * @return
 	 * @throws FileNotFoundException
 	 */
-	public int a(String filename) throws FileNotFoundException {
+	public int a(String filename, boolean reset) throws FileNotFoundException {
+		if (reset) {
+			map = new MyGraphMap13();
+			loadedFiles = new LinkedList<String>();
+		}
 		if (loadedFiles.contains(filename))
 			return 0;
 		BufferedReader file = new BufferedReader(new FileReader(filename));
 		loadedFiles.add(filename);
-		return map.loadFile(file);
+		int loaded = map.loadFile(file);
+		map.addRandomFlights(2, 8, 100, 2000);
+		return loaded;
 	}
 	
 	/**

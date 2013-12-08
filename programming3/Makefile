@@ -15,7 +15,7 @@ CLASSES = \
 default: clm2186_programming_3_cli.jar
 
 clm2186_programming_3_cli.jar: $(CLASSES:.java=.class)
-	jar cfe clm2186_programming_3_cli.jar mainf13 $(CLASSES:.java=.class) 
+	jar cfe clm2186_programming_3_cli.jar mainf13 $(CLASSES:.java=.class) MyGraphMap13*.class
 
 
 docs: $(CLASSES)
@@ -28,7 +28,7 @@ clean:
 all: clean default docs
 
 test: default
-	java -Xmx2g -jar clm2186_programming_3_cli.jar fict100.txt
+	java -Xmx2g -jar clm2186_programming_3_cli.jar worldcities.txt
 
 clm2186_programming_3.tar.gz: default docs
 	tar czf clm2186_programming_3.tar.gz README.md *.java *.jar docs Makefile

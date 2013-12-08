@@ -75,7 +75,7 @@ public class MapPanel extends JPanel {
 		commandPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
 		commandPanel.add(new JLabel("Commands:"));
 		
-		buttons = new JButton['k'-'a'];		
+		buttons = new JButton['l'-'a'];		
 		for (int i = 0; i < buttons.length; i++) {
 			char letter = (char) (i+'a');
 			buttons[i] = new JButton(commands[i]);
@@ -138,8 +138,12 @@ public class MapPanel extends JPanel {
 		super.paintComponent(page);
 		
 		headerStatus.setText("Files Loaded: " + app.loadedFiles.toString());
-		currentCity.setText("Current City: " + app.e());
+		if (app.map.getCurrentCity() != null) {
+			currentCity.setText("Current City: " + app.map.getCurrentCity().toString());
+		}
 	}
+	
+	
 	
 	public void a() {
 		String workingDir = System.getProperty("user.dir");
@@ -168,6 +172,7 @@ public class MapPanel extends JPanel {
 			setAllButtons(true);
 		}
 	}
+	
 	public void b() {
 		String state = JOptionPane.showInputDialog(null,
 				  "What state do you want to search for?",

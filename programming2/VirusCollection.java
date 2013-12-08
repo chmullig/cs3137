@@ -36,7 +36,7 @@ public class VirusCollection implements Serializable {
 	private ArrayList<String> benignFileNames;
 	private int n = 8;
 	private double alpha = 1;
-	private double beta = 20;
+	private double beta = 200;
 	private boolean cached = false;
 	
 	/**

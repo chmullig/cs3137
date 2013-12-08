@@ -71,12 +71,12 @@ public class mainf13 {
 					int n = Integer.parseInt(nStr);
 					System.out.println(app.f(n));
 				} else if (command.equals("g")) {
-					System.out.print("cheapest route: n ?= ");
+					System.out.print("closest by cost: n ?= ");
 					String nStr = getInput(scn, batch);
 					int n = Integer.parseInt(nStr);
 					System.out.println(app.g(n));
 				} else if (command.equals("h")) {
-					System.out.print("Target CityID: ");
+					System.out.print("Cheapest Route Target CityID: ");
 					String cityStr = getInput(scn, batch);
 					Integer targetID = Integer.parseInt(cityStr);
 					System.out.println(app.h(targetID));

@@ -4,6 +4,9 @@ import java.io.*;
 
 /**
  * @author Chris Mulligan <clm2186@columbia.edu>
+ * Represent a flight between two cities. Because every city has a lat/long,
+ * every flight has a distance, as defined by their great circle distance on
+ * earth. Flights may optionally have a cost.  
  *
  */
 public class Flight {
@@ -22,12 +25,13 @@ public class Flight {
 	}
 
 	public Flight(City origin, City dest) {
-		this(origin, dest, 0);
+		this(origin, dest, Integer.MAX_VALUE);
 	}
 	
 	
 	/**
-	 * Calculate using great circle distance.
+	 * Calculate using great circle distance in kilometers.
+	 * Based in part on http://stackoverflow.com/a/837957/349931
 	 */
 	private void calculateDistance() {
 		double dLat = Math.toRadians(destination.getLatitude() - origin.getLatitude());
@@ -52,6 +56,11 @@ public class Flight {
 	public void setDestination(City destination) {
 		this.destination = destination;
 	}
+	/**
+	 * Integer.MAX_VALUE indicates this is unspecified.
+	 * 
+	 * @return
+	 */
 	public int getCost() {
 		return cost;
 	}
@@ -63,6 +72,13 @@ public class Flight {
 		return distance;
 	}
 	
+	/** 
+	 * Print it out like
+	 * 
+	 * [ORIGIN, NAME -> DEST, NAME / $COST / DISTkm]
+	 * 
+	 * @see java.lang.Object#toString()
+	 */
 	public String toString() {
 		return "[" + origin.getFullname() + " -> " + destination.getFullname() + " / $" + cost +" / " + Math.round(distance) + "km]";
 	}

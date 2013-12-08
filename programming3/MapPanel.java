@@ -8,6 +8,13 @@ import javax.swing.border.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 
+/**
+ * @author Chris Mulligan (clm2186@columbia.edu)
+ * 
+ * GUI interface to the GPS application. Uses a {@link MapApplication} to
+ * do the real world. GUI version of {@link mainf13}.
+ *
+ */
 public class MapPanel extends JPanel {
 	private MapApplication app;
 	
@@ -227,9 +234,9 @@ public class MapPanel extends JPanel {
 				  JOptionPane.QUESTION_MESSAGE);
 		try {
 			app.j(fileBase);
+			status.setText("Saved!");
 		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			status.setText("Error Saving!");
 		}
 	}
 
@@ -240,15 +247,17 @@ public class MapPanel extends JPanel {
 				  JOptionPane.QUESTION_MESSAGE);
 		try {
 			app.k(fileBase);
+			status.setText("Saved!");
 		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			status.setText("Error Saving!");
 		}
 	}
 	
 	/**
 	 * @author Chris Mulligan <clm2186>
-	 * Update the hyperparameters. We actually just set both whenever we set either.
+	 * Check which button was pushed and call the appropriate single letter
+	 * function. Does a tiny bit of housekeeping before/after.
+	 * 
 	 */
 	private class ButtonListener implements ActionListener {
 		public void actionPerformed(ActionEvent event) {
@@ -282,184 +291,6 @@ public class MapPanel extends JPanel {
 
 	
 	
-	
-
-	
-	/**
-	 * @author Chris Mulligan (clm2186)
-	 * 
-	 * (Attempt to) load a previously saved serialized file!
-	 */
-	private class LoadSerListener implements ActionListener {
-		public void actionPerformed(ActionEvent e) {
-			String workingDir = System.getProperty("user.dir");
-			JFileChooser chooser = new JFileChooser(workingDir);
-			String help = "Select a .ser file containing a previously saved virus session";
-			chooser.setDialogTitle(help);
-			chooser.setFileFilter(new FileNameExtensionFilter("Serialized Session", "ser"));
-			int chooserStatus = -1;
-			chooserStatus = chooser.showOpenDialog(null);
-			if (chooserStatus == JFileChooser.APPROVE_OPTION) {
-				status.setText("Loading, please wait...");
-				setAllButtons(false);
-				repaint();
-				try {
-					FileInputStream fileIn = new FileInputStream(chooser.getSelectedFile());
-					ObjectInputStream in = new ObjectInputStream(fileIn);
-					//app = (VirusCollection) in.readObject();
-					in.close();
-					fileIn.close();
-					status.setText("Loaded!");
-					throw new ClassNotFoundException();
-				} catch(IOException i) {
-					JOptionPane.showMessageDialog(null, "Error: Unable to load serialized virus collection");
-				} catch(ClassNotFoundException c) {
-					JOptionPane.showMessageDialog(null, "Error: VirusCollection class not found");
-				}
-				setAllButtons(true);
-			}
-			repaint();
-		}
-	}
-	
-	/**
-	 * @author Chris Mulligan (clm2186)
-	 * 
-	 * (Attempt to) load specified files and directories!
-	 */
-	private class LoadListener implements ActionListener {
-		public void actionPerformed(ActionEvent e) {
-			boolean virus = false;
-			
-			String workingDir = System.getProperty("user.dir");
-			JFileChooser chooser = new JFileChooser(workingDir);
-			String help = "Select " + (virus ? "virus" : "benign") + " .hex files, or a directory";
-			chooser.setDialogTitle(help);
-			chooser.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
-			chooser.setMultiSelectionEnabled(true);
-			chooser.setFileFilter(new FileNameExtensionFilter("hex dump", "hex"));
-			int chooserStatus = -1;
-			chooserStatus = chooser.showOpenDialog(null);
-			if (chooserStatus == JFileChooser.APPROVE_OPTION) {
-				status.setText("Loading, please wait...");
-				setAllButtons(false);
-				repaint();
-				
-				
-				for (File file: chooser.getSelectedFiles()) {
-					status.setText("Loading " + file.getName());
-					status.repaint();
-//					if (file.isDirectory()) {
-//						System.out.println("Loading directory " + file.getName());
-//						//app.loadDirectory(file, virus);
-//					} else {
-//						try {
-//							System.out.println("Loading file " + file.getName());
-//							//app.loadFile(file, virus);
-//						} catch (FileNotFoundException e1) {
-//							System.out.println("error!");
-//						}
-//					}
-				}
-				System.out.println("Done loading.");
-				status.setText("Loaded!");
-				setAllButtons(true);
-				repaint();
-			}
-			repaint();
-		}
-	}
-	
-
-	/**
-	 * @author Chris Mulligan (clm2186)
-	 * 
-	 * (Attempt to) test specified files and directories!
-	 */
-	private class TestListener implements ActionListener {
-		public void actionPerformed(ActionEvent e) {
-			
-			String workingDir = System.getProperty("user.dir");
-			JFileChooser chooser = new JFileChooser(workingDir);
-			String help = "Select .hex files, or a directory to test";
-			chooser.setDialogTitle(help);
-			chooser.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
-			chooser.setMultiSelectionEnabled(true);
-			chooser.setFileFilter(new FileNameExtensionFilter("hex dump", "hex"));
-			int chooserStatus = -1;
-			chooserStatus = chooser.showOpenDialog(null);
-			if (chooserStatus == JFileChooser.APPROVE_OPTION) {
-				status.setText("Testing, please wait...");
-				setAllButtons(false);
-				repaint();
-				
-				for (File file: chooser.getSelectedFiles()) {
-					status.setText("Testing " + file.getName());
-					status.repaint();
-					File[] files;
-					if (file.isDirectory()) {
-						files = file.listFiles();
-					} else {
-						files = new File[]{file};
-					}
-					try {
-						for (File currFile: files) {
-							FileReader fileReader = new FileReader(currFile);
-							BufferedReader fileBuffer = new BufferedReader(fileReader);
-							StringBuffer contents = new StringBuffer();
-							contents.append(fileBuffer.readLine().replaceAll(" ", ""));
-							
-							//double prediction = app.computeNB(contents.toString());
-							//JOptionPane.showMessageDialog(null, "File " + currFile.getName() + " prediction: " + prediction*100);
-							
-							fileBuffer.close();
-						}
-					} catch (IOException e1) {
-						System.out.println("Testing IO exception");
-						e1.printStackTrace();
-					}
-				}
-				status.setText("Done testing!");
-				setAllButtons(true);
-				repaint();
-			}
-			repaint();
-		}
-	}
-	
-	/**
-	 * @author Chris Mulligan (clm2186)
-	 * 
-	 * Save the current virus collection to a file.
-	 */
-	private class SaveListener implements ActionListener {
-		public void actionPerformed(ActionEvent e) {
-			String workingDir = System.getProperty("user.dir");
-			JFileChooser chooser = new JFileChooser(workingDir);
-			String help = "Save current session to a .ser file";
-			chooser.setDialogTitle(help);
-			chooser.setFileFilter(new FileNameExtensionFilter("Serialized Session", "ser"));
-			int chooserStatus = -1;
-			chooserStatus = chooser.showSaveDialog(null);
-			if (chooserStatus == JFileChooser.APPROVE_OPTION) {
-				status.setText("Saving, please wait...");
-				setAllButtons(false);
-				repaint();
-				try {
-					FileOutputStream fileOut = new FileOutputStream(chooser.getSelectedFile());
-					ObjectOutputStream out = new ObjectOutputStream(fileOut);
-					out.writeObject(app);
-					out.close();
-					fileOut.close();
-				} catch(IOException i) {
-					JOptionPane.showMessageDialog(null, "Error: Unable to save serialized virus collection");
-				}
-				status.setText("Saving!");
-				setAllButtons(true);
-			}
-			repaint();
-		}
-	}
 	
 	
 }

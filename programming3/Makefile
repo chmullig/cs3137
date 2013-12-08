@@ -44,5 +44,4 @@ world.png: test
 tgz: clm2186_programming_3.tar.gz
 
 clm2186_programming_3.tar.gz: default docs world.png
-	tar czf clm2186_programming_3.tar.gz README.md *.java *.jar docs Makefile world.dot world.png input.txt worldcity.txt
-
+	tar czf clm2186_programming_3.tar.gz README.md *.java *.jar docs Makefile world.dot world.png input.txt worldcity.txt worldcities.txt

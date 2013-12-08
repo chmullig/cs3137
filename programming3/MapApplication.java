@@ -3,8 +3,12 @@ import java.lang.*;
 import java.beans.DesignMode;
 import java.io.*;
 
+
 /**
  * @author Chris Mulligan <clm2186@columbia.edu>
+ *
+ * Wraps {@link MyGraphMap13} to support the Programming 3 requirements. Maps
+ * a specific letter command to the appropriate MyGraph13 functions. 
  *
  */
 public class MapApplication {
@@ -17,8 +21,20 @@ public class MapApplication {
 		loadedFiles = new LinkedList<String>();
 	}
 	
+	/**
+	 * @return true if any file has been loaded yet
+	 */
 	public boolean hasCities() {
 		return !loadedFiles.isEmpty();
+	}
+	
+	/**
+	 * Pick a random city and make IT our current city.  
+	 */
+	private void randomCurrent() {
+		int randomCityID = (int)Math.random()*map.getCityCount();
+		City randomCurrent = map.getCities().get(randomCityID);
+		map.setCurrentCity(randomCurrent);
 	}
 	
 	/**
@@ -92,12 +108,6 @@ public class MapApplication {
 			return "none";
 	}
 	
-	private void randomCurrent() {
-		int randomCityID = (int)Math.random()*map.getCityCount();
-		City randomCurrent = map.getCities().get(randomCityID);
-		map.setCurrentCity(randomCurrent);
-	}
-	
 	/**
 	 * f. Find n closest cities using gps distances 
 	 * 
@@ -113,9 +123,25 @@ public class MapApplication {
 		
 		StringBuffer results = new StringBuffer();
 		for (City city: closestN) {
-			results.append(city.toString());
+			results.append(city.toString() + " " + city.getDistance() + "km");
+			
+			City u = city;
+			results.append(" via ");
+			List<String> path = new LinkedList<String>();
+			while (u != null) {
+				path.add(u.getFullname());
+				u = u.getParent();
+			}
+			for (int i = path.size()-1; i >= 0; i--) {
+				results.append(path.get(i));
+				if (i > 0) {
+					results.append(" -> ");
+				}
+			}
 			results.append("\n");
 		}
+		
+		
 		return results.toString();
 	}
 	
@@ -134,8 +160,23 @@ public class MapApplication {
 		
 		StringBuffer results = new StringBuffer();
 		for (City city: closestN) {
-			results.append(city.toString());
+			results.append(city.toString() + " $" + city.getDistance());
+			
+			City u = city;
+			results.append(" via ");
+			List<String> path = new LinkedList<String>();
+			while (u != null) {
+				path.add(u.getFullname());
+				u = u.getParent();
+			}
+			for (int i = path.size()-1; i >= 0; i--) {
+				results.append(path.get(i));
+				if (i > 0) {
+					results.append(" -> ");
+				}
+			}
 			results.append("\n");
+			
 		}
 		return results.toString();
 	}
@@ -164,11 +205,23 @@ public class MapApplication {
 		return results.toString();
 	}
 	
+	/**
+	 * j. added by Chris - saves a graphviz .dot file
+	 * 
+	 * @param filename
+	 * @throws FileNotFoundException
+	 */
 	public void j(String filename) throws FileNotFoundException {
 		PrintStream dot = new PrintStream(filename +".dot");
 		map.makeGraphviz(dot);
 	}
 	
+	/**
+	 * k. added by Chris - saves gephi .csv files
+	 * 
+	 * @param filename
+	 * @throws FileNotFoundException
+	 */
 	public void k(String filename) throws FileNotFoundException {
 		PrintStream nodes = new PrintStream(filename +"_nodes.csv");
 		map.makeGephiNodes(nodes);

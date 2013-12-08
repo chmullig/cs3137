@@ -6,6 +6,16 @@ import java.io.*;
 /**
  * @author Chris Mulligan <clm2186@columbia.edu>
  *
+ * Programming 3 assignment. This is the main graph of cities, and flights
+ * between cities.
+ * 
+ * Internally it stores cities in a List, as well as a HashMap from Fullname to
+ * City object.
+ * 
+ * Flights have two measures - distance and cost. It can perform all algorithms
+ * like finding closest, and finding shortest path, using either metric. 
+ * 
+ * See README for more information.
  */
 public class MyGraphMap13 {
 	private List<City> cities;
@@ -26,14 +36,18 @@ public class MyGraphMap13 {
 		rand.setSeed(237465);
 	}
 	
-	public MyGraphMap13(int size) {
-		cities = new ArrayList<City>();
-		luCities = new HashMap<String, City>(size);
-		current = null;
-		rand = new Random();
-		rand.setSeed(237465);
-	}
-	
+	/**
+	 * Given a reader, check the # of cities in the first row, then load
+	 * all the cities in the file. NOTE, based on a piazza comment it swaps
+	 * the lat/long from what was specified in the instructions. This way makes
+	 * more sense to me.
+	 * 
+	 * It does NOT add random flights, use
+	 * {@link #addRandomFlights(int, int, int, int)} for that
+	 * 
+	 * @param cityFileReader
+	 * @return
+	 */
 	public int loadFile(BufferedReader cityFileReader) {
 		int numCities = 0;
 		int loaded = 0;
@@ -79,6 +93,10 @@ public class MyGraphMap13 {
 		return loaded;
 	}
 	
+	/**
+	 * Add the city, and increment the appropriate counters.
+	 * @param city
+	 */
 	public void addCity(City city) {
 		if (!cities.contains(city)) {
 			city.setId(cities.size());
@@ -89,42 +107,75 @@ public class MyGraphMap13 {
 	}
 	
 
-	public void addFlight(Flight flight) {
-		City origin = flight.getOrigin();
-		if (!luCities.containsKey(origin.getFullname())) {
-			luCities.put(origin.getFullname(), origin);
-		}
-		City dest = flight.getDestination();
-		if (!luCities.containsKey(dest.getFullname())) {
-			luCities.put(dest.getFullname(), dest);
-		}
-		origin.addOutbound(flight);
-		dest.addInbound(flight);
+	/**
+	 * "Add" a flight. This adds the flight to the origin's outbound list, and
+	 * the destination's inbound list. It also increments the flight count.
+	 * 
+	 * @param flight
+	 */
+	public void addFlight(Flight flight) {		
+		flight.getOrigin().addOutbound(flight);
+		flight.getDestination().addInbound(flight);
 		flightCount++;
 	}
 	
+	/**
+	 * Construction a Flight and then call {@link #addFlight(Flight)}
+	 * 
+	 * @param origin
+	 * @param destination
+	 * @param cost
+	 */
 	public void addFlight(City origin, City destination, int cost) {
 		Flight myFlight = new Flight(origin, destination, cost);
 		addFlight(myFlight);
 	}
 	
+	/**
+	 * Check if a city name is in the city list. Based on full name!
+	 * 
+	 * @param name
+	 * @return
+	 */
 	public boolean containsCity(String name) {
 		return luCities.containsKey(name);
 	}
 	
+	/**
+	 * Return the city based on full name.
+	 * @param name
+	 * @return
+	 */
 	public City findCity(String name) {
 		City city = luCities.get(name);
 		return city;
 	}
 	
+	/**
+	 * Return a city by its unique ID number.
+	 * 
+	 * @param id
+	 * @return
+	 */
 	public City findCity(int id) {
 		return cities.get(id);
 	}
 	
+	/**
+	 * Get a list of all the cities. Note that you can fuck things up if you
+	 * mess with this! 
+	 * 
+	 * @return
+	 */
 	public List<City> getCities() {
 		return cities;
 	}
 	
+	/**
+	 * Return a list of all the states in the database.
+	 * 
+	 * @return
+	 */
 	public List<String> listStates() {
 		List<String> states = new LinkedList<String>();
 		for (City city: cities) {
@@ -134,6 +185,12 @@ public class MyGraphMap13 {
 		return states;
 	}
 	
+	/**
+	 * Return a list of all the cities with a given state string.
+	 * 
+	 * @param state
+	 * @return
+	 */
 	public List<City> getCitiesInState(String state) {
 		List<City> matching = new LinkedList<City>();
 		for (City city: cities) {
@@ -143,6 +200,16 @@ public class MyGraphMap13 {
 		return matching;
 	}
 	
+	/**
+	 * Add random flights. Parameters specified as described below. It doesn't
+	 * allow self flights, nor multiple flights with the same origin and
+	 * destination.
+	 * 
+	 * @param lowerN min outbound flights per city
+	 * @param upperN max outbound flights per city
+	 * @param lowerCost min cost per flight
+	 * @param upperCost max cost per flight
+	 */
 	public void addRandomFlights(int lowerN, int upperN, int lowerCost, int upperCost) {
 		for (City city: cities) {
 			int nOutbound = rand.nextInt(upperN-lowerN)+lowerN;
@@ -160,6 +227,11 @@ public class MyGraphMap13 {
 	}
 	
 	
+	/**
+	 * Pick a city and name it our capital! We love this city!
+	 * 
+	 * @param city
+	 */
 	public void setCurrentCity(City city) {
 		current = city;
 	}
@@ -174,14 +246,41 @@ public class MyGraphMap13 {
 	}
 	
 	
+	/**
+	 * Get the N cheapest cities to current city, as measured by edge weigth (aka
+	 * cost. Note that it calls {@link #dijkstra(DistanceMetric, int)}
+	 * with {@link DistanceMetric}.COST to do everything.
+	 * 
+	 * @param n
+	 * @return
+	 */
 	public List<City> nByCost(int n) {
 		return dijkstra(DistanceMetric.COST, n);
 	}
 	
+	/**
+	 * Get the N closest cities to current city, as measured by great circle
+	 * distance. Note that it calls {@link #dijkstra(DistanceMetric, int)}
+	 * with {@link DistanceMetric}.DISTANCE to do everything.
+	 * @param n
+	 * @return
+	 */
 	public List<City> nByDistance(int n) {
 		return dijkstra(DistanceMetric.DISTANCE, n);
 	}
 	
+	/**
+	 * Beginning from the current city, calculates cheapest path using Djikstra's
+	 * algorithm. It will use either distance or cost as the weight, depending
+	 * on the {@link DistanceMetric} passed in. It returns a list of the n
+	 * closest cities. However it also has a nice side effect of setting all
+	 * cities' distance, and parents to correct based on the DistanceMetric
+	 * passed in. Thus it helps solve the {@link #cheapestPath(City)} problem. 
+	 * 
+	 * @param metric
+	 * @param n
+	 * @return
+	 */
 	private List<City> dijkstra(DistanceMetric metric, int n) {
 		if (current == null) {
 			throw new IllegalStateException("must set current city first");
@@ -221,16 +320,26 @@ public class MyGraphMap13 {
 		List<City> sortedCities = new ArrayList<City>(cities);
 		Collections.sort(sortedCities);
 		
-		if (n != cityCount)
-			return sortedCities.subList(0, n);
-		else
-			return sortedCities;
+		return sortedCities.subList(1, n+1);
 	}
 	
+	/**
+	 * Find the cheapest path using costs from current city to the destination.
+	 * 
+	 * Calls {@link #dijkstra(DistanceMetric, int)} to compute distances/costs,
+	 * then starts from the destination and moves backward. Returns null 
+	 * if there is no path.
+	 * 
+	 * @param destination
+	 * @return
+	 */
 	public List<Flight> cheapestPath(City destination) {
 		List<Flight> shortestPath = new LinkedList<Flight>();
 		City u = destination;
 		dijkstra(DistanceMetric.COST, 1);
+		if (u.getDistance() == Integer.MAX_VALUE) {
+			return null;
+		}
 		while (u != current) {
 			shortestPath.add(u.getParentFlight());
 			u = u.getParent();
@@ -240,6 +349,12 @@ public class MyGraphMap13 {
 		return shortestPath;
 	}
 	
+	/**
+	 * Same as cheapest path, but uses distance instead of cost.
+	 * 
+	 * @param destination
+	 * @return
+	 */
 	public List<Flight> shortestPath(City destination) {
 		List<Flight> shortestPath = new LinkedList<Flight>();
 		City u = destination;

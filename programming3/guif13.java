@@ -3,11 +3,12 @@ import javax.swing.*;
 /**
  * @author Chris Mulligan <clm2186>
  *
+ * Trivial wrapper application, {@link MapPanel} does everything.
  */
 public class guif13 {
 
 	/**
-	 * @param args
+	 * @param args ignored
 	 */
 	public static void main(String[] args) {
 		JFrame frame = new JFrame("Map 13");

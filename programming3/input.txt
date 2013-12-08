@@ -2,9 +2,12 @@ a
 worldcity.txt
 d
 35
+e
 f
 4
 g
+20
+h
 20
 j
 world
